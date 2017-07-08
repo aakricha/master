@@ -42,7 +42,7 @@ class phpEditAdmin extends phpAddAdmin
 
 	function onSave ( $func_name_on_save = '', $var_name_on_save = '' )
 	{
-		$this->onSave = $func_name_on_save;
+		$this->onSave     = $func_name_on_save;
 		$this->onSave_var = $var_name_on_save;
 	}
 
@@ -299,6 +299,10 @@ EOT;
 		$out = true;
 		if ( !empty( $this->onSave ) )
 		{
+			if (!is_numeric($this->onSave_var) && empty($this->onSave_var))
+			{
+				$this->onSave_var = $this->db->getOne("SELECT {$this->tableId} FROM {$this->table} $this->sqlCondition");
+			}
 			$tmp = call_user_func( $this->onSave, $this->onSave_var );
 			if (is_bool($tmp) || $tmp=='1' || $tmp=='0')
 			{
