@@ -39,7 +39,7 @@ function tools_scan_check_file_perm(&$folder_errors, $baseDir, $right_chmod)
 {
 	$permision = file_octal_permissions(fileperms($baseDir));
 	if($permision != $right_chmod)
-		$folder_errors[] = msg("Incorrect permision file ({$permision}), it should be {$right_chmod}", 'File : '.preg_replace('~^'.save_txt(_ROOT).'~', '', $baseDir).'<br />');
+		$folder_errors[] = msg("Incorrect permision file ({$permision}), it should be {$right_chmod}", 'File : '.preg_replace('~^'.preg_quote(_ROOT, '~').'~is', '', $baseDir).'<br />');
 }
 function tools_scan_check_dir_perm(&$folder_errors, $baseDir, $right_chmod)
 {
@@ -52,7 +52,7 @@ function tools_scan_check_dir_perm(&$folder_errors, $baseDir, $right_chmod)
 			$permision = file_octal_permissions(fileperms($folder));
 			if($permision != $right_chmod)
 			{
-				$folder_errors[] = msg("Incorrect permision directory ({$permision}), it should be {$right_chmod}", 'Directory : '.preg_replace('~^'.save_txt(_ROOT).'~', '', $folder).'<br />');
+				$folder_errors[] = msg("Incorrect permision directory ({$permision}), it should be {$right_chmod}", 'Directory : '.preg_replace('~^'.preg_quote(_ROOT, '~').'~is', '', $folder).'<br />');
 			}
 			tools_scan_check_dir_perm($folder_errors, $folder, $right_chmod);
 		}

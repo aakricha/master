@@ -419,15 +419,6 @@ function unhtmlentities_r($vars)
 	$vars = is_array($vars) ? array_map(__FUNCTION__, $vars) : unhtmlentities($vars);
 	return $vars;
 }
-function save_txt($url, $quote = '~')
-{
-	$output = addslashes($url);
-	if(strstr($url, $quote))
-	{
-		$output = str_replace($quote, '\\'.$quote, $output);
-	}
-	return $output;
-}
 function justify_text($txt, $txt2, $spaces, $add = ' ')
 {
   $i = strlen($txt);
