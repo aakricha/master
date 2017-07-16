@@ -246,8 +246,7 @@ class phpEditAdmin extends phpAddAdmin
 			{
 				$GLOBALS['sys']->nav_add($this->hideToolTitle);
 			}
-			$footer .=	'<span type="button" class="btn btn-default btn-sm" onclick="document.location.href=\''
-					 		.		$_GET['return'].'\';"><span class="glyphicon glyphicon-chevron-left"></span></span> ';
+			$footer .=	$GLOBALS['sys']->button($_GET['return']);
 		}
 		if (!isset($_POST[$this->deleteButton->name]))
 		{

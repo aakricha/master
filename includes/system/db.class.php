@@ -162,6 +162,7 @@ class bbcSQL
 			}else{
 				$where = '';
 			}
+			// pr("UPDATE `{$table}` SET {$sql} {$where}", __FILE__.':'.__LINE__);die();
 			$out = $this->Execute("UPDATE `{$table}` SET {$sql} {$where}");
 		}
 		return $out;
@@ -393,14 +394,17 @@ class bbcSQL
 		return $result;
 	}
 
-	function _build($data)
+	function _build($data, $exclude=array('id'))
 	{
 		$output = array();
 		if (!empty($data))
 		{
 			foreach ($data as $key => $value)
 			{
-				$output[] = "`{$key}`='".addslashes($value)."'";
+				if (!in_array($key, $exclude))
+				{
+					$output[] = "`{$key}`='".addslashes($value)."'";
+				}
 			}
 		}
 		return implode(', ', $output);

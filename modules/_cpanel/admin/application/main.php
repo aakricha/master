@@ -32,10 +32,10 @@ $_setting = array(
 		)
 	);
 $params = array(
-  'config'=> $_setting
-, 'name'	=> 'config'
-, 'title'	=> 'Third Party Application Configuration'
-);
+	'config' => $_setting,
+	'name'   => 'config',
+	'title'  => 'Third Party Application Configuration'
+	);
 $conf = _class('bbcconfig');
 $conf->set($params);
 echo msg('this configuration will only used by third party apps for other platform such as Android, iOS or Blackberry which is connected to this system. Please contact your developer if you need the native application for this system ', 'warning');

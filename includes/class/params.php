@@ -855,126 +855,126 @@ class params
 }
 /*
 $config = array(
-	'characters'=> array(
-		'text'			=> 'Sample Text Input'
-	,	'tips'      => 'text to display under the input in small font-size'
-	,	'add'       => 'additional text after the input'
-	,	'help'      => 'popup tips to display right after the title'
-	,	'type'      => 'text' // type of input
-	, 'language'  => true 	// is input support multiple language, default value is false
-	,	'attr'      => ' size="40"' // additional attribute for the input
-	, 'default'   => 'insert default value'
-	,	'mandatory' => 1 // is this field must be filled in (compulsory). Eg. 1 or 0
-	,	'checked'   => 'any'	// validate input before it save in database eg. 'any' || 'email' || 'url' || 'phone' || 'number' default is 'any'
-	),
-	'plain'=> array(
-		'text'		=> 'Sample Plaintext'
-	,	'tips'    => 'text to display under the input in small font-size'
-	,	'add'     => 'additional text after the input'
-	,	'help'    => 'popup tips to display right after the title'
-	,	'type'    => 'plain'	// type of input
-	,	'default' => 'this is the text'
-	),
-	'radio'			=> array(
-		'text'			=> 'Sample Radio input'
-	,	'tips'      => 'text to display under the input in small font-size'
-	,	'add'       => 'additional text after the input'
-	,	'help'      => 'popup tips to display right after the title'
-	,	'type'      => 'radio' // type of input
-	,	'delim'     => "<br />\n"
-	, 'option'    => array('yes', 'no')
-	, 'default'   => '0'
-	,	'mandatory' => 1 // is this field must be filled in (compulsory). Eg. 1 or 0
-	,	'checked'   => 'any'	// validate input before it save in database eg. 'any' || 'email' || 'url' || 'phone' || 'number' default is 'any'
-	),
-	'select'		=> array(
-		'text'			=> 'Sample Select input'
-	,	'tips'      => 'text to display under the input in small font-size'
-	,	'add'       => 'additional text after the input'
-	,	'help'      => 'popup tips to display right after the title'
-	,	'type'      => 'select' // type of input
-	,	'is_arr'    => true			// if this is true, user has multiple selection
-	, 'option'    => array(1 => 'yes', 0 => 'no')
-	, 'default'   => 'no'
-	,	'mandatory' => 0 // is this field must be filled in (compulsory). Eg. 1 or 0
-	,	'checked'   => 'any'	// validate input before it save in database eg. 'any' || 'email' || 'url' || 'phone' || 'number' default is 'any'
-	),
+	'characters' => array(
+		'text'      => 'Sample Text Input',
+		'tips'      => 'text to display under the input in small font-size',
+		'add'       => 'additional text after the input',
+		'help'      => 'popup tips to display right after the title',
+		'type'      => 'text', // type of input
+		'language'  => true, 	// is input support multiple language, default value is false
+		'attr'      => ' size="40"', // additional attribute for the input
+		'default'   => 'insert default value',
+		'mandatory' => 1, // is this field must be filled in (compulsory). Eg. 1 or 0
+		'checked'   => 'any'	// validate input before it save in database eg. 'any' || 'email' || 'url' || 'phone' || 'number' default is 'any'
+		),
+	'plain' => array(
+		'text'    => 'Sample Plaintext',
+		'tips'    => 'text to display under the input in small font-size',
+		'add'     => 'additional text after the input',
+		'help'    => 'popup tips to display right after the title',
+		'type'    => 'plain',
+		'default' => 'this is the text'
+		),
+	'radio' => array(
+		'text'      => 'Sample Radio input',
+		'tips'      => 'text to display under the input in small font-size',
+		'add'       => 'additional text after the input',
+		'help'      => 'popup tips to display right after the title',
+		'type'      => 'radio',
+		'delim'     => "<br />\n",
+		'option'    => array('yes', 'no'),
+		'default'   => '0',
+		'mandatory' => 1, // is this field must be filled in (compulsory). Eg. 1 or 0
+		'checked'   => 'any'	// validate input before it save in database eg. 'any' || 'email' || 'url' || 'phone' || 'number' default is 'any'
+		),
+	'select' => array(
+		'text'			=> 'Sample Select input',
+		'tips'      => 'text to display under the input in small font-size',
+		'add'       => 'additional text after the input',
+		'help'      => 'popup tips to display right after the title',
+		'type'      => 'select',
+		'is_arr'    => true,			// if this is true, user has multiple selection
+		'option'    => array(1 => 'yes', 0 => 'no'),
+		'default'   => 'no',
+		'mandatory' => 0, // is this field must be filled in (compulsory). Eg. 1 or 0
+		'checked'   => 'any'	// validate input before it save in database eg. 'any' || 'email' || 'url' || 'phone' || 'number' default is 'any'
+		),
 	'checkbox'	=> array(
-		'text'			=> 'Sample Checkbox input'
-	,	'tips'      => 'text to display under the input in small font-size'
-	,	'add'       => 'additional text after the input'
-	,	'help'      => 'popup tips to display right after the title'
-	,	'type'      => 'checkbox' // type of input
-	,	'delim'     => "<br />\n"
-	, 'option'    => array(1 => 'yes', 0 => 'no') // leave it empty or unset for one checkbox and value
-	, 'default'   => 1
-	,	'mandatory' => 0 // is this field must be filled in (compulsory). Eg. 1 or 0
-	,	'checked'   => 'any'	// validate input before it save in database eg. 'any' || 'email' || 'url' || 'phone' || 'number' default is 'any'
-	),
+		'text'			=> 'Sample Checkbox input',
+		'tips'      => 'text to display under the input in small font-size',
+		'add'       => 'additional text after the input',
+		'help'      => 'popup tips to display right after the title',
+		'type'      => 'checkbox',
+		'delim'     => "<br />\n",
+		'option'    => array(1 => 'yes', 0 => 'no'), // leave it empty or unset for one checkbox and value
+		'default'   => 1,
+		'mandatory' => 0, // is this field must be filled in (compulsory). Eg. 1 or 0
+		'checked'   => 'any',	// validate input before it save in database eg. 'any' || 'email' || 'url' || 'phone' || 'number' default is 'any'
+		),
 	'checkbox2'	=> array(
-		'text'			=> 'Sample Checkbox with one option'
-	,	'tips'      => 'text to display under the input in small font-size'
-	,	'add'       => 'additional text after the input'
-	,	'help'      => 'popup tips to display right after the title'
-	,	'type'      => 'checkbox' // type of input
-	,	'option'    => 'activate'
-	, 'default'   => 1
-	,	'mandatory' => 0 // is this field must be filled in (compulsory). Eg. 1 or 0
-	,	'checked'   => 'any'	// validate input before it save in database eg. 'any' || 'email' || 'url' || 'phone' || 'number' default is 'any'
-	),
+		'text'			=> 'Sample Checkbox with one option',
+		'tips'      => 'text to display under the input in small font-size',
+		'add'       => 'additional text after the input',
+		'help'      => 'popup tips to display right after the title',
+		'type'      => 'checkbox',
+		'option'    => 'activate',
+		'default'   => 1,
+		'mandatory' => 0, // is this field must be filled in (compulsory). Eg. 1 or 0
+		'checked'   => 'any'	// validate input before it save in database eg. 'any' || 'email' || 'url' || 'phone' || 'number' default is 'any'
+		),
 	'textarea'	=> array(
-		'text'			=> 'Sample textarea input'
-	,	'tips'      => 'text to display under the input in small font-size'
-	,	'add'       => 'additional text after the input'
-	,	'help'      => 'popup tips to display right after the title'
-	,	'type'      => 'textarea' // type of input
-	, 'language'  => true 			// is input support multiple language, default value is false
-	, 'default'   => 'sfdghgfhg'// default value
-	,	'mandatory' => 0				// is this field must be filled in (compulsory). Eg. 1 or 0
-	,	'format'    => 'none' 		// what format you want to use eg. none | code | html
-	,	'checked'   => 'any'			// validate input before it save in database eg. 'any' || 'email' || 'url' || 'phone' || 'number' default is 'any'
-	),
+		'text'			=> 'Sample textarea input',
+		'tips'      => 'text to display under the input in small font-size',
+		'add'       => 'additional text after the input',
+		'help'      => 'popup tips to display right after the title',
+		'type'      => 'textarea',
+		'language'  => true, 			// is input support multiple language, default value is false
+		'default'   => 'sfdghgfhg',// default value
+		'mandatory' => 0,				// is this field must be filled in (compulsory). Eg. 1 or 0
+		'format'    => 'none', 		// what format you want to use eg. none | code | html
+		'checked'   => 'any'			// validate input before it save in database eg. 'any' || 'email' || 'url' || 'phone' || 'number' default is 'any'
+		),
 	'file'			=> array(
-		'text'		=> 'Sample input for single file'
-	,	'tips'		=> 'text to display under the input in small font-size'
-	,	'add'			=> 'additional text after the input'
-	,	'help'		=> 'popup tips to display right after the title'
-	,	'type'		=> 'file' // type of input
-	, 'default'	=> 'sfdghgfhg'
-	, 'path'		=> 'images/uploads/'
-	),
+		'text'		=> 'Sample input for single file',
+		'tips'		=> 'text to display under the input in small font-size',
+		'add'			=> 'additional text after the input',
+		'help'		=> 'popup tips to display right after the title',
+		'type'		=> 'file',
+		'default'	=> 'sfdghgfhg',
+		'path'		=> 'images/uploads/'
+		),
 	'files'			=> array(
-		'text'		=> 'Sample input for multiple files'
-	,	'tips'		=> 'insert files to uploaded'
-	,	'add'			=> 'additional text after the input'
-	,	'help'		=> 'popup tips to display right after the title'
-	,	'type'		=> 'files' // type of input
-	, 'default'	=> ''
-	, 'max'			=> '5'
-	, 'path'		=> 'images/upload'
-	),
+		'text'		=> 'Sample input for multiple files',
+		'tips'		=> 'insert files to uploaded',
+		'add'			=> 'additional text after the input',
+		'help'		=> 'popup tips to display right after the title',
+		'type'		=> 'files',
+		'default'	=> '',
+		'max'			=> '5',
+		'path'		=> 'images/upload'
+		),
 	'captcha'		=> array(
-		'text'		=> 'Sample captcha for validation'
-	,	'tips'		=> 'Insert shown code in image as validation'
-	,	'add'			=> 'additional text after the input'
-	,	'help'		=> 'popup tips to display right after the title'
-	,	'type'		=> 'captcha' // type of input
-	, 'match'		=> 0 // '1' for Case Insensitive
-	)
-);
+		'text'		=> 'Sample captcha for validation',
+		'tips'		=> 'Insert shown code in image as validation',
+		'add'			=> 'additional text after the input',
+		'help'		=> 'popup tips to display right after the title',
+		'type'		=> 'captcha',
+		'match'		=> 0 // '1' for Case Insensitive
+		)
+	);
 //CHANGE 'default' TO 'force' IF IN EDIT CONDITION...
 // SAMPLE VARIABLE TO INSERT...
 $params = array(
-	'title'				=> 'Header of form or title'
-,	'table'				=> 'bbc_content' 			// what table to insert or edit
-,	'text_id'			=> 'bbc_content_text' // leave it blank or unset if multi language is not in use
-,	'config_pre'	=> array()						// this is the input fields to diplay before config fields (must be available in table of current database)
-,	'config'			=> $config						// variable above
-,	'name'				=> 'params' 					// what field name which is use in database table
-,	'config_post'	=> array() 						// this is the input fields to diplay after config fields (must be available in table of current database)
-,	'primary'			=> 'id'								// field name for primary field in database table, default value is id
-,	'id'					=> 0									// insert value for the primary field, if you leave it blank or 0 that would be Insert data
-);
+	'title'				=> 'Header of form or title',
+	'table'				=> 'bbc_content',				// what table to insert or edit
+	'text_id'			=> 'bbc_content_text',	// leave it blank or unset if multi language is not in use
+	'config_pre'	=> array(),							// this is the input fields to diplay before config fields (must be available in table of current database)
+	'config'			=> $config,							// variable above
+	'name'				=> 'params',						// what field name which is use in database table
+	'config_post'	=> array(),							// this is the input fields to diplay after config fields (must be available in table of current database)
+	'primary'			=> 'id',								// field name for primary field in database table, default value is id
+	'id'					=> 0										// insert value for the primary field, if you leave it blank or 0 that would be Insert data
+	);
 # PS: PRIMARY FIELD OF TABLE MUST BE NAMED 'id' TO MAKE THIS CLASS WORK PROPERLY
 $p = _class('params',$params);
 echo $p->show();

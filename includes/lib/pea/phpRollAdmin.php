@@ -505,20 +505,27 @@ class phpRollAdmin extends phpEasyAdminLib
 		$out .= $mainForm;
 
 		// ambil tr untuk button-button dan navigasi prev next
-		$foot    = '';
-		$getNav  = $this->nav->getNav();
-		$colspan = $numColumns - $numBottomColumns + 1;
-		$tdsave  = false;
+		$foot         = '';
+		$returnButton = '';
+		$getNav       = $this->nav->getNav();
+		$colspan      = $numColumns - $numBottomColumns + 1;
+		$tdsave       = false;
+
+		if (!empty($_GET['return']))
+		{
+			$returnButton = $GLOBALS['sys']->button($_GET['return']);
+		}
 
 		if (!empty($getNav))
 		{
 			if ($numColumns >= $numBottomColumns)
 			{
 				$tdsave = true;
-	      $foot  .= '<td colspan="'.$colspan.'">'.$getNav.'</td>';
+	      $foot  .= '<td colspan="'.$colspan.'">'.$returnButton.$getNav.'</td>';
 			}else{
-				$foot .= '<td>'.$getNav;
+				$foot .= '<td>'.$returnButton.$getNav;
 			}
+			$returnButton = '';
 		}else $tdsave = true;
 
 		if ($this->saveTool)
@@ -528,9 +535,10 @@ class phpRollAdmin extends phpEasyAdminLib
 				$c     = empty($getNav) ? ' colspan="'.($colspan+1).'"' : '';
 				$foot .= '<td'.$c.'>';
 			}
-			$foot.= '<button type="submit" name="'. $this->saveButton->name .'" value="'. $this->saveButton->value
-					.	'" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-'.$this->saveButton->icon.'"></span>'
-					. $this->saveButton->label .'</button>'."\n";
+			$foot .= $returnButton;
+			$foot .= '<button type="submit" name="'. $this->saveButton->name .'" value="'. $this->saveButton->value
+						.	'" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-'.$this->saveButton->icon.'"></span>'
+						. $this->saveButton->label .'</button>'."\n";
 			if ($this->resetTool)
 			{
 				$foot .= '<button type="reset" class="btn btn-warning btn-sm"><span class="glyphicon glyphicon-'.$this->resetButton->icon.'"></span>'.$this->resetButton->label.'</button> ';
