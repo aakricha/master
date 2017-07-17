@@ -54,7 +54,7 @@ if (_SEO && _ADMIN == '')
 	{
 		if(!empty($_seo['tmp']['fetch'][1]) && !empty($_seo['tmp']['lang'][$_seo['tmp']['fetch'][1]]['id']))
 		{
-			$_seo['URI'] = preg_replace('~^/?[a-z]{2}/~is', '', $_seo['URI']);
+			$_seo['URI'] = preg_replace('~^/?[a-z]{2}/?~is', '', $_seo['URI']);
 			$_seo['add'] .= '&lang_id='.$_seo['tmp']['lang'][$_seo['tmp']['fetch'][1]]['id'];
 			$Bbc->url_prefix = $_seo['tmp']['fetch'][1].'/';
 		}
@@ -81,7 +81,7 @@ if (_SEO && _ADMIN == '')
 	}
 	if($_seo['r_URL'][0]=='')
 	{
-		seo_link_request('?menu_id=-1');
+		seo_link_request('?menu_id=-1'.$_seo['add']);
 	}else{
 		preg_match('~^(.*?)\.([a-z0-9]+)~is', $_seo['r_URL'][0], $_seo['tmp']);
 		switch(@$_seo['tmp'][2])
