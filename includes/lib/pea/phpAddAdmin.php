@@ -423,7 +423,7 @@ EOT;
 								}
 							}
 							$this->error = !$this->actionOnInsert();
-							if ($this->error)
+							if (!$this->error)
 							{
 								if (!empty($this->pendingQuery))
 								{
