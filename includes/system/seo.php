@@ -161,7 +161,7 @@ function site_url($string='', $add_URL = true)
 	if(empty($string1))													$proccess = false;
 	elseif(_SEO != 1)				 										$proccess = false;
 	elseif(_ADMIN != '')				 								return site_url_admin($string);
-	elseif(preg_match('~^[a-z]+\:~is',$string1))return $string;
+	elseif(preg_match('~^[a-z]+\://~is',$string1))return $string;
 	elseif(preg_match('~^#~is',$string1))				return $string;
 	elseif(!preg_match('~\?mod=~s', $string1))	$proccess = false;
 	else 																				$proccess = true;
