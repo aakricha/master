@@ -45,7 +45,27 @@ if (defined('_AsYnCtAsK'))
 		{
 			function module_replace($matches)
 			{
-				$matches[3] = (empty($matches[3])) ? (strtolower($matches[1])=='href' ? _URL : '') : site_url($matches[3]);
+				$matches[1] = strtolower($matches[1]);
+				if (preg_match('~(news|cat|tag)://([0-9]+)(.*?)~', $matches[3], $match))
+				{
+					_func('content');
+					$output = '';
+					switch ($match[1])
+					{
+						case 'news':
+							$output .= content_link($match[2]);
+							break;
+						case 'cat':
+							$output .= content_cat_link($match[2]);
+							break;
+						case 'tag':
+							$output .= content_tag_link($match[2]);
+							break;
+					}
+					$output    .= $match[3];
+					$matches[3] = $output;
+				}
+				$matches[3] = (empty($matches[3])) ? ($matches[1]=='href' ? _URL : '') : site_url($matches[3]);
 				$output = $matches[1].'='.$matches[2].$matches[3].$matches[4];
 				return $output;
 			}
