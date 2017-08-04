@@ -46,7 +46,7 @@ if (defined('_AsYnCtAsK'))
 			function module_replace($matches)
 			{
 				$matches[1] = strtolower($matches[1]);
-				if (preg_match('~(news|cat|tag)://([0-9]+)(.*?)~', $matches[3], $match))
+				if (preg_match('~(news|cat|tag)://([0-9]+)(.*?)$~', $matches[3], $match))
 				{
 					_func('content');
 					$output = '';
