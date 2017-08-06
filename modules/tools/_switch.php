@@ -24,6 +24,7 @@ if ($_SERVER['REMOTE_ADDR'] == '127.0.0.1' || $_SERVER['REMOTE_ADDR'] == '::1')
 }
 if(file_exists($M_DIR) && ini_get('display_errors')==1 && !empty($_SESSION[$key]))
 {
+	meta_title('tools');
 	chdir($M_DIR);
 	$sys->stop();
 	$sys->set_layout('blank');

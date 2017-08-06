@@ -223,7 +223,7 @@ EOT;
 	}
 	return $output;
 }
-function tabs($data, $use_cookie = 1, $name='', $maxwidth = false, $r_iframe = array(), $automodeperiod=0)
+function tabs($data, $use_cookie = 1, $name='', $maxwidth = false, $r_iframe = array())
 {
 	$output = '';
 	if (!empty($data) && is_array($data))
