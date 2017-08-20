@@ -29,10 +29,10 @@ class FormText extends Form
 		$this->delimeter = $delimeter;
 	}
 
-	function setStripTags($except = '')
+	function setStripTags($allowable_tags = '')
 	{
 		$this->isStripTags = true;
-		$this->isStripTags_except = $except;
+		$this->isStripTags_except = $allowable_tags;
 	}
 
 	function setHtmlEntities($bool = true)

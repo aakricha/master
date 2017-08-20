@@ -1,12 +1,13 @@
 <?php  if (!defined('_VALID_BBC')) exit('No direct script access allowed');
 
 /*=====================================
- * $arr[] = array(
- 			'id'		=> ''
- 		,	'par_id'=> ''
- 		,	'title'	=> ''
- 		,	'link'	=> ''
- 		);
+	$arr[] = array(
+		'id'          => '',
+		'par_id'      => '',
+		'title'       => '',
+		'link'        => '',
+		'description' => '' // for alt, if doesn't any then use 'title'
+		);
  	 $cookie can be config if (array)
  *====================================*/
 function tree_list($arr, $title = '', $cookie = true, $all_active_link = true, $target = '', $path_icon = '')
@@ -45,7 +46,9 @@ function tree_list($arr, $title = '', $cookie = true, $all_active_link = true, $
 	foreach((array)$arr as $i => $row)
 	{
 		$j++;
-		$link = (!$all_active_link) ? _tree_list_link($arr, $row['id'], $i, $j) : $row['link'];
+		$link    = (!$all_active_link) ? _tree_list_link($arr, $row['id'], $i, $j) : $row['link'];
+		$alt     = !empty($row['description']) ? $row['description'] : $row['title'];
+		$alt     = addslashes(htmlentities(trim(strip_tags(preg_replace('~\s{2,}~s', ' ', $alt)))));
 		$targeti = $row['link'] != $link ? '' : $target;
 		if(!empty($row['image']))
 		{
@@ -53,14 +56,22 @@ function tree_list($arr, $title = '', $cookie = true, $all_active_link = true, $
 		}else{
 			$icon = '';
 		}
-		$menu .= "d.add(".$row['id'].", ".$row['par_id'].",'".$row['title']."', '".$link."','".strip_tags($row['title'])."','".$targeti."','$icon', '$icon', false);\n";
+		$menu .= "d.add({$row['id']}, {$row['par_id']},'{$row['title']}', '{$link}','{$alt}','{$targeti}','{$icon}', '{$icon}', false);\n";
 	}
 	$url = is_file($sys->template_dir.'images/folder.gif') ? $sys->template_url.'images/' : '';
 	ob_start();
 	?>
 	<div class="expand-collapse">
-		<a href="javascript: d.openAll();" title="Expand All">expand</a> |
-		<a href="javascript: d.closeAll();" title="Collapse All">collapse</a>
+		<div class="btn-group" data-toggle="buttons">
+		  <label class="btn btn-xs btn-default" onclick="d.openAll();">
+		  	<input type="radio" autocomplete="off">
+		    <?php echo icon('chevron-down'); ?>
+		  </label>
+		  <label class="btn btn-xs btn-default" onclick="d.closeAll();">
+		  	<input type="radio" autocomplete="off">
+		    <?php echo icon('chevron-up'); ?>
+		  </label>
+		</div>
 	</div>
 	<div class="dtree">
 		<script type="text/javascript">
@@ -69,6 +80,35 @@ function tree_list($arr, $title = '', $cookie = true, $all_active_link = true, $
 			d.add(0,-1,'<?php echo $title['text'];?>', '<?php echo $title['link'];?>','<?php echo $title['text'];?>','','', false);
 			<?php echo $menu;?>
 			document.write(d);
+			<?php
+			if (isset($row['description']))
+			{
+				?>
+				_Bbc(function($){
+					$("a", $(".dtree")).each(function(){
+						var a = $(this);
+						var b = $(this).attr("title");
+						var c = document.location.href;
+						if (a.hasClass("nodeSel") && a.attr("href")!=c) {
+							a.removeClass("nodeSel").addClass("node");
+						}
+						if (a.attr("href")==c && !a.hasClass("nodeSel")) {
+							a.removeClass("node").addClass("nodeSel");
+						}
+						if(b!=a.text()) {
+							$(this).attr({
+								"data-toggle":"popover",
+								"data-placement": "auto",
+								"title":"",
+								"data-content":b
+							});
+						}
+					});
+					BS3load.popover();
+				});
+				<?php
+			}
+			?>
 		</script>
 	</div>
 	<?php

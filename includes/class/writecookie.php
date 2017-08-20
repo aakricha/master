@@ -9,7 +9,18 @@ class writecookie{
 	function __construct( $name, $value, $int_expire ){
 		$this->name 		= $name;
 		$this->value 		= $value;
-		$this->int_expire	= $int_expire;
+		if (is_string($int_expire))
+		{
+			$this->int_expire = strtotime($int_expire);
+		}else{
+			$time = time();
+			if ($time < $int_expire)
+			{
+				$this->int_expire	= $int_expire+$time;
+			}else{
+				$this->int_expire	= $int_expire;
+			}
+		}
 	}
 
 	function check(){
@@ -29,7 +40,6 @@ class writecookie{
 		}	else {
 			$date = time() + $this->int_expire;
 		}
-		$date = time() + $this->int_expire;
 		$host = '.'.preg_replace('~^www\.~', '', getenv('HTTP_HOST'));
 		setcookie( $this->name, $this->value, $this->int_expire, '', $host );
 		$this->name;

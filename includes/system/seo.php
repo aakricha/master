@@ -155,16 +155,42 @@ function site_url($string='', $add_URL = true)
 			return call_user_func_array($Bbc->mod['name'].'_'.__FUNCTION__, func_get_args());
 		}
 	}
-	if(!empty($Bbc->site_url_arr[$string])) return $Bbc->site_url_arr[$string];
+	if(!empty($Bbc->site_url_arr[$string]))
+	{
+		return $Bbc->site_url_arr[$string];
+	}
 	$string1 = preg_replace('#^'._URL.'#is','', $string);
 	$string1 = preg_replace('#^'.$Bbc->url_prefix.'#is','', $string1);
-	if(empty($string1))													$proccess = false;
-	elseif(_SEO != 1)				 										$proccess = false;
-	elseif(_ADMIN != '')				 								return site_url_admin($string);
-	elseif(preg_match('~^[a-z]+\://~is',$string1))return $string;
-	elseif(preg_match('~^#~is',$string1))				return $string;
-	elseif(!preg_match('~\?mod=~s', $string1))	$proccess = false;
-	else 																				$proccess = true;
+	if(empty($string1))
+	{
+		$proccess = false;
+	}else
+	if(_SEO != 1)
+	{
+		$proccess = false;
+	}else
+	if(_ADMIN != '')
+	{
+		return site_url_admin($string);
+	}else
+	if(preg_match('~^[a-z]+\://~is',$string1))
+	{
+		return $string;
+	}else
+	if(preg_match('~^[a-z]+\:[\sa-z]+~is',$string))
+	{
+		return $string;
+	}else
+	if(preg_match('~^#~is',$string1))
+	{
+		return $string;
+	}else
+	if(!preg_match('~\?mod=~s', $string1))
+	{
+		$proccess = false;
+	}else{
+		$proccess = true;
+	}
 	if($proccess && $string1)
 	{
 		$output = _URL.$Bbc->url_prefix;
@@ -231,9 +257,11 @@ function site_url($string='', $add_URL = true)
 		}
 	}else
 	if(empty($string1))
+	{
 		$output = _URL.$Bbc->url_prefix;
-	else
+	}else{
 		$output = _URL.$Bbc->url_prefix.$string1;
+	}
 	$Bbc->site_url_arr[$string] = $output;
 	return $output;
 }

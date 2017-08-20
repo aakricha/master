@@ -888,7 +888,7 @@ $config = array(
 		'checked'   => 'any'	// validate input before it save in database eg. 'any' || 'email' || 'url' || 'phone' || 'number' default is 'any'
 		),
 	'select' => array(
-		'text'			=> 'Sample Select input',
+		'text'      => 'Sample Select input',
 		'tips'      => 'text to display under the input in small font-size',
 		'add'       => 'additional text after the input',
 		'help'      => 'popup tips to display right after the title',
@@ -900,7 +900,7 @@ $config = array(
 		'checked'   => 'any'	// validate input before it save in database eg. 'any' || 'email' || 'url' || 'phone' || 'number' default is 'any'
 		),
 	'checkbox'	=> array(
-		'text'			=> 'Sample Checkbox input',
+		'text'      => 'Sample Checkbox input',
 		'tips'      => 'text to display under the input in small font-size',
 		'add'       => 'additional text after the input',
 		'help'      => 'popup tips to display right after the title',
@@ -912,7 +912,7 @@ $config = array(
 		'checked'   => 'any',	// validate input before it save in database eg. 'any' || 'email' || 'url' || 'phone' || 'number' default is 'any'
 		),
 	'checkbox2'	=> array(
-		'text'			=> 'Sample Checkbox with one option',
+		'text'      => 'Sample Checkbox with one option',
 		'tips'      => 'text to display under the input in small font-size',
 		'add'       => 'additional text after the input',
 		'help'      => 'popup tips to display right after the title',
@@ -923,7 +923,7 @@ $config = array(
 		'checked'   => 'any'	// validate input before it save in database eg. 'any' || 'email' || 'url' || 'phone' || 'number' default is 'any'
 		),
 	'textarea'	=> array(
-		'text'			=> 'Sample textarea input',
+		'text'      => 'Sample textarea input',
 		'tips'      => 'text to display under the input in small font-size',
 		'add'       => 'additional text after the input',
 		'help'      => 'popup tips to display right after the title',
@@ -935,31 +935,31 @@ $config = array(
 		'checked'   => 'any'			// validate input before it save in database eg. 'any' || 'email' || 'url' || 'phone' || 'number' default is 'any'
 		),
 	'file'			=> array(
-		'text'		=> 'Sample input for single file',
-		'tips'		=> 'text to display under the input in small font-size',
-		'add'			=> 'additional text after the input',
-		'help'		=> 'popup tips to display right after the title',
-		'type'		=> 'file',
-		'default'	=> 'sfdghgfhg',
-		'path'		=> 'images/uploads/'
+		'text'    => 'Sample input for single file',
+		'tips'    => 'text to display under the input in small font-size',
+		'add'     => 'additional text after the input',
+		'help'    => 'popup tips to display right after the title',
+		'type'    => 'file',
+		'default' => 'sfdghgfhg',
+		'path'    => 'images/uploads/'
 		),
 	'files'			=> array(
-		'text'		=> 'Sample input for multiple files',
-		'tips'		=> 'insert files to uploaded',
-		'add'			=> 'additional text after the input',
-		'help'		=> 'popup tips to display right after the title',
-		'type'		=> 'files',
-		'default'	=> '',
-		'max'			=> '5',
-		'path'		=> 'images/upload'
+		'text'    => 'Sample input for multiple files',
+		'tips'    => 'insert files to uploaded',
+		'add'     => 'additional text after the input',
+		'help'    => 'popup tips to display right after the title',
+		'type'    => 'files',
+		'default' => '',
+		'max'     => '5',
+		'path'    => 'images/upload'
 		),
 	'captcha'		=> array(
-		'text'		=> 'Sample captcha for validation',
-		'tips'		=> 'Insert shown code in image as validation',
-		'add'			=> 'additional text after the input',
-		'help'		=> 'popup tips to display right after the title',
-		'type'		=> 'captcha',
-		'match'		=> 0 // '1' for Case Insensitive
+		'text'  => 'Sample captcha for validation',
+		'tips'  => 'Insert shown code in image as validation',
+		'add'   => 'additional text after the input',
+		'help'  => 'popup tips to display right after the title',
+		'type'  => 'captcha',
+		'match' => 0 // '1' for Case Insensitive
 		)
 	);
 //CHANGE 'default' TO 'force' IF IN EDIT CONDITION...

@@ -205,6 +205,15 @@ class zip  {
 	 */
 	function read_dir($path, $path_to = '')
 	{
+		$tmpDir = getcwd().'/';
+		chdir(dirname($path));
+		$folder = basename($path).'/';
+		$out    = $this->_read_dir($folder, $path_to);
+		chdir($tmpDir);
+		return $out;
+	}
+	function _read_dir($path, $path_to = '')
+	{
 		$path_to .= preg_match('~/$~is', $path_to) ? '' : '/';
 		if ($fp = @opendir($path))
 		{
@@ -212,7 +221,7 @@ class zip  {
 			{
 				if (@is_dir($path.$file) && substr($file, 0, 1) != '.')
 				{
-					$this->read_dir($path.$file."/", $path_to);
+					$this->_read_dir($path.$file."/", $path_to);
 				}
 				elseif (substr($file, 0, 1) != ".")
 				{

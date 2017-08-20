@@ -3,12 +3,14 @@
 class getDirectory
 {
 	var $root;
+	var $url;
 	var $mainDir;
 	var $thisDir;
 	var $lastDir;
-	function __construct($path = '', $root = '')
+	function __construct($path = '', $root = '', $url = '')
 	{
 		$this->root = empty($root) ? _ROOT : $root;
+		$this->url  = empty($url) ? _URL : $url;
 		$this->setPath($path);
 	}
 	function setpath($path)
@@ -38,7 +40,7 @@ class getDirectory
 				if($data != '.' and $data != '..'){
 					$output[] = $data;
 				}
-			}  
+			}
 			closedir($dir);
 		}
 		if(strtolower($order) == 'desc')		rsort($output);
@@ -84,7 +86,7 @@ class getDirectory
 						);
 					}
 				}
-			}  
+			}
 			closedir($dir);
 		}
 		if(strtolower($order) == 'desc') rsort($output);
@@ -129,7 +131,7 @@ class getDirectory
 			}
 		}
 	}
-	function update($filename, $text, $type = 'insert')
+	function update($filename, $text)
 	{
 		$file_path = $this->root.$this->mainDir.'/'.$filename;
 		$file = fopen($file_path, "w+");

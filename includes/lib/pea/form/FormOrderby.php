@@ -69,7 +69,7 @@ class FormOrderby extends Form
 		$i = 0;
 		foreach( $arrTitle as $title)
 		{
-			$this ->addOrderby( $title, $arrValue[$i] );
+			$this->addOrderby( $title, $arrValue[$i] );
 			$i++;
 		}
 	}

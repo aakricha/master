@@ -1,7 +1,11 @@
 <?php  if (!defined('_VALID_BBC')) exit('No direct script access allowed');
 
 // khusus untuuk phpSearchAdmin
-
+/*
+// EXAMPLE
+$form->search->addInput('keyword','keyword');
+$form->search->input->keyword->addSearchField($field = 'title,description,keyword,tags,intro,content', $isFullText = true);
+*/
 class FormKeyword extends Form
 {
 	var $searchField = array();

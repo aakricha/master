@@ -172,9 +172,10 @@ class Jquery
 
 	function _tree_list($arr, $params = array(), $active_class='', $par_id = 0)
 	{
-		$out = array();
-		$icon_path= $this->dir.'tree/';
-		$icon_url	= $this->url.'tree/';
+		$out        = array();
+		$icon_path  = $this->dir.'tree/';
+		$icon_url   = $this->url.'tree/';
+		$active_tag = ' class="'.$active_class.'"';
 		foreach((array)$arr AS $dt)
 		{
 			if($dt['par_id'] == $par_id)
