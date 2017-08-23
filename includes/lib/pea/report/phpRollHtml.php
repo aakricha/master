@@ -5,34 +5,20 @@ include_once _PEA_ROOT.'report/phpReport.php';
 
 class phpRollHtml extends phpReport
 {
-    /**
-    * Konstruktor: Inisialisasi
-	* example:
-    * $arrHeader = array('Nama','Umur');
-    * $arrData[] = array('ogy', 12);
-    * $arrData[] = array('sigit', 54);
-    * $arrData[] = array('ogi sigit pornawan testing excel report', 54);
-    * $excel = new phpMyExcel( $fileName="report.xls", $worksheetName="report", $arrHeader, $arrData );
-	*
-    * @access public
-    * @param string	$fileName		Nama file html hasil generate
-    * @param string	$worksheetName	Nama worksheet dari HTML
-	* @param array	$arrHeader		array header, yang nantinya jadi title di excelnya
-	* @param array	$arrHeader		array header, yang nantinya jadi title di excelnya
-    */
+	public $extension = '.html';
   var $htmlTable;
 	function __construct( $fileName='', $worksheetName='', $arrHeader=array(), $arrData = array() )
 	{
-		$tgl	= date("Y-m-d");
+		$tgl	= date('Y-m-d');
 
-		if ( $fileName == '' )		$fileName = "report". $tgl .".html";
-		if ( $worksheetName == '' )	$worksheetName = "HTML Report ". $tgl;
+		if ( $fileName == '' )		$fileName = 'report'. $tgl . $extension;
+		if ( $worksheetName == '' )	$worksheetName = 'HTML Report '. $tgl;
 
-		$this->type				= "html";
-		$this->fileName			= $fileName;
-		$this->worksheetName	= $worksheetName;
-		$this->arrHeader		= $arrHeader;
-		$this->arrData			= $arrData;
+		$this->type          = 'html';
+		$this->fileName      = $fileName;
+		$this->worksheetName = $worksheetName;
+		$this->arrHeader     = $arrHeader;
+		$this->arrData       = $arrData;
 		$this->setMaxColumnWidth();
 	}
 

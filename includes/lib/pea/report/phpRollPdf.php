@@ -19,28 +19,13 @@ include_once _PEA_ROOT.'includes/fpdf/mc_table/mc_table.php';
 */
 class phpRollPdf extends phpReport
 {
+	public $extension = '.pdf';
 	var $maxColumnWidth; 	// maximum column width,
-	/**
-    * Konstruktor: Inisialisasi
-	* example:
-    * $arrHeader = array('Nama','Umur');
-    * $arrData[] = array('ogy', 12);
-    * $arrData[] = array('sigit', 54);
-    * $arrData[] = array('ogi sigit pornawan testing excel report', 54);
-    * $excel = new phpMyExcel( $fileName="report.xls", $worksheetName="report", $arrHeader, $arrData );
-	*
-    * @access public
-    * @param string	$fileName		Nama file excel hasil generate
-    * @param string	$worksheetName	Nama worksheet dari Excel
-	* @param array	$arrHeader		array header, yang nantinya jadi title di excelnya
-	* @param array	$arrHeader		array header, yang nantinya jadi title di excelnya
-  */
 	function __construct( $fileName='', $worksheetName='', $arrHeader=array(), $arrData = array() )
 	{
 		$tgl	= date("Y-m-d");
 
-		if ( $fileName == '' )		$fileName = "pdfReport". $tgl .".pdf";
-		if ( $worksheetName == '' )	$worksheetName = "Pdf Report ". $tgl;
+		if ( $fileName == '' )		$fileName = "pdfReport". $tgl . $extension;
 
 		$this->type				= "pdf";
 		$this->fileName			= $fileName;

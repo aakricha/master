@@ -378,7 +378,8 @@ class phpEasyAdminLib
 				link_css(_ROOT.'templates/admin/bootstrap/css/font-awesome.min.css');
 			}
 			$this->isReportOn	= true;
-			$this->report->$type = new $class();
+			$title = !empty($this->input->header->title) ? strip_tags($this->input->header->title) : 'Report';
+			$this->report->$type = new $class($title);
 		}
 	}
 

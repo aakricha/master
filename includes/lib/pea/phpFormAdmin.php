@@ -467,6 +467,10 @@ class Form
 
 	function getReportOutput( $str_value = '' )
 	{
+		if (is_array($str_value))
+		{
+			$str_value = current($str_value);
+		}
 		return $str_value;
 	}
 
