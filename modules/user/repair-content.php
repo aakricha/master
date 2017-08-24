@@ -1,6 +1,16 @@
 <?php  if (!defined('_VALID_BBC')) exit('No direct script access allowed');
 
 /* FROM content_fetch_admin() and content_fetch() */
+$f = $db->getCol("SHOW FIELDS FROM `bbc_content`");
+if (in_array('par_id', $f))
+{
+  if (!empty($_GET['redirect']))
+  {
+    redirect($_GET['redirect']);
+  }else{
+    redirect();
+  }
+}
 $r = debug_backtrace();
 $f = !empty($r[0]) ? $r[0]['file'].':'.$r[0]['line'] : '';
 @file_put_contents(_ROOT.'images/repair_content_log.txt', date('Y-m-d H:i:s ').$f."\n".print_r(array('REFERER' => @$_SERVER['HTTP_REFERER'], 'URI' => @$_SERVER['REQUEST_URI']), 1)."\n\n", FILE_APPEND);
