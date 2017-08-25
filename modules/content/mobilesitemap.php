@@ -2,15 +2,16 @@
 
 $r = config('mobile', 'subdomain');
 $sys->stop();
-$_URL	= config('mobile', 'subdomain') ? 'http://m.'.preg_replace('~^(www\.)?~','',config('site', 'url'))._URI : _URL;
-$links= $content = array();
-$links[] = $_URL;
-$content[]= '<url><loc>'.$_URL.'</loc><priority>1.0</priority><mobile:mobile/></url>';
+$_URL      = config('mobile', 'subdomain') ? 'http://m.'.preg_replace('~^(www\.)?~','',config('site', 'url'))._URI : _URL;
+$links     = $content = array();
+$links[]   = $_URL;
+$content[] = '<url><loc>'.$_URL.'</loc><priority>1.0</priority><mobile:mobile/></url>';
+
 /*=====================================
  * CREATE CONTENTS
  *===================================*/
-$q = 'SELECT c.id, c.created, c.modified, c.revised, t.title FROM `bbc_content` AS c LEFT JOIN `bbc_content_text` AS t 
-ON(t.content_id=c.id AND t.lang_id='.lang_id().') WHERE c.publish=1 ORDER BY id DESC LIMIT 0, 50';
+$q = 'SELECT c.`id`, c.`created`, c.`modified`, c.`revised`, t.`title` FROM `bbc_content` AS c LEFT JOIN `bbc_content_text` AS t
+ON(t.`content_id`=c.`id` AND t.`lang_id`='.lang_id().') WHERE c.`publish`=1 ORDER BY `id` DESC LIMIT 0, 50';
 $r = $db->cacheGetAll($q);
 foreach($r AS $d)
 {
@@ -26,8 +27,8 @@ foreach($r AS $d)
 /*=====================================
  * CREATE CATEGORIES
  *===================================*/
-$q = 'SELECT c.id, t.title FROM `bbc_content_cat` AS c LEFT JOIN `bbc_content_cat_text` AS t 
-ON(t.cat_id=c.id AND t.lang_id='.lang_id().') WHERE c.publish=1 ORDER BY id ASC';
+$q = 'SELECT c.`id`, t.`title` FROM `bbc_content_cat` AS c LEFT JOIN `bbc_content_cat_text` AS t
+ON(t.`cat_id`=c.`id` AND t.`lang_id`='.lang_id().') WHERE c.`publish`=1 ORDER BY `id` ASC';
 $r = $db->cacheGetAll($q);
 foreach($r AS $d)
 {
@@ -54,22 +55,6 @@ foreach($r AS $d)
 		$content[] = '<url><loc>'.htmlentities($link).'</loc><mobile:mobile/></url>';
 	}
 }
-/*=====================================
- * START DISPLAY XML PAGE
- *===================================*/
-ob_start();
-echo '<?xml version="1.0" encoding="UTF-8"?>';?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-	xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0">
-<?php	echo implode('', $content);	?>
-</urlset>
-<?php
-$output = ob_get_contents();
-ob_end_clean();
-header('Content-type: text/xml');
-header('Content-length: ' . strlen($output));
-echo $output;
-die;
 function content_menu_link($link, $seo, $main_url)
 {
 	if(empty($link)){
@@ -85,3 +70,5 @@ function content_menu_link($link, $seo, $main_url)
 	}
 	return $output;
 }
+$sys->stop();
+include tpl('mobilesitemap.html.php');
