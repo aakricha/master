@@ -1,5 +1,119 @@
 <?php defined( '_VALID_BBC' ) or die( 'Restricted access' );
 
+if (!empty($_GET['backup']))
+{
+	$data = array(
+		'template' => $_CONFIG['template'],
+		'block'    => $db->getAll("SELECT * FROM `bbc_block` WHERE `template_id`={$template_id} ORDER BY `id` ASC"),
+		'theme'    => $db->getAll("SELECT * FROM `bbc_block_theme` WHERE `template_id`={$template_id} ORDER BY `id` ASC")
+		);
+	foreach ($data['block'] as &$dt)
+	{
+		$dt['title'] = $db->getAssoc("SELECT `lang_id`, `title` FROM `bbc_block_text` WHERE `block_id`={$dt['id']} ORDER BY `lang_id` ASC");
+	}
+	_func('download', 'file', $_CONFIG['template'].'_'.date('Y-m-d-H-i-s').'.json', json_encode($data, JSON_PRETTY_PRINT));
+}else
+if (!empty($_POST['restore']))
+{
+	$msg   = '';
+	$error = true;
+	if (@is_uploaded_file($_FILES['blocks']['tmp_name']))
+	{
+		if (preg_match('~\.json$~is', $_FILES['blocks']['name']))
+		{
+			$json = file_read($_FILES['blocks']['tmp_name']);
+			if (!empty($json))
+			{
+				$data = json_decode($json, 1);
+				if (!empty($data))
+				{
+					if (@$data['template']==$_CONFIG['template'])
+					{
+						$keys = array('template', 'block', 'theme');
+						if ($keys==array_keys($data))
+						{
+							$keys = array('id', 'template_id', 'block_ref_id', 'position_id', 'show_title', 'link', 'cache', 'theme_id', 'group_ids', 'menu_ids', 'menu_ids_blocked', 'module_ids_allowed', 'module_ids_blocked', 'config', 'orderby', 'active', 'title');
+							if ($keys==array_keys($data['block'][0]))
+							{
+								$is_ok = true;
+								$ids   = $db->getCol("SELECT `id` FROM `bbc_block` WHERE `template_id`={$template_id}");
+								ids($ids);
+								$db->Execute("SET autocommit=0");
+								$db->Execute("START TRANSACTION");
+								$db->Execute("DELETE FROM `bbc_block` WHERE `template_id`={$template_id}");
+								$db->Execute("DELETE FROM `bbc_block_theme` WHERE `template_id`={$template_id}");
+								if (!empty($ids))
+								{
+									$db->Execute("DELETE FROM `bbc_block_text` WHERE `block_id` IN ({$ids})");
+								}
+								foreach ($data['block'] as $dt)
+								{
+									$is_ok = $db->Insert('bbc_block', $dt, ['title']);
+									if (!$is_ok)
+									{
+										$is_ok = false;
+										break;
+									}else{
+										foreach ($dt['title'] as $lang_id => $title)
+										{
+											$txt = array(
+												'block_id' => $dt['id'],
+												'title'    => $title,
+												'lang_id'  => $lang_id
+												);
+											$db->Insert('bbc_block_text', $txt);
+										}
+									}
+								}
+								if ($is_ok)
+								{
+									foreach ($data['theme'] as $dt)
+									{
+										$is_ok = $db->Insert('bbc_block_theme', $dt, []);
+										if (empty($is_ok))
+										{
+											$is_ok = false;
+											break;
+										}
+									}
+								}
+								if ($is_ok)
+								{
+									$db->Execute("COMMIT");
+									$db->cache_clean();
+									$msg   = 'Your blocks and themes has been restore';
+									$error = false;
+								}else{
+									$db->Execute("ROLLBACK");
+									$msg = 'Please check your file configuration, before you upload to restore the blocks';
+								}
+							}else{
+								$msg = 'Your file has been modified incorrectly';
+							}
+						}else{
+							$msg = 'your file does not match for block configuration';
+						}
+					}else{
+						$msg = 'it seems you\'re uploading configuration file for another template';
+					}
+				}else{
+					$msg = 'Please upload the file with block configuration in it';
+				}
+			}else{
+				$msg = 'Your file is empty';
+			}
+		}else{
+			$msg = 'You must upload the correct format file';
+		}
+	}else{
+		$msg = 'Please upload the configuration file to restore the blocks';
+	}
+	if (!empty($msg))
+	{
+		echo msg($msg, ($error ? 'danger' : 'success'));
+	}
+}
+
 $linkto      = $Bbc->mod['circuit'].'.block&act=edit'.$add_link;
 $edit_fields = !empty($_SESSION['block_edit_field']) ? $_SESSION['block_edit_field'] : array();
 
@@ -177,3 +291,52 @@ function block_repair()
 	global $db, $template_id;
 	include_once 'block-repair.php';
 }
+link_js(_PEA_URL.'includes/formIsRequire.js', false);
+?>
+<button type="button" class="btn btn-default btn-sm" data-href="<?php echo seo_uri(); ?>&backup=1" id="backup">
+	<span class="glyphicon glyphicon-cloud-download" title="Backup All Blocks"></span>
+	Backup All Blocks
+</button>
+&nbsp;
+<button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#myModal">
+	<span class="glyphicon glyphicon-cloud-upload" title="Restore All Blocks"></span>
+	Restore All Blocks
+</button>
+<div class="clearfix"></div>
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+    	<form action="" method="POST" enctype="multipart/form-data" class="formIsRequire">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-title" id="myModalLabel">Restore All Blocks</h4>
+	      </div>
+	      <div class="modal-body">
+        	<div class="form-group">
+        		<label>Upload recovery file</label>
+        		<input type="file" name="blocks" class="form-control" placeholder="configuration file" req="any true" />
+        		<div class="display-block">
+        			Upload your recovery file from the last time you downloaded from "<?php echo $_CONFIG['template']; ?>" template.
+        			Once you submit this form, all changes you've made after you download the configuration will be replaced based
+        			on your configuration file.
+        		</div>
+        	</div>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="submit" name="restore" value="block" class="btn btn-primary"><?php echo icon('floppy-save'); ?> Submit</button>
+	      </div>
+    	</form>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+	_Bbc(function($){
+		$("#backup").on("click", function(e){
+			e.preventDefault();
+			if (confirm("You're about to download current Block configuraton, which is only used to recover the blocks for this particular tempate (<?php echo $_CONFIG['template']; ?>). Do you want to continue?")) {
+				document.location.href=$(this).data("href");
+			}
+		})
+	});
+</script>
