@@ -12,6 +12,15 @@ if (!empty($keyword['module_id']))
 	$form->search->input->module_id->setReferenceTable('bbc_module ORDER BY name');
 	$form->search->input->module_id->setReferenceField('name','id');
 }
+$r_lang = lang_assoc();
+if (count($r_lang) > 1)
+{
+	$form->search->addInput( 'lang_id', 'selecttable' );
+	$form->search->input->lang_id->setReferenceTable('bbc_lang');
+	$form->search->input->lang_id->setReferenceField( 'title', 'id' );
+}else{
+	$form->search->addExtraField('lang_id', lang_id());
+}
 $form->search->addInput('keyword','keyword');
 $form->search->input->keyword->addSearchField('code,content', false);
 // $form->search->input->keyword->addSearchField('name,content,content_id', true);
