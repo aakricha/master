@@ -21,10 +21,13 @@ function sring_space($txt, $txt2, $spaces, $add = ' ', $align = 'right')
 }
 function string_limit($txt, $limit=150, $add_txt = '')
 {
-	$len = strlen($txt);
+	$len    = strlen($txt);
+	$limit -= strlen($add_txt);
 	if($len > $limit)
 	{
 		$output = substr($txt, 0, $limit).$add_txt;
-	}else $output = $txt;
-	return $txt;
+	}else{
+		$output = $txt.$add_txt;
+	}
+	return $output;
 }
