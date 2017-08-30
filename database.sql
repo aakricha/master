@@ -947,27 +947,27 @@ CREATE TABLE `bbc_cpanel` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 INSERT INTO `bbc_cpanel` (`id`, `par_id`, `title`, `image`, `act`, `link`, `is_shortcut`, `orderby`, `active`) VALUES
-(1, 0, 'Configuration', 'config.png', 'config', 'index.php?mod=_cpanel.config', 0, 2, 1),
-(2, 0, 'User Manager', 'user.png', 'user', 'index.php?mod=_cpanel.user', 0, 14, 1),
-(3, 0, 'Manage Content', 'content.png', 'main', 'index.php?mod=_cpanel.content', 0, 8, 1),
-(4, 0, 'Block Manager', 'block.png', 'block', 'index.php?mod=_cpanel.block', 0, 1, 1),
-(5, 0, 'Site Template', 'template.png', 'template', 'index.php?mod=_cpanel.template', 0, 11, 1),
-(6, 0, 'User Group', 'group.png', 'group', 'index.php?mod=_cpanel.group', 0, 13, 1),
-(7, 0, 'Menu Manager', 'menu.png', 'menu', 'index.php?mod=_cpanel.menu', 0, 9, 1),
-(8, 0, 'Welcome Message', 'home.png', 'home', 'index.php?mod=_cpanel.home', 0, 15, 1),
-(9, 0, 'Third Party App', 'application.png', 'application', 'index.php?mod=_cpanel.application', 0, 6, 1),
-(10, 0, 'Modules Manager', 'modules.png', 'modules', 'index.php?mod=_cpanel.module', 0, 10, 1),
-(11, 0, 'Language', 'language.png', 'language', 'index.php?mod=_cpanel.language', 0, 7, 1),
-(12, 0, 'Content Trash', 'trash.png', 'trash', 'index.php?mod=_cpanel.trash', 0, 3, 1),
-(13, 0, 'Email Template', 'email.png', 'email', 'index.php?mod=_cpanel.email', 0, 4, 1),
-(14, 0, 'File Manager', 'filemanager.png', 'main', 'index.php?mod=_cpanel.filemanager', 0, 5, 1),
-(15, 0, 'System Tools', 'tools.png', 'tools', 'index.php?mod=_cpanel.tools', 0, 12, 1),
-(16, 2, 'User Field', 'field.png', 'field', 'index.php?mod=_cpanel.user&act=field', 0, 1, 1),
-(17, 4, 'Block Theme', 'theme.png', 'block', 'index.php?mod=_cpanel.block&act=theme', 0, 2, 1),
-(18, 4, 'Block Position', 'block_position.png', 'block', 'index.php?mod=_cpanel.block&act=block_position', 0, 1, 1),
-(19, 5, 'Edit CSS Style', 'editcss.png', 'template', 'index.php?mod=_cpanel.template&act=editCSS', 0, 1, 1),
-(20, 7, 'Menu Position', 'position.png', 'menu', 'index.php?mod=_cpanel.menu&act=position', 0, 1, 1),
-(21, 11, 'Language Reference', 'reference.png', 'language', 'index.php?mod=_cpanel.language&act=reference', 0, 1, 1);
+  (1, 0, 'Configuration', 'config.png', 'config', 'index.php?mod=_cpanel.config', 0, 2, 1),
+  (2, 0, 'User Manager', 'user.png', 'user', 'index.php?mod=_cpanel.user', 0, 14, 1),
+  (3, 0, 'Manage Content', 'content.png', 'main', 'index.php?mod=_cpanel.content', 0, 7, 1),
+  (4, 0, 'Block Manager', 'block.png', 'block', 'index.php?mod=_cpanel.block', 0, 1, 1),
+  (5, 0, 'Site Template', 'template.png', 'template', 'index.php?mod=_cpanel.template', 0, 10, 1),
+  (6, 0, 'User Group', 'group.png', 'group', 'index.php?mod=_cpanel.group', 0, 13, 1),
+  (7, 0, 'Menu Manager', 'menu.png', 'menu', 'index.php?mod=_cpanel.menu', 0, 8, 1),
+  (8, 0, 'Welcome Message', 'home.png', 'home', 'index.php?mod=_cpanel.home', 0, 15, 1),
+  (9, 0, 'Third Party App', 'application.png', 'application', 'index.php?mod=_cpanel.application', 0, 12, 1),
+  (10, 0, 'Modules Manager', 'modules.png', 'modules', 'index.php?mod=_cpanel.module', 0, 9, 1),
+  (11, 0, 'Language', 'language.png', 'language', 'index.php?mod=_cpanel.language', 0, 6, 1),
+  (12, 0, 'Content Trash', 'trash.png', 'trash', 'index.php?mod=_cpanel.trash', 0, 3, 1),
+  (13, 0, 'Email Template', 'email.png', 'email', 'index.php?mod=_cpanel.email', 0, 4, 1),
+  (14, 0, 'File Manager', 'filemanager.png', 'main', 'index.php?mod=_cpanel.filemanager', 0, 5, 1),
+  (15, 0, 'System Tools', 'tools.png', 'tools', 'index.php?mod=_cpanel.tools', 0, 11, 1),
+  (16, 2, 'User Field', 'field.png', 'field', 'index.php?mod=_cpanel.user&act=field', 0, 1, 1),
+  (17, 4, 'Block Theme', 'theme.png', 'block', 'index.php?mod=_cpanel.block&act=theme', 0, 2, 1),
+  (18, 4, 'Block Position', 'block_position.png', 'block', 'index.php?mod=_cpanel.block&act=block_position', 1, 1, 1),
+  (19, 5, 'Edit CSS Style', 'editcss.png', 'template', 'index.php?mod=_cpanel.template&act=editCSS', 0, 1, 1),
+  (20, 7, 'Menu Position', 'position.png', 'menu', 'index.php?mod=_cpanel.menu&act=position', 0, 1, 1),
+  (21, 11, 'Language Reference', 'reference.png', 'language', 'index.php?mod=_cpanel.language&act=reference', 0, 1, 1);
 
 DROP TABLE IF EXISTS `bbc_email`;
 CREATE TABLE `bbc_email` (
