@@ -106,6 +106,20 @@ $form->roll->input->visit->setIcon('fa-external-link', 'open page');
 $form->roll->input->visit->setLinks(_URL.'id.htm');
 $form->roll->input->visit->setExtra('target="external"');
 $form->roll->input->visit->setFieldName('id AS visit');
+
+if (config('manage', 'is_nested'))
+{
+	if (in_array('parent', $show_fields))
+	{
+		$form->roll->addInput( 'par_id', 'selecttable' );
+		$form->roll->input->par_id->setTitle('Parent');
+		$form->roll->input->par_id->setReferenceTable('bbc_content_text');
+		$form->roll->input->par_id->setReferenceField( 'title', 'content_id' );
+		$form->roll->input->par_id->setReferenceCondition( 'lang_id='.$keyword['lang_id'] );
+		$form->roll->input->par_id->setLinks($edit_link);
+	}
+}
+
 if (in_array('hits', $show_fields))
 {
 	$form->roll->addInput('hits','sqlplaintext');
@@ -214,6 +228,14 @@ _Bbc(function($) {
 			<strong>Display Column :</strong>
 			<label><input type="checkbox" name="edit[]" value="id" <?php echo is_checked(in_array('id', $show_fields)); ?> /> ID</label> &nbsp;
 			<label><input type="checkbox" name="edit[]" value="image" <?php echo is_checked(in_array('image', $show_fields)); ?> /> Image</label> &nbsp;
+			<?php
+			if (config('manage', 'is_nested'))
+			{
+				?>
+				<label><input type="checkbox" name="edit[]" value="parent" <?php echo is_checked(in_array('parent', $show_fields)); ?> /> Parent</label> &nbsp;
+				<?php
+			}
+			?>
 			<label><input type="checkbox" name="edit[]" value="hits" <?php echo is_checked(in_array('hits', $show_fields)); ?> /> Hits</label> &nbsp;
 			<label><input type="checkbox" name="edit[]" value="content" <?php echo is_checked(in_array('content', $show_fields)); ?> /> Content</label> &nbsp;
 			<label><input type="checkbox" name="edit[]" value="category" <?php echo is_checked(in_array('category', $show_fields)); ?> /> Category</label> &nbsp;

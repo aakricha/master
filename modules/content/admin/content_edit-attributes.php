@@ -553,6 +553,7 @@ if (!empty($c['is_nested']))
 	</div>
 	<?php
 }else{
+	link_js(_PEA_URL.'includes/FormTags.js', false);
 	$r_ids = ($form_act == 'edit') ? $db->getAssoc("SELECT `id`, `related_id` FROM `bbc_content_related` WHERE `content_id`={$content_id}") : array();
 	$r     = array_values($r_ids);
 	if ($r!=array_unique($r))
@@ -569,21 +570,72 @@ if (!empty($c['is_nested']))
 		}
 		$r_ids = $new_r;
 	}
-	?>
-	<div class="form-group">
-		<label>Related Content</label>
-		<div class="input-group">
-			<input type="text" name="content_related" id="related_content" value="<?php echo implode(',', $r_ids);	?>" class="form-control"
-			placeholder="Insert Content IDs separate by comma or space" />
-			<div class="input-group-addon" id="related_icon" style="cursor: pointer;">
-				<?php echo icon('play') ?>
+	$max_content = intval(config('rules', 'content_max'));
+	$tot_content = $db->getOne("SELECT COUNT(*) FROM `bbc_content` WHERE 1")+1;
+	if ($tot_content > $max_content)
+	{
+		?>
+		<div class="form-group">
+			<label>Related Content</label>
+			<div class="input-group">
+				<input type="text" name="content_related" id="related_content" value="<?php echo implode(',', $r_ids);	?>" class="form-control"
+				placeholder="Insert Content IDs separate by comma or space" />
+				<div class="input-group-addon" id="related_icon" style="cursor: pointer;">
+					<?php echo icon('play') ?>
+				</div>
 			</div>
+			<div class="help-block">This is where you can insert ids of related contents and separate them by space or comma.</div>
+			<div id="related_preview"></div>
+			<input type="hidden" name="par_id" value="<?php echo $data['par_id'];?>">
 		</div>
-		<div class="help-block">This is where you can insert ids of related contents and separate them by space or comma.</div>
-		<div id="related_preview"></div>
-		<input type="hidden" name="par_id" value="<?php echo $data['par_id'];?>">
-	</div>
-	<?php
+		<?php
+	}else{
+		$elink = 'index.php?mod=content.content_edit&id=';
+		$token = encode(
+			json_encode(
+				array(
+					'table'  => 'bbc_content_text',
+					'field'  => 'title',
+					'id'     => 'content_id',
+					'format' => 'CONCAT(title, " (", content_id, ")")',
+					'sql'    => 'content_id!='.$content_id,
+					'expire' => $params['expire']
+					)
+				)
+			);
+		?>
+		<div class="form-group">
+			<label>Related Content</label>
+			<div class="form-control tags">
+				<span>
+					<?php
+					if (!empty($content_id))
+					{
+						$r = array();
+						if (!empty($r_ids))
+						{
+							$r = $db->getAssoc("SELECT `content_id`, `title` FROM `bbc_content_text` WHERE `content_id` IN (".implode(',', $r_ids).")");
+						}
+						foreach ($r_ids as $i)
+						{
+							?>
+							<span>
+								<span class="glyphicon glyphicon-remove-circle"></span>
+								<a href="<?php echo $elink.$i; ?>"><?php echo $r[$i]; ?> (<?php echo $i; ?>)</a>
+								<input type="hidden" name="content_related[]" value="<?php echo $i; ?>" />
+							</span>
+							<?php
+						}
+					}
+					?>
+				</span>
+				<span data-token="<?php echo $token; ?>" data-href="<?php echo $elink; ?>" name="content_related" contenteditable></span>
+			</div>
+			<div class="help-block">Insert content title which is related to this current content, you can press Enter or Tab to add the content into this field</div>
+			<input type="hidden" name="par_id" value="<?php echo $data['par_id'];?>">
+		</div>
+		<?php
+	}
 }
 if (config('manage','webtype') == '1')
 {
@@ -598,14 +650,18 @@ if (config('manage','webtype') == '1')
 				<?php
 				if (!empty($content_id))
 				{
-					$q = "SELECT t.id, t.title FROM bbc_content_tag_list AS l
-					LEFT JOIN bbc_content_tag AS t ON (l.tag_id=t.id)
-					WHERE l.content_id=".$content_id;
+					$q = "SELECT t.`id`, t.`title` FROM `bbc_content_tag_list` AS l
+					LEFT JOIN `bbc_content_tag` AS t ON (l.`tag_id`=t.`id`)
+					WHERE l.`content_id`=".$content_id;
 					$r = $db->getAll($q);
 					foreach ($r as $t)
 					{
 						?>
-						<span><span class="glyphicon glyphicon-remove-circle"></span> <a href="<?php echo $elink.$t['id']; ?>"><?php echo $t['title']; ?></a><input type="hidden" name="tags_ids[]" value="<?php echo $t['id']; ?>" /></span>
+						<span>
+							<span class="glyphicon glyphicon-remove-circle"></span>
+							<a href="<?php echo $elink.$t['id']; ?>"><?php echo $t['title']; ?></a>
+							<input type="hidden" name="tags_ids[]" value="<?php echo $t['id']; ?>" />
+						</span>
 						<?php
 					}
 				}

@@ -927,10 +927,23 @@ class content_class {
 		}
 		if(!empty($output['content_related']))
 		{
-			$output['content_related'] = preg_replace(array('~^[^0-9]+~','~[^0-9]+$~','~[^0-9]+~', '~,{2,}~'), array('','',',',','), $output['content_related']);
-			if(!empty($output['content_related']))
+			if (is_array($output['content_related']))
 			{
-				$output['content_related'] = array_unique(explode(',',$output['content_related']));
+				$output['content_related'] = array_unique($output['content_related']);
+			}else{
+				$output['content_related'] = preg_replace(array('~^[^0-9]+~','~[^0-9]+$~','~[^0-9]+~', '~,{2,}~'), array('','',',',','), $output['content_related']);
+				if(!empty($output['content_related']))
+				{
+					$output['content_related'] = array_unique(explode(',',$output['content_related']));
+				}
+			}
+			if (!empty($content_id) && !empty($output['content_related']))
+			{
+				$i = array_search($content_id, $output['content_related']);
+				if (is_numeric($i))
+				{
+					unset($output['content_related'][$i]);
+				}
 			}
 		}else $output['content_related'] = array();
 		return $output;
