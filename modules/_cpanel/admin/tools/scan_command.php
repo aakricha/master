@@ -10,40 +10,49 @@ _func('file');
  *==============================================*/
 if(!isset($_POST['Submit']))
 {
-?>
-<form action="" method="POST" enctype="multipart/form-data" target="output">
-	<table class="table">
-		<tbody>
+	?>
+	<form action="" method="POST" enctype="multipart/form-data" target="output">
+		<table width="100%" height="100%" border=0 cellpadding="0" cellspacing="0">
 			<tr>
-				<td width="50">user</td>
-				<td>:<input type="text" name="user" class="form-control" /></td>
-			</tr>
-			<tr>
-				<td>group</td>
-				<td>:<input type="text" name="group" class="form-control" /></td>
-			</tr>
-			<tr>
-				<td colspan=2>
-					<input type="button" value="&laquo; back" class="btn btn-default" onClick="document.location.href='<?php echo $Bbc->mod['circuit'];?>.tools&act=scan'">
-					<input type=submit name="Submit" class="btn btn-default" value="get command">
+				<td>
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">Scan Error Command</h3>
+						</div>
+						<div class="panel-body">
+							<div class="form-group">
+								<label>User</label>
+								<input type="text" name="user" class="form-control" />
+							</div>
+							<div class="form-group">
+								<label>Group</label>
+								<input type="text" name="group" class="form-control" />
+							</div>
+							<?php echo $sys->button(@$_GET['return']); ?>
+							<button type=submit name="Submit" value="get command" class="btn btn-default">
+								<?php echo icon('fa-terminal'); ?>
+								Get Command
+							</button>
+						</div>
+					</div>
 				</td>
 			</tr>
 			<tr>
-				<td colspan=2>
-					<iframe src="" name="output" width="100%" height="300px" frameborder=0></iframe>
+				<td>
+					<iframe src="" name="output" width="100%" height="100%" frameborder=0></iframe>
 				</td>
 			</tr>
-		</tbody>
-	</table>
-</form>
-<?php
+		</table>
+	</form>
+	<?php
 } else {
-	$r_tpl= array();
-	$text	= '';
 	$path	= _ROOT.'templates/';
-	$text .= "find . -type f -exec chmod 644 {} \;
-find . -type d -exec chmod 755 {} \;
-";
+	$text = 'cd '._ROOT.'
+find . \( -path "./images/*" -o -path "./cgi-bin/*" \) -prune -o -type d -exec chmod 755 {} \;
+find . \( -path "./images/*" -o -path "./cgi-bin/*" \) -prune -o -type f -exec chmod 644 {} \;
+rm -rf images/cache
+chmod -R 777 images
+find templates/. -name style.css -exec chmod 777 {} \;';
 	if(empty($_POST['user']) && preg_match('~^/home[0-9]?/~', $path))
 	{
 		preg_match('~/home[0-9]?/(.*?)/~', $path, $m);
@@ -53,23 +62,9 @@ find . -type d -exec chmod 755 {} \;
 	if(isset($_POST['user']))
 	{
 		$user = $_POST['user'];
-		$group= $_POST['group'] ? $_POST['group'] : $user;
-		$text .= "chown -R $user:$group *
-";
+		$group= !empty($_POST['group']) ? $_POST['group'] : $user;
+		$text .= "\nchown -R $user:$group *";
 	}
-	$r = path_list_r($path, true);
-	foreach($r AS $dir)
-	{
-		if(!preg_match('/admin/i', $dir))
-		{
-			if(is_file($path.$dir.'/index.html'))
-			{
-				if(is_file($path.$dir.'/css/style.css'))
-					$r_tpl[] = $path.$dir.'/css/style.css';
-			}
-		}
-	}	
-	$text .= "chmod -R 777 images/ .htaccess ".implode(' ', $r_tpl)."\n";
 	echo '<textarea style="width:100%;height: 90%;border: 0px;background: transparent;" onclick="this.select();">'.$text.'</textarea>';
 	die();
 }

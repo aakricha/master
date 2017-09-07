@@ -36,6 +36,11 @@ function tools_move($old, $new)
 	$new = preg_replace('~^'._ROOT.'~s', '', $new);
 	return $ftp->move($old, $new);
 }
+function tools_url($act, $is_return = true)
+{
+	global $Bbc;
+	return $Bbc->mod['circuit'].'.tools&act='.$act.'&return='.urlencode(seo_uri());
+}
 if($is_connect)
 {
 	switch($_GET['act'])
@@ -69,7 +74,7 @@ if($is_connect)
 		case 'block_download':
 			include 'block_download.php';
 		break;
-	
+
 		case 'template':
 			include 'template_function.php';
 			include 'template.php';
@@ -83,7 +88,7 @@ if($is_connect)
 		case 'language_download':
 			include 'language_download.php';
 		break;
-	
+
 		case 'licence':
 			include 'licence.php';
 		break;
@@ -91,5 +96,5 @@ if($is_connect)
 			include 'index.php';
 		break;
 	}
-	$ftp->close(); 
+	$ftp->close();
 }

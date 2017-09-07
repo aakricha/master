@@ -66,7 +66,7 @@ if (!empty($_POST['shortcut_submit_update']))
 _func('array');
 $r_menu = array_path($menu);
 $r_cpanel = array_path($cpanel);
-
+$sys->nav_add('Create Desktop Shortcut');
 ?>
 <form action="" method="POST" name="shortcut" role="form">
 	<div class="panel panel-default">
@@ -96,7 +96,7 @@ $r_cpanel = array_path($cpanel);
 						PS: Press and Hold the command (CMD) / control (Ctrl) button on your keyboard to select multiple options
 					</span>
 				</p>
-			</div>		
+			</div>
 			<div class="form-group">
 				<label>Control Panel Shortcuts</label>
 				<div class="input-group">

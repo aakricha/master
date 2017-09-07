@@ -17,8 +17,11 @@ if(!isset($_POST['Submit']))
 		</tr>
 		<tr>
 			<td>
-				<input type="button" value="&laquo; Cancel" class="button" onClick="document.location.href='<?php echo $Bbc->mod['circuit'];?>.tools&act=scan'">
-				<input type=submit name="Submit" class="button" value="Commit the action">
+				<?php echo $sys->button(@$_GET['return']); ?>
+				<button type="submit" name="Submit" value="Commit the action" class="btn btn-default">
+					<?php echo icon('fa-database'); ?>
+					Repair Database
+				</button>
 			</td>
 		</tr>
 		<tr>

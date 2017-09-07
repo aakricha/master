@@ -6,32 +6,33 @@ if(!isset($_POST['Submit']))
 {
 	?>
 	<form action="" method="POST" enctype="multipart/form-data" target="output">
-		<table class="table">
-			<tbody>
-				<tr>
-					<td width="50">file</td>
-					<td>:<input type="text" name="file" value="644" maxlength="3" class="form-control" /></td>
-				</tr>
-				<tr>
-					<td>directory</td>
-					<td>:<input type="text" name="directory" value="755" maxlength="3" class="form-control" /></td>
-				</tr>
-				<tr>
-					<td>path</td>
-					<td>:<input type="text" name="path" value="" class="form-control" /></td>
-				</tr>
-				<tr>
-					<td colspan=2>
-						<input type="button" value="&laquo; back" class="btn btn-default" onClick="document.location.href='<?php echo $Bbc->mod['circuit'];?>.tools&act=scan'">
-						<input type=submit name="Submit" value="Execute" class="btn btn-default">
-					</td>
-				</tr>
-				<tr>
-					<td colspan=2>
-						<iframe src="" name="output" width="100%" height="300px" frameborder=0></iframe>
-					</td>
-				</tr>
-			</tbody>
+		<table width="100%" height="100%" border=0 cellpadding="0" cellspacing="0">
+			<tr>
+				<td>
+					<div class="form-group">
+						<label>File</label>
+						<input type="text" name="file" value="644" maxlength="3" class="form-control" />
+					</div>
+					<div class="form-group">
+						<label>Directory</label>
+						<input type="text" name="directory" value="755" maxlength="3" class="form-control" />
+					</div>
+					<div class="form-group">
+						<label>Path</label>
+						<input type="text" name="path" value="<?php echo _ROOT; ?>" class="form-control" />
+					</div>
+					<?php echo $sys->button(@$_GET['return']); ?>
+					<button type=submit name="Submit" value="Execute" class="btn btn-default">
+						<?php echo icon('fa-lock'); ?>
+						Execute
+					</button>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<iframe src="" name="output" width="100%" height="100%" frameborder=0></iframe>
+				</td>
+			</tr>
 		</table>
 	</form>
 	<?php
@@ -48,7 +49,7 @@ if(!isset($_POST['Submit']))
 				$filedata = array();
 				if ($fp = @opendir($source_dir))
 				{
-					$source_dir = rtrim($source_dir, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;		
+					$source_dir = rtrim($source_dir, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
 					while (FALSE !== ($file = readdir($fp)))
 					{
 						if (strncmp($file, '.', 1) == 0)
@@ -96,6 +97,6 @@ if(!isset($_POST['Submit']))
 	}
 	$r = path_chmod($path, $dir, $file);
 	if(empty($r)) $r = 'Success Chmod :'.str_replace(_ROOT, '', $path)."\n".'All files :'.$_POST['file']."\n".'All directories :'.$_POST['directory'];
-	echo '<textarea class="form-control">'.print_r($r, 1).'</textarea>';
-	die();	
+	echo '<textarea class="form-control" style="width: 100%;height: 100%;border: 0;">'.print_r($r, 1).'</textarea>';
+	die();
 }
