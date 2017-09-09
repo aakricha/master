@@ -10,32 +10,30 @@
 		<![endif]-->
 	</head>
 	<body>
-		<div style="width: 100%; height: 100%; overflow: auto; -webkit-overflow-scrolling: touch;">
-			<?php
-			echo $sys->nav_show();
-			echo $Bbc->content;
-			if($db->debug)
-			{
-				?>
-				<div class="clearfix"></div>
-				<div class="predebug">&nbsp;</div>
-				<div class="debug" data-toggle="modal" href="#debug-content" style="position: fixed"></div>
-					<div class="modal fade" id="debug-content" tabindex="-1">
-						<div class="modal-dialog modal-lg">
-							<div class="modal-content">
-								<div class="modal-body">
-									<?php
-									echo '<code>'.print_r($Bbc->debug, 1).'</code>';
-									?>
-								</div>
+		<?php
+		echo $sys->nav_show();
+		echo $Bbc->content;
+		if($db->debug)
+		{
+			?>
+			<div class="clearfix"></div>
+			<div class="predebug">&nbsp;</div>
+			<div class="debug" data-toggle="modal" href="#debug-content" style="position: fixed"></div>
+				<div class="modal fade" id="debug-content" tabindex="-1">
+					<div class="modal-dialog modal-lg">
+						<div class="modal-content">
+							<div class="modal-body">
+								<?php
+								echo '<code>'.print_r($Bbc->debug, 1).'</code>';
+								?>
 							</div>
 						</div>
 					</div>
-				<?php
-			}
-			?>
-			<div id="loading">Loading...</div>
-		</div>
+				</div>
+			<?php
+		}
+		?>
+		<div id="loading">Loading...</div>
 		<script src="<?php echo $sys->template_url;?>bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
 		<script src="<?php echo $sys->template_url;?>js/index.js" type="text/javascript"></script>
 	</body>
