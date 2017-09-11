@@ -32,14 +32,10 @@ $form->roll->input->post_date->setTitle('date');
 $form->roll->input->post_date->setDateFormat();
 
 $form->roll->addInput('message', 'sqlplaintext');
-$form->roll->input->message->setTitle('Message');
 $form->roll->input->message->setsubstr(0, 150);
 
-$form->roll->addInput('followed', 'select');
-$form->roll->input->followed->setTitle('Follow');
-$form->roll->input->followed->addOption('Yes', '1');
-$form->roll->input->followed->addOption('No', '0');
-$form->roll->input->followed->setPlainText(true);
+$form->roll->addInput('answer', 'sqlplaintext');
+$form->roll->input->answer->setsubstr(0, 150);
 
 $form->roll->action();
 

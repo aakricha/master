@@ -44,6 +44,10 @@ $r_param = urldecode_r(config_decode($data['params']));
 			<th>Answer</th>
 			<td><?php echo nl2br($data['answer']);?></td>
 		</tr
+		<tr>
+			<td>Answered on</td>
+			<td><i><?php echo date( 'D - M jS, Y H:i:s', strtotime($data['answer_date']));?></i></td>
+		</tr
 	</tbody>
 	<tfoot>
 		<tr>

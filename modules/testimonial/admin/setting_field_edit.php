@@ -2,7 +2,7 @@
 
 $id = @intval($_GET['id']);
 $sql = ($id > 0) ? "WHERE id=$id" : '';
-$txt = (!empty($sql)) ? 'Edit Contact Field' : 'Add Contact Field';
+$txt = (!empty($sql)) ? 'Edit Testimonial Field' : 'Add Testimonial Field';
 
 $form = _lib('pea',  'testimonial_field' );
 

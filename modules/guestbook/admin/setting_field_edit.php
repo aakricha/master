@@ -2,7 +2,7 @@
 
 $id = @intval($_GET['id']);
 $sql = ($id > 0) ? "WHERE id=$id" : '';
-$txt = (!empty($sql)) ? 'Edit Contact Field' : 'Add Contact Field';
+$txt = (!empty($sql)) ? 'Edit Guestbook Field' : 'Add Guestbook Field';
 
 $form = _lib('pea',  'guestbook_field' );
 

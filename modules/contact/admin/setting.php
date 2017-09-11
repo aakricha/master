@@ -90,7 +90,7 @@ $form->roll->input->active->setTitle( 'Active' );
 $form->roll->input->active->setCaption( 'active' );
 
 $tabs['Fields'] = $form->roll->getForm();
-$tabs['Fields'] .= '<input type="button" class="button" style="float: right;" value="Advance Setting &gt;&gt;" onclick="document.location.href=\''.$Bbc->mod['circuit'].'.setting_field\'"><br class="clear" />';
+$tabs['Fields'] .= $sys->button($Bbc->mod['circuit'].'.setting_field&return='.urlencode(seo_uri()), 'Manage Fields', 'tasks');
 
 echo tabs($tabs);
 ?>

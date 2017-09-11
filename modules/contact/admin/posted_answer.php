@@ -1,9 +1,13 @@
 <?php  if (!defined('_VALID_BBC')) exit('No direct script access allowed');
 
-$id = @intval($_GET['id']);
-$q = "SELECT * FROM contact WHERE id=$id";
+$id   = @intval($_GET['id']);
+$q    = "SELECT * FROM contact WHERE id=$id";
 $data = $db->getRow($q);
-#if($data['followed']) redirect($Bbc->mod['circuit'].'.posted_detail&id='.$id);
+if (empty($_GET['return']))
+{
+	$_GET['return'] = $Bbc->mod['circuit'].'.posted';
+}
+if($data['followed']) redirect($Bbc->mod['circuit'].'.posted_detail&id='.$id.'&return='.urlencode($_GET['return']));
 $r_param = urldecode_r(config_decode($data['params']));
 if(isset($_POST['submit']))
 {
@@ -13,8 +17,8 @@ if(isset($_POST['submit']))
 		$c = get_config('contact', 'form');
 		$email = is_email($c['email']) ? $c['email'] : config('email','address');
 		$message .= '
-		
------ Original Message ----- 
+
+----- Original Message -----
 From: "'.$data['name'].'" <'.$data['email'].'>
 To: <'.$email.'>
 Sent: '.date('l, F jS, Y H:i:s', strtotime($data['post_date'])).'
@@ -29,12 +33,15 @@ Sent: '.date('l, F jS, Y H:i:s', strtotime($data['post_date'])).'
 	, $message
 	, array($email, config('email', 'name'))
 	);
-	$q = "UPDATE contact SET answer='".addslashes($_POST['answer'])."', answer_date=NOW(), followed=1 WHERE id=$id";
+	$answer = $_POST['answer']."\n\n by ".$user->name;
+	$q = "UPDATE contact SET answer='{$answer}', answer_date=NOW(), followed=1 WHERE id=$id";
 	$db->Execute($q);
 	redirect($Bbc->mod['circuit'].'.posted_detail&id='.$id);
 }
+_lib('pea', 'contact');
+link_js(_PEA_URL.'includes/formIsRequire.js', false);
 ?>
-<form action="" method="post" name="contact" enctype="multipart/form-data">
+<form action="" method="post" name="contact" enctype="multipart/form-data" class="formIsRequire">
 	<table class="table table-hover">
 		<thead>
 			<tr>
@@ -72,7 +79,7 @@ Sent: '.date('l, F jS, Y H:i:s', strtotime($data['post_date'])).'
 			<tr>
 				<th>Answer</th>
 				<td>
-					<textarea name="answer" class="form-control"></textarea>
+					<textarea name="answer" class="form-control" req="any true"></textarea>
 				</td>
 			</tr>
 			<tr>
@@ -89,7 +96,7 @@ Sent: '.date('l, F jS, Y H:i:s', strtotime($data['post_date'])).'
 			<tr>
 				<td></td>
 				<td>
-					<span type="button" class="btn btn-default btn-sm" onclick="document.location.href='<?php echo $Bbc->mod['circuit'].'.posted';?>';"><span class="glyphicon glyphicon-chevron-left"></span></span>
+					<?php echo $sys->button($_GET['return']); ?>
 					<button type="submit" name="submit" value="Submit" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-floppy-disk"></span> Submit</button>
 				</td>
 			</tr>
