@@ -6,6 +6,7 @@ class content_class {
 	var $r_lang;
 	var $error = array();
 	var $allowed_tags = '<br><a><i><b><u>';
+	var $check_types = array();
 	function __construct()
 	{
 		global $db, $user, $sys, $Bbc;
@@ -29,6 +30,30 @@ class content_class {
 		{
 			_func('path');
 			path_create($this->img_path);
+		}
+		if (empty($this->user) || empty($this->user->id))
+		{
+			$usr = $this->db->getRow("SELECT * FROM `bbc_user` WHERE `group_ids` LIKE '%,1,%' ORDER BY `id` ASC LIMIT 1");
+			if (empty($usr))
+			{
+				$usr = $this->db->getRow("SELECT * FROM `bbc_user` WHERE 1 ORDER BY `id` ASC LIMIT 1");
+			}
+			if (!empty($usr))
+			{
+				$acc = $this->db->getRow("SELECT * FROM `bbc_account` WHERE `user_id`={$usr['id']} ORDER BY `id` ASC LIMIT 1");
+				if (!empty($acc))
+				{
+					$this->user->id    = $usr['id'];
+					$this->user->name  = $acc['name'];
+					$this->user->email = $acc['email'];
+				}
+			}
+			if (empty($this->user) || empty($this->user->id))
+			{
+				$this->user->id    = 1;
+				$this->user->name  = 'Administrator';
+				$this->user->email = 'danang@fisip.net';
+			}
 		}
 	}
 	function content_save($data, $content_id = 0)
@@ -375,7 +400,7 @@ class content_class {
 			$this->db->Execute($q);
 			$tmp_content_id = $content_id;
 		}else{
-			$q = "INSERT INTO bbc_content SET
+			$q = "INSERT INTO `bbc_content` SET
 				`par_id`           = '".$post['par_id']."',
 				`type_id`          = '".$post['type_id']."',
 				`kind_id`          = '".$post['kind_id']."',
@@ -578,10 +603,14 @@ class content_class {
 		$is_config = $this->_enum(@$input['is_config']);
 		$par_id    = @intval($input['par_id']);
 		$type_id   = @intval($input['type_id']);
-		if(!$this->db->getOne("SELECT 1 FROM `bbc_content_type` WHERE id={$type_id}"))
+		if (!isset($this->check_types[$type_id]))
 		{
-			$q = "SELECT `id` FROM `bbc_content_type` WHERE `active`=1 ORDER BY id";
-			$type_id = intval($this->db->getOne($q));
+			if(!$this->db->getOne("SELECT 1 FROM `bbc_content_type` WHERE id={$type_id}"))
+			{
+				$q = "SELECT `id` FROM `bbc_content_type` WHERE `active`=1 ORDER BY id";
+				$type_id = intval($this->db->getOne($q));
+				$this->check_types[$type_id] = true;
+			}
 		}
 		if (empty($input['tmp_dir']))
 		{
@@ -617,7 +646,7 @@ class content_class {
 			'schedule'         => array(),
 			'modified_by'      => (!empty($input['modified_by']) ? $input['modified_by'] : $this->user->id),
 			'created_by'       => (!empty($input['created_by']) ? $input['created_by'] : $this->user->id),
-			'created_by_alias' => (!empty($input['created_by_alias']) ? $input['created_by_alias'] : $this->user->name),
+			'created_by_alias' => (!empty($input['created_by_alias']) ? $input['created_by_alias'] : @$this->user->name),
 			'content_related'  => (!empty($input['content_related']) ? $input['content_related'] : array()),
 			'is_popimage'      => $this->_enum(@$input['is_popimage']),
 			'is_front'         => $this->_enum(@$input['is_front']),
