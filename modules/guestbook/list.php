@@ -1,5 +1,9 @@
 <?php  if (!defined('_VALID_BBC')) exit('No direct script access allowed');
 
+if (!$sys->menu_real)
+{
+	$sys->nav_change(lang('Guest Book'));
+}
 $conf = get_config('guestbook', 'guestbook');
 echo '<h1>'.lang('guestbook').'</h1>';
 if(!$sys->menu_real)

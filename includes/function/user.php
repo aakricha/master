@@ -103,8 +103,9 @@ function user_create($params)
 {
 	$params = is_array($params) ? $params : config_decode($params);
 	if(isset($params['params'])
-	&& isset($params['name']) && !empty($params['name'])
-	&& isset($params['email']) && is_email($params['email']))
+		&& !empty($params['name'])
+		&& isset($params['email'])
+		&& is_email($params['email']))
 	{
 		global $db;
 		/*=======================================
@@ -465,7 +466,7 @@ function user_login($username, $password, $is_admin = 0, $rememberme = 0)
 							FROM bbc_user WHERE id = ".$dt['id'];
 				$user = $db->getRow($q);
 				// FETCH PARTICULAR
-				$q = "SELECT id AS account_id, name, email, params FROM bbc_account WHERE user_id=".$dt['id'];
+				$q = "SELECT id AS account_id, name, email, image, params FROM bbc_account WHERE user_id=".$dt['id'];
 				$acc = $db->getRow($q);
 				$acc['params'] = config_decode(@$acc['params']);
 				$user = array_merge($user, $acc);
@@ -608,4 +609,32 @@ function user_call_func_validate()
 		}
 	}
 	return $out;
+}
+function user_auth($data = array())
+{
+	global $user;
+	if (!empty($data))
+	{
+		$_SESSION['user_auth'] = $data;
+		redirect();
+	}else
+	if (!empty($_SESSION['user_auth']))
+	{
+		return $_SESSION['user_auth'];
+	}else
+	if (!empty($user->image))
+	{
+		$out = array(
+			'id'    => $user->id,
+			'name'  => $user->name,
+			'email' => $user->email,
+			'image' => $user->image
+			);
+		$_SESSION['user_auth'] = $out;
+		return $out;
+	}else
+	if (@$_GET['mod']!='user.auth')
+	{
+		redirect('user/auth?return='.urlencode(seo_url()));
+	}
 }

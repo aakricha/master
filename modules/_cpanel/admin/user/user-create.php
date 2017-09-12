@@ -6,6 +6,10 @@ function cpanel_create_user(&$form)
 	$output = '';
 	if($form->is_updated)
 	{
+		if (empty($_POST['params']))
+		{
+			$_POST['params'] = array('group_ids' => $_POST['group_ids']);
+		}
 		$new_id = user_create($_POST);
 		if (empty($new_id))
 		{
@@ -17,7 +21,6 @@ function cpanel_create_user(&$form)
 	}
 	return $output;
 }
-
 ob_start();
 $group_ids = @$_POST['group_ids'];
 if (!empty($group_ids))
@@ -71,8 +74,10 @@ if (!empty($group_ids))
 	{
 		echo '<div id="userform">'.$form->show().'</div>';
 	}else{
-		echo $form->show();
+		// karena kalo secara default class params di load di header sedangkan
+		// di ajax tidak ada header
 		link_js(_LIB.'pea/includes/formIsRequire.js', false);
+		echo $form->show();
 	}
 }
 if (empty($_GET['is_ajax']))
@@ -116,6 +121,7 @@ if (empty($_GET['is_ajax']))
 	</form>
 	<script type="text/javascript">
 		_Bbc(function($){
+			$("input[name=group_ids]").closest(".form-group").hide();
 			$("#user_group").on("submit", function(e){
 				e.preventDefault();
 				if ($(this).serialize()=="") {

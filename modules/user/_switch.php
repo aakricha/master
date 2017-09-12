@@ -57,6 +57,10 @@ switch($Bbc->mod['task'])
 		include 'alert_remove.php';
 		break;
 
+	case 'auth':
+		include 'auth.php'; // untuk mengambil foto user yang ingin men-submit gambar
+		break;
+
 	case 'logout': // Halaman untuk logout bagi user yang sudah login
 		user_logout($user->id);
 		redirect(_URL);

@@ -53,7 +53,7 @@ if (!empty($config['id']) && !empty($config['expire']) && $config['expire'] > ti
 	}else
 	if(str_replace('http://', '', $post['website']) != '' && !is_url($post['website']))
 	{
-		$output['message'] = msg(lang('url is invalid'));
+		$output['message'] = msg(lang('url is invalid').pr($post, 1));
 	}else
 	if(empty($post['content']))
 	{

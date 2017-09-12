@@ -10,12 +10,30 @@ switch(@$conf['orderby'])
 	case '3': $sql .= '`name` ASC';break;
 	default	: $sql .= '`id` DESC';break;
 }
-$page = @intval($_GET['id']);
-$sql .= ' LIMIT '.@intval($page*$conf['tot']).', '.@intval($conf['tot']);
-$q = "SELECT * FROM guestbook WHERE publish=1 ".$sql;
+$page   = @intval($_GET['id']);
+$sql   .= ' LIMIT '.@intval($page*$conf['tot']).', '.@intval($conf['tot']);
+$q      = "SELECT * FROM guestbook WHERE publish=1 ".$sql;
 $r_list = $db->getAll($q);
-if($db->Affected_rows())
+if(!empty($r_list))
 {
+	foreach ($r_list as $i => $data)
+	{
+		$image = '';
+		if (!empty($data['params']))
+		{
+			$params = config_decode($data['params']);
+			if (!empty($params['image']))
+			{
+				$image = $params['image'];
+			}
+		}
+		if (empty($image))
+		{
+			$image = $sys->avatar($data['email'], 1);
+		}
+		$r_list[$i]['image']   = $image;
+		$r_list[$i]['message'] = smiley_parse($data['message']);
+	}
 	include tpl('list_show.html.php');
 }
 if($Bbc->mod['task'] != 'list_show')
@@ -28,6 +46,6 @@ if($Bbc->mod['task'] != 'list_show')
 	}
 	echo page_list($found, $conf['tot'], $page, 'id', $Bbc->mod['circuit'].'.list');
 }else{
-	echo msg(lang('guestbook empty'));
+	// echo msg(lang('guestbook empty'));
 }
 if($Bbc->mod['task'] == 'list_show') $sys->stop();

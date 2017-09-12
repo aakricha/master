@@ -6,12 +6,12 @@
 		<li>
 			<div class="blockquote">
 				<div class="col-md-2 no-left">
-					<?php if($conf['avatar']) echo avatar($data['email'], 70);	?>
+					<?php if($conf['avatar']) echo image($data['image'], '', ' class="img-responsive img-thumbnail"');	?>
 				</div>
 				<div class="col-md-10 no-left">
 					<b><?php echo $data['name'];?></b>
 					<span><?php echo date('d M Y | H:i:s', strtotime($data['date']));?></span>
-					<p><?php echo smiley_parse($data['message']);?></p>
+					<p><?php echo $data['message'];?></p>
 				</div>
 			</div>
 			<div class="clearfix"></div>

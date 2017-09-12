@@ -1,5 +1,9 @@
 <?php  if (!defined('_VALID_BBC')) exit('No direct script access allowed');
 
+if (!$sys->menu_real)
+{
+	$sys->nav_change(lang('Testimonial'));
+}
 $conf = get_config('testimonial', 'testimonial');
 echo '<h1>'.lang('Testimonial').'</h1>';
 if(!$sys->menu_real)

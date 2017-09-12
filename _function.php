@@ -175,7 +175,7 @@ function tpl($file, $default_file='')
 }
 function is_url($text)
 {
-	$regex		= '/^((?:ht|f)tps?:\/\/)[a-z0-9\-]+\.[a-z0-9\-\.]+\/?/is';
+	$regex		= '/^((?:ht|f)tps?:\/\/)(?:[a-z0-9\-]+\.[a-z0-9\-\.]+|localhost)\/?/is';
 	$output = (preg_match($regex, (string)$text)) ? true : false;
 	return $output;
 }
