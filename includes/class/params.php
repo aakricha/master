@@ -182,8 +182,7 @@ class params
 			{
 				$GLOBALS['sys']->nav_add($title);
 			}
-			$footer =	'<span type="button" class="btn btn-default btn-sm" onclick="document.location.href=\''
-					 		.		$_GET['return'].'\';"><span class="glyphicon glyphicon-chevron-left"></span></span> ';
+			$footer =	$GLOBALS['sys']->button($_GET['return']);
 		}else $footer = '';
 		$cls = $this->isFormRequire ? ' class="formIsRequire"' : '';
 		$output .='
