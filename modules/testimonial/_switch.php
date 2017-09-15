@@ -14,7 +14,7 @@ switch( $Bbc->mod['task'] )
 		include 'form.php';
 		break;
 	case 'form-finished':
-		echo msg(@$_SESSION['testimonial']);
+	include 'form-finished.php';
 		break;
 
 	default:
