@@ -4,58 +4,56 @@ $tabs = array();
 $form = _class('bbcconfig');
 
 $_setting = array(
-	'alert'		=> array(
-		'text'		=> 'Alert New Post'
-	,	'type'		=> 'radio'
-	,	'option'	=> array('1'=>'yes','0'=>'no')
-	,	'default'	=> '1'
-	,	'tips'		=> 'Alert admin by email for every new post'
-	)
-,	'email'		=> array(
-		'text'		=> 'Email'
-	,	'type'		=> 'text'
-	,	'attr'		=> 'size="30"'
-	,	'tips'		=> 'Insert email address as destination of new GuestBook posted, or leave it blank to use <a href="index.php?mod=_cpanel.config" rel="admin_link">global email</a>'
-	)
-,	'approved'	=> array(
-		'text'		=> 'Approved'
-	,	'type'		=> 'radio'
-	,	'option'	=> array('1'=>'auto','0'=>'manual')
-	,	'default'	=> '0'
-	,	'tips'		=> 'if auto, all incoming GuestBook will automaticaly publish'
-	)
-,	'tot'=> array(
-		'text'		=> 'Total per page'
-	,	'type'		=> 'text'
-	,	'attr'		=> 'size="10"'
-	,	'default'	=> '12'
-	,	'tips'		=> 'Items to show per page'
-	)
-,	'avatar'		=> array(
-		'text'		=> 'Use Avatar'
-	,	'type'		=> 'radio'
-	,	'option'	=> array('1'=>'yes','0'=>'no')
-	,	'default'	=> '1'
-	,	'tips'		=> 'Show user avatar'
-	)
-,	'animated'		=> array(
-		'text'		=> 'Load Page'
-	,	'type'		=> 'radio'
-	,	'option'	=> array('1'=>'Animated','0'=>'Manual')
-	,	'default'	=> '0'
-	,	'tips'		=> 'Select method to show guestbook list per page'
-	)
-,	'orderby'		=> array(
-		'text'		=> 'Sequence from'
-	,	'type'		=> 'radio'
-	,	'option'	=> array('1'=>'Last Posted','2'=>'First Posted', '3'=>'Alphabetically')
-	,	'default'	=> '1'
+	'alert' => array(
+		'text'    => 'Alert New Post',
+		'type'    => 'radio',
+		'option'  => array('1'=>'yes','0'=>'no'),
+		'default' => '1',
+		'tips'    => 'Alert admin by email and notification for every new post'
+	),
+	'email' => array(
+		'text' => 'Email',
+		'type' => 'text',
+		'tips' => 'Insert email address as destination of new GuestBook posted, or leave it blank to use <a href="index.php?mod=_cpanel.config" rel="admin_link">global email</a>'
+	),
+	'approved' => array(
+		'text'    => 'Approved',
+		'type'    => 'radio',
+		'option'  => array('1'=>'auto','0'=>'manual'),
+		'default' => '0',
+		'tips'    => 'if auto, all incoming GuestBook will automaticaly publish'
+	),
+	'tot' => array(
+		'text'    => 'Total per page',
+		'type'    => 'text',
+		'default' => '12',
+		'tips'    => 'Items to show per page'
+	),
+	'avatar' => array(
+		'text'    => 'Use Avatar',
+		'type'    => 'radio',
+		'option'  => array('1'=>'yes','0'=>'no'),
+		'default' => '1',
+		'tips'    => 'Show user avatar, if you select "yes" everytime user wants to post guestbook they will be force to identify him self using their own social media'
+	),
+	'animated' => array(
+		'text'    => 'Load Page',
+		'type'    => 'radio',
+		'option'  => array('1'=>'Animated','0'=>'Manual'),
+		'default' => '0',
+		'tips'    => 'Select method to show guestbook list per page'
+	),
+	'orderby' => array(
+		'text'    => 'Sequence from',
+		'type'    => 'radio',
+		'option'  => array('1'=>'Last Posted','2'=>'First Posted', '3'=>'Alphabetically'),
+		'default' => '1'
 	)
 );
 $output = array(
-	'config'=> $_setting
-,	'name'	=> 'guestbook'
-,	'title'	=> 'guestbook List'
+	'config'=> $_setting,
+	'name'	=> 'guestbook',
+	'title'	=> 'guestbook List'
 );
 $form->set($output);
 $tabs['List'] = $form->show();
