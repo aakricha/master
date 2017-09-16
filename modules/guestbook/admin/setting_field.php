@@ -2,8 +2,8 @@
 
 include 'setting_field_edit.php';
 $tab_output = array(
-	'Fields'	=> ''
-,	'New Field'	=> $form->edit->getForm()
+	'Fields'    => '',
+	'New Field' => $form->edit->getForm()
 );
 
 $form = _lib('pea',  'guestbook_field' );

@@ -113,7 +113,7 @@ function _action_register(&$form)
 			`username` = '".$data['username']."',
 			`email`    = '".$data['email']."',
 			`active`   = 1
-			WHERE id   = $form->table_id";
+			WHERE `id` = $form->table_id";
 		$db->Execute($q);
 
 		// SET PARAM FOR EMAIL

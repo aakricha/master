@@ -1,12 +1,12 @@
 <?php  if (!defined('_VALID_BBC')) exit('No direct script access allowed');
 
 $tmp = array(
-	'title'				=> ''
-,	'description'	=> ''
-,	'keyword'			=> ''
-,	'intro'				=> ''
-,	'content'			=> ''
-,	'tags'				=> ''
+	'title'       => '',
+	'description' => '',
+	'keyword'     => '',
+	'intro'       => '',
+	'content'     => '',
+	'tags'        => ''
 );
 $text = @array_merge($tmp, $data['text'][$lang_id]);
 $defConfig = array('language' => (count($r_lang) > 1) ? $language['code'] : 'en', 'path' => 'images/modules/content/');

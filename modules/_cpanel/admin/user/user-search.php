@@ -1,10 +1,10 @@
 <?php defined( '_VALID_BBC' ) or die( 'Restricted access' );
 
 $_search = array(
-	'name'	=>	$Bbc->mod['task']
-,	'link'	=>	$Bbc->mod['circuit'].'.'.$Bbc->mod['task']
-,	'module'=>	'_cpanel'
-,	'keyword'=>	'search'
+	'name'	=>	$Bbc->mod['task'],
+	'link'	=>	$Bbc->mod['circuit'].'.'.$Bbc->mod['task'],
+	'module'=>	'_cpanel',
+	'keyword'=>	'search'
 );
 if(isset($_POST[$_search['keyword']]))
 {
