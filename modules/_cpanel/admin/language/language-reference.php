@@ -52,8 +52,8 @@ function language_repair()
 
 
 $tabs = array(
-  'Language' => $form->roll->getForm()
-, 'Add' => $form->edit->getForm()
+  'Language' => $form->roll->getForm(),
+  'Add' => $form->edit->getForm()
 );
 
 echo tabs($tabs);

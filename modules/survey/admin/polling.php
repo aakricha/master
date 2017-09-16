@@ -87,7 +87,7 @@ function polling_delete($ids)
 	}
 }
 $tabs = array(
-	'List Polling'=> $form->roll->getForm()
-,	'Add Polling'	=> $form1->add->getForm()
+	'List Polling' => $form->roll->getForm(),
+	'Add Polling'  => $form1->add->getForm()
 );
 echo tabs($tabs);

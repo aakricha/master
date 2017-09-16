@@ -241,8 +241,8 @@ $form->roll->onSave( 'block_repair', array(), true );
 
 /* BLOCK DISPLAY */
 $tabs = array(
-	'List Block'=> $form->roll->getForm()
-,	'Add Block'	=> $formBlockEdit
+	'List Block'=> $form->roll->getForm(),
+	'Add Block'	=> $formBlockEdit
 );
 ob_start();
 $arr = !empty($_SESSION['block_edit_field']) ? $_SESSION['block_edit_field'] : array();

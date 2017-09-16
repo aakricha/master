@@ -102,8 +102,8 @@ $form2->roll->onSave('user_field_repair');
 $form2->roll->onDelete('user_field_repair', '', true);
 
 $tabs = array(
-	'Fields'    => $form2->roll->getForm()
-, 'Add Fields'=> $form->edit->getForm()
+	'Fields'    => $form2->roll->getForm(),
+	'Add Fields'=> $form->edit->getForm()
 );
 function user_field_repair($id =0)
 {

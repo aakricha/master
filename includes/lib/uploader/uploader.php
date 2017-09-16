@@ -11,15 +11,15 @@ class uploader
     function __construct($allowedExtensions = array('jpg', 'jpeg', 'gif', 'png', 'bmp'), $sizeLimit = 0)
     {
         $allowedExtensions = array_map("strtolower", $allowedExtensions);
-        $this->allowedExtensions = $allowedExtensions;        
+        $this->allowedExtensions = $allowedExtensions;
         $this->sizeLimit = $sizeLimit ? $sizeLimit : min($this->toBytes(ini_get('upload_max_filesize')), $this->toBytes(ini_get('post_max_size')));
-        $this->checkServerSettings();       
+        $this->checkServerSettings();
         if (isset($_GET['qqfile'])) {
             $this->file = new uploaderXML();
         } elseif (isset($_FILES['qqfile'])) {
             $this->file = new uploaderFORM();
         } else {
-            $this->file = false; 
+            $this->file = false;
         }
     }
     public function build($path, $tmp, $current = array(), $inputName = 'files', $text = 'Add Images', $node_id = 'file-uploader')
@@ -72,26 +72,26 @@ var b = new qq.FileUploader({
     {
         return $this->inputField;
     }
-    private function checkServerSettings(){        
+    private function checkServerSettings(){
         $postSize = $this->toBytes(ini_get('post_max_size'));
-        $uploadSize = $this->toBytes(ini_get('upload_max_filesize'));        
+        $uploadSize = $this->toBytes(ini_get('upload_max_filesize'));
         if ($postSize < $this->sizeLimit || $uploadSize < $this->sizeLimit){
-            $size = max(1, $this->sizeLimit / 1024 / 1024) . 'M';             
-            die("{'error':'increase post_max_size and upload_max_filesize to $size'}");    
-        }        
+            $size = max(1, $this->sizeLimit / 1024 / 1024) . 'M';
+            die("{'error':'increase post_max_size and upload_max_filesize to $size'}");
+        }
     }
-    
+
     private function toBytes($str){
         $val = trim($str);
         $last = strtolower($str[strlen($str)-1]);
         switch($last) {
             case 'g': $val *= 1024;
             case 'm': $val *= 1024;
-            case 'k': $val *= 1024;        
+            case 'k': $val *= 1024;
         }
         return $val;
     }
-    
+
     /**
      * Returns array('success'=>true, 'result'=>'filename.jpg') or array('error'=>'error message')
      */
@@ -100,21 +100,21 @@ var b = new qq.FileUploader({
         if (!is_writable($uploadDirectory)){
             return array('error' => "Server error. Upload directory isn't writable.");
         }
-        
+
         if (!$this->file){
             return array('error' => 'No files were uploaded.');
         }
-        
+
         $size = $this->file->getSize();
-        
+
         if ($size == 0) {
             return array('error' => 'File is empty');
         }
-        
+
         if ($size > $this->sizeLimit) {
             return array('error' => 'File is too large');
         }
-        
+
         $pathinfo = pathinfo($this->file->getName());
         $filename = $pathinfo['filename'];
         //$filename = md5(uniqid());
@@ -124,7 +124,7 @@ var b = new qq.FileUploader({
             $these = implode(', ', $this->allowedExtensions);
             return array('error' => 'File has an invalid extension, it should be one of '. $these . '.');
         }
-        
+
         if(!$replaceOldFile){
             /// don't overwrite previous files that were uploaded
             while (file_exists($uploadDirectory . $filename . '.' . $ext)) {
@@ -138,7 +138,7 @@ var b = new qq.FileUploader({
             return array('error'=> 'Could not save uploaded file.' .
                 'The upload was cancelled, or server error encountered');
         }
-        
+
     }
     function name()
     {
@@ -170,21 +170,21 @@ class uploaderXML {
      * Save the file to the specified path
      * @return boolean TRUE on success
      */
-    function save($path) {    
+    function save($path) {
         $input = fopen("php://input", "r");
         $temp = tmpfile();
         $realSize = stream_copy_to_stream($input, $temp);
         fclose($input);
-        
-        if ($realSize != $this->getSize()){            
+
+        if ($realSize != $this->getSize()){
             return false;
         }
-        
-        $target = fopen($path, "w");        
+
+        $target = fopen($path, "w");
         fseek($temp, 0, SEEK_SET);
         stream_copy_to_stream($temp, $target);
         fclose($target);
-        
+
         return true;
     }
     function getName() {
@@ -192,17 +192,17 @@ class uploaderXML {
     }
     function getSize() {
         if (isset($_SERVER["CONTENT_LENGTH"])){
-            return (int)$_SERVER["CONTENT_LENGTH"];            
+            return (int)$_SERVER["CONTENT_LENGTH"];
         } else {
             throw new Exception('Getting content length is not supported.');
-        }      
-    }   
+        }
+    }
 }
 
 /**
  * Handle file uploads via regular form post (uses the $_FILES array)
  */
-class uploaderFORM {  
+class uploaderFORM {
     /**
      * Save the file to the specified path
      * @return boolean TRUE on success
@@ -225,12 +225,12 @@ class uploaderFORM {
 // Simple Example :
 $uploader = _lib('uploader', array('jpg', 'jpeg', 'gif', 'png', 'bmp'), (2*1024*1024));
 $uploader->build(
-  $path     = 'images/modules/test/'
-, $tmp      = 'images/cache/0/'
-, $current  = array('img1.jpg', 'img2.jpg')
-, $inputName= 'files'
-, $text     = 'Add Images'
-, $node_id  = 'file-uploader'
+  $path      = 'images/modules/test/',
+  $tmp       = 'images/cache/0/',
+  $current   = array('img1.jpg', 'img2.jpg'),
+  $inputName = 'files',
+  $text      = 'Add Images',
+  $node_id   = 'file-uploader'
 );
 echo '<form>'.$uploader->input().'</form>';
 #*/

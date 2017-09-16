@@ -7,9 +7,9 @@ if(isset($_GET['showTree']))
 	redirect();
 }
 $arr = array(
-	array('PUBLIC', $Bbc->mod['circuit'].'.menu')
-,	array('ADMIN', $Bbc->mod['circuit'].'.menu&is_admin=1')
-,	array('<input type="checkbox" name="showTree" value="" id="showTree"'.is_checked(@$_SESSION['showTree'])
+	array('PUBLIC', $Bbc->mod['circuit'].'.menu'),
+	array('ADMIN', $Bbc->mod['circuit'].'.menu&is_admin=1'),
+	array('<input type="checkbox" name="showTree" value="" id="showTree"'.is_checked(@$_SESSION['showTree'])
 		. ' onClick="document.location.href=\''.$mainLink.'&showTree=\'+this.checked;return false;"> '
 		. '<label for="showTree" style="font-weight: normal;margin:0;color: #333;">Show Menu Tree</label>', '#')
 );

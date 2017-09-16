@@ -6,38 +6,38 @@ $id = @intval($_GET['id']);
 $q = "SELECT user_id FROM survey_posted WHERE id=$id";
 $user_id = $db->getOne($q);
 $params = array(
-	'title'				=> 'User Profile'
-,	'table'				=> 'survey_posted'
-,	'config_pre'	=> array()
-,	'config'			=> user_field($user_id)
-,	'config_post'	=> array()
-,	'name'				=> 'params'
-,	'id'					=> $id
+	'title'       => 'User Profile',
+	'table'       => 'survey_posted',
+	'config_pre'  => array(),
+	'config'      => user_field($user_id),
+	'config_post' => array(),
+	'name'        => 'params',
+	'id'          => $id
 );
 
 $params['config_pre'] = array(
-	'name'=> array(
-		'text'	=> 'Name'
-	,	'type'	=> 'text'
-	,	'attr'			=> 'size="30"'
-	,	'mandatory'	=> '1'
-	)
-,	'email'	=> array(
-		'text'			=> 'Email'
-	,	'type'			=> 'text'
-	,	'mandatory'	=> '1'
-	,	'attr'			=> 'size="30"'
-	,	'checked'		=> 'email'
+	'name' => array(
+		'text'      => 'Name',
+		'type'      => 'text',
+		'attr'      => 'size="30"',
+		'mandatory' => '1'
+	),
+	'email' => array(
+		'text'      => 'Email',
+		'type'      => 'text',
+		'mandatory' => '1',
+		'attr'      => 'size="30"',
+		'checked'   => 'email'
 	)
 );
 $params['config_post'] = array(
-	'date'	=> array(
-		'text'			=> 'Date Time'
-	,	'type'			=> 'plain'
-	)
-,	'publish'	=> array(
-		'text'			=> 'Publish'
-	,	'type'			=> 'checkbox'
+	'date' => array(
+		'text' => 'Date Time',
+		'type' => 'plain'
+	),
+	'publish' => array(
+		'text' => 'Publish',
+		'type' => 'checkbox'
 	)
 );
 $form = _class('params');

@@ -146,7 +146,7 @@ function _question_delete($ids)
 	}
 }
 $tabs = array(
-  'Questions' => $form->roll->getForm()
-, 'Add'	=> $form1->add->getForm()
+	'Questions' => $form->roll->getForm(),
+	'Add'	=> $form1->add->getForm()
 );
 echo tabs($tabs);

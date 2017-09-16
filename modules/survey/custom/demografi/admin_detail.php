@@ -55,8 +55,8 @@ $form->roll->input->publish->setTitle('Publish');
 $form->roll->input->publish->setCaption('Actived');
 
 $tabs = array(
-	'Question'=> $form->roll->getForm()
-,	'Add'			=> $form->add->getForm()
+	'Question'=> $form->roll->getForm(),
+	'Add'			=> $form->add->getForm()
 );
 
 function questionary_option($opti, $c)

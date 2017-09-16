@@ -3,8 +3,8 @@
 $Bbc->home = 'user.main'; // ini adalah halaman pertama atau bisa di bilang indexnya
 $Bbc->login= 'user.login'; // ini adalah halaman untuk login jika bukan haknya
 $Bbc->load=  array(
-  'func'	=> array()
-, 'class'	=> array()
-, 'lib'		=> array()
-, 'sys'		=> array('menu.admin')
+	'func'	=> array(),
+	'class'	=> array(),
+	'lib'		=> array(),
+	'sys'		=> array('menu.admin')
 );

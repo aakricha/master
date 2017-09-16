@@ -9,55 +9,53 @@ if($user->id > 0 && $is_register_only)
 {
 	redirect('index.php?mod=user.account');
 }
-$id = @intval($_GET['id']);
-$form = _class('params');
+$id     = @intval($_GET['id']);
+$form   = _class('params');
 $params = array(
-	'title'				=> 'Registration Form'
-,	'table'				=> 'bbc_account_temp'
-,	'config_pre'	=> array()
-,	'config'			=> user_field(0, $id)
-,	'config_post'	=> array()
-,	'pre_func'		=> '_is_email_unique'
-,	'post_func'		=> '_action_register'
-,	'name'				=> 'params'
-,	'id'					=> 0
+	'title'       => 'Registration Form',
+	'table'       => 'bbc_account_temp',
+	'config_pre'  => array(),
+	'config'      => user_field(0, $id),
+	'config_post' => array(),
+	'pre_func'    => '_is_email_unique',
+	'post_func'   => '_action_register',
+	'name'        => 'params',
+	'id'          => 0
 );
 
 $params['config_pre'] = array(
 /*
-	'username'=> array(
-		'text'	=> 'Username'
-	,	'type'	=> 'plain'
-	)
-,#*/
-	'name'=> array(
-		'text'	=> 'Name'
-	,	'type'	=> 'text'
-	,	'attr'			=> 'size="30"'
-	,	'mandatory'	=> '1'
+	'username' => array(
+		'text' => 'Username',
+		'type' => 'plain'
+	),
+#*/
+	'name' => array(
+		'text'      => 'Name',
+		'type'      => 'text',
+		'mandatory' => '1'
 	)
 );
 $params['config_post'] = array(
-	'email'	=> array(
-		'text'			=> 'Email'
-	,	'type'			=> 'text'
-	,	'attr'			=> 'size="30"'
-	,	'checked'		=> 'email'
-	,	'mandatory'	=> 1
-	,	'tips'			=> 'email as username'
-	)
-,	'vcode'	=> array(
-		'text'	=> 'Validation Code'
-	,	'type'	=> 'captcha'
+	'email' => array(
+		'text'      => 'Email',
+		'type'      => 'text',
+		'checked'   => 'email',
+		'mandatory' => 1,
+		'tips'      => 'email as username'
+	),
+	'vcode' => array(
+		'text' => 'Validation Code',
+		'type' => 'captcha'
 	)
 );
 if($id)
 {
 	$params['config']['group_ids'] = array(
-		'text'		=> 'Group'
-	,	'type'		=> 'hidden'
-	,	'default'	=> $id
-	,	'force'		=> $id
+		'text'    => 'Group',
+		'type'    => 'hidden',
+		'default' => $id,
+		'force'   => $id
 	);
 }
 $form->set($params);
@@ -109,13 +107,13 @@ function _action_register(&$form)
 		#code
 		$data['code'] = _action_register_code($data['username']);
 
-		$q="UPDATE bbc_account_temp
-				SET `code`	= '".$data['code']."'
-				, `date`		= DATE_ADD(NOW(), INTERVAL +".intval(config('rules', 'register_expired'))." DAY )
-				, `username`= '".$data['username']."'
-				, `email`		= '".$data['email']."'
-				, `active`	= 1
-				WHERE id=$form->table_id";
+		$q="UPDATE bbc_account_temp SET
+			`code`     = '".$data['code']."',
+			`date`     = DATE_ADD(NOW(), INTERVAL +".intval(config('rules', 'register_expired'))." DAY ),
+			`username` = '".$data['username']."',
+			`email`    = '".$data['email']."',
+			`active`   = 1
+			WHERE id   = $form->table_id";
 		$db->Execute($q);
 
 		// SET PARAM FOR EMAIL
