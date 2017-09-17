@@ -4,7 +4,7 @@ $id = @intval($_GET['id']);
 
 $form = _lib('pea',  'survey_posted AS p LEFT JOIN survey_posted_question AS q ON (p.id=q.posted_id)' );
 
-$form->initRoll("WHERE question_id=$id", 'p.id AS id' );
+$form->initRoll("WHERE question_id=$id", 'posted_id' );
 $form->roll->setSaveTool(false);
 $form->roll->setDeleteTool(false);
 $form->roll->setFormName('report');
@@ -25,8 +25,8 @@ $form->roll->input->note->setTitle('Notes');
 if($Bbc->mod['task'] == 'question_report')
 {
 	$tabs = array(
-	  'Chart' => ''
-	, 'Report'=> $form->roll->getForm()
+		'Chart'  => '',
+		'Report' => $form->roll->getForm()
 	);
 	$q = "SELECT COUNT(*) FROM survey_posted_question WHERE question_id=$id";
 	$total = $db->getOne($q);
@@ -48,9 +48,9 @@ if($Bbc->mod['task'] == 'question_report')
 					if($d['voted'] > 0) $voted = intval($d['voted'] / $total * 100);
 					else $voted = 0;
 					$i++;
-					$chd[]= $voted;
-					$chl[]= $i;
-					$li[]	= '<li>'.$d['title'].' ('.$d['voted'].' voters)</li>';
+					$chd[] = $voted;
+					$chl[] = $i;
+					$li[]  = '<li>'.$d['title'].' ('.$d['voted'].' voters)</li>';
 				}
 				$img_url			= 'http://chart.apis.google.com/chart?cht=bvs&chs=320x200&chd=t:'.urlencode(implode(',', $chd)).'&chl='.urlencode(implode('|', $chl)).'&chxt=y';
 				$tabs['Chart']= '<p style="float: left;"><img src="'.$img_url.'" border=0></p><ol style="float: left;font-weight: bold;">'.implode('', $li).'</ol><div class="clear"></div>';
@@ -73,8 +73,7 @@ if($Bbc->mod['task'] == 'question_report')
 			break;
 		}
 	}else unset($tabs['Chart']);
-	$button = '<input type="button" value="&laquo; Return" onclick="document.location.href=\''.$Bbc->mod['circuit'].'.question\'" class="button">';
-	echo tabs($tabs).$button.'<p class="clear">&nbsp;</p>';
+	echo tabs($tabs);
 }else{
 	echo $form->roll->getForm();
 }

@@ -9,7 +9,6 @@ switch($Bbc->mod['task'])
 		break;
 	case 'posted_detail':
 		include 'posted_detail.php';
-		$sys->button($Bbc->mod['circuit'].'.posted');
 		break;
 
 	case 'question': // daftar pertanyaan 2 untuk questionary yang anda buat
