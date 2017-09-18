@@ -7,6 +7,7 @@ $form = _lib('pea',  'survey_posted AS p LEFT JOIN survey_posted_question AS q O
 $form->initRoll("WHERE question_id=$id", 'posted_id' );
 $form->roll->setSaveTool(false);
 $form->roll->setDeleteTool(false);
+$form->roll->addReport();
 $form->roll->setFormName('report');
 
 $form->roll->addInput('name','sqllinks');

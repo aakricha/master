@@ -7,7 +7,7 @@ $total = $db->getOne($q);
 $q = "SELECT * FROM survey_question AS q LEFT JOIN survey_question_text AS t ON (q.id=t.question_id AND t.lang_id=".lang_id().") WHERE q.id=$id";
 $data = $db->getRow($q);
 
-if(!$db->Affected_rows())
+if(empty($data))
 {
 	redirect($Bbc->mod['circuit'].'.question');
 }else{
@@ -34,8 +34,8 @@ if(!$db->Affected_rows())
 			<form method="post" name="reset">
 				Are you sure want to reset this question ?
 				<p><?php echo $data['title'];?></p>
-				<input type="submit" name="submit" value="Yes" class="button">
-				<input type="submit" name="submit" value="Repair Only" class="button">
+				<input type="submit" name="submit" value="Yes" class="btn btn-default">
+				<input type="submit" name="submit" value="Repair Only" class="btn btn-default">
 			</form>
 			<?php		}
 		$text = ob_get_contents();
@@ -44,6 +44,9 @@ if(!$db->Affected_rows())
 		$text = 'this question has no voters.';
 	}
 	$output = msg($text, '');
-	$output .= '<input type="button" value="&laquo Return" onclick="document.location.href=\''.$Bbc->mod['circuit'].'.question_detail&id='.$id.'\'" class="button">';
+	if (!empty($_GET['return']))
+	{
+		$output .= $sys->button($_GET['return']);
+	}
 	echo $output;
 }

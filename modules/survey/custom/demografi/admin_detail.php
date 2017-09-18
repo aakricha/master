@@ -93,21 +93,24 @@ if(count($arr) > 0)
 		$r_a = explode('<br />', $data['option_titles']);
 		foreach($r_q AS $j => $q)
 		{
-			echo '<h2>'.$q.'</h2><br />';
+			echo '<b>'.$q.'</b><br />';
 			$dt = array(1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0);
 			questionary_option($r_a[$j], $c);
 			$chd = $chl = array();
 			$total = array_sum($dt);
-			foreach($dt AS $i => $voted)
+			if ($total > 0)
 			{
-				if($voted > 0) $voted = round($voted / $total * 100, 2);
-				else $voted = 0;
-				$chd[] = $voted;
-				$chl[] = $c[$i].' ('.$voted.' %)';
-			}
-			$img_url = 'http://chart.apis.google.com/chart?cht=p3&chs=460x100&chd=t:'.urlencode(implode(',', $chd)).'&chl='.urlencode(implode('|', $chl));
+				foreach($dt AS $i => $voted)
+				{
+					if($voted > 0) $voted = round($voted / $total * 100, 2);
+					else $voted = 0;
+					$chd[] = $voted;
+					$chl[] = $c[$i].' ('.$voted.' %)';
+				}
+				$img_url = 'http://chart.apis.google.com/chart?cht=p3&chs=460x100&chd=t:'.urlencode(implode(',', $chd)).'&chl='.urlencode(implode('|', $chl));
 
-			echo '<p><img src="'.$img_url.'" border=0></p>';
+				echo '<p><img src="'.$img_url.'" border=0></p>';
+			}
 		}
 	}
 	$tabs['Report'] = ob_get_contents();

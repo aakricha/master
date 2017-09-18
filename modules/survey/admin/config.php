@@ -9,7 +9,7 @@ $_setting = array(
 		'tips'   => 'Select style to show survey list'
 	),
 	'noreentry' => array(
-		'text'   => 'Not Re-entry',
+		'text'   => 'No Re-entry',
 		'type'   => 'radio',
 		'option' => array('1'=>'Yes', '0'=>'No'),
 		'tips'   => 'if user already post the survey, the form will not available any more'

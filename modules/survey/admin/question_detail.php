@@ -74,69 +74,69 @@ if($is_option)
 
 	$form->initAdd();
 	$form->add->setLanguage( 'option_id' );
-	
+
 	$form->add->addInput('header','header');
 	$form->add->input->header->setTitle('Add Option');
-	
+
 	$form->add->addInput('title','text');
 	$form->add->input->title->setTitle('Option');
 	$form->add->input->title->setSize( 30 );
 	$form->add->input->title->setLanguage();
-	
+
 	$form->add->addInput('question_id','hidden');
 	$form->add->input->question_id->setDefaultValue($id);
-	
+
 	$form->add->addInput('voted','hidden');
 	$form->add->input->voted->setDefaultValue(0);
-	
+
 	$form->add->addInput('checked','checkbox');
 	$form->add->input->checked->setTitle('Checked');
 	$form->add->input->checked->setCaption('Checked');
 	$form->add->input->checked->addTip('automatically checked if this option is displayed');
-	
+
 	$form->add->addInput('publish','checkbox');
 	$form->add->input->publish->setTitle('Publish');
 	$form->add->input->publish->setCaption('Actived');
 	$form->add->input->publish->setDefaultValue(1);
-	
+
 	$form->add->onSave('_option_add');
 	$form->add->action();
-	
+
 	/*===============================================
 	 * START LISTING
 	 *==============================================*/
 	#$form = _lib('pea',  'survey_question_option' );
-	
+
 	$form->initRoll("WHERE question_id=$id ORDER BY orderby ASC", 'id' );
 	$form->roll->setLanguage( 'option_id' );
-	
+
 	$form->roll->addInput('title','text');
 	$form->roll->input->title->setTitle('Option');
 	$form->roll->input->title->setSize(30);
 	$form->roll->input->title->setLanguage();
-	
+
 	$form->roll->addInput('voted','sqlplaintext');
 	$form->roll->input->voted->setTitle('voted');
-	
+
 	$form->roll->addInput('orderby','orderby');
 	$form->roll->input->orderby->setTitle('Orderby');
-	
+
 	$form->roll->addInput('checked','checkbox');
 	$form->roll->input->checked->setTitle('Checked');
 	$form->roll->input->checked->setCaption('Checked');
-	
+
 	$form->roll->addInput('publish','checkbox');
 	$form->roll->input->publish->setTitle('Publish');
 	$form->roll->input->publish->setCaption('Actived');
-	
+
 	#$form->roll->onDelete('_option_delete', $form->roll->getDeletedId(), false);
-	
+
 	$tabs = array(
 	  'Chart' => ''
 	, 'Options'=> $form->roll->getForm()
 	, 'Add'		=> $form->add->getForm()
 	);
-	
+
 	/*===============================================
 	 * START Chart
 	 *==============================================*/
@@ -163,7 +163,7 @@ if($is_option)
 					$li[]	= '<li>'.$d['title'].' ('.$d['voted'].' voters)</li>';
 				}
 				$img_url			= 'http://chart.apis.google.com/chart?cht=bvs&chs=320x200&chd=t:'.urlencode(implode(',', $chd)).'&chl='.urlencode(implode('|', $chl)).'&chxt=y';
-				$tabs['Chart']= '<p style="float: left;"><img src="'.$img_url.'" border=0></p><ol style="float: left;font-weight: bold;">'.implode('', $li).'</ol><div class="clear"></div>';
+				$tabs['Chart']= '<p style="float: left;"><img src="'.$img_url.'" border=0></p><ol style="float: left;font-weight: bold;">'.implode('', $li).'</ol><div class="clearfix"></div>';
 			break;
 			case'radio':
 			case'select':
@@ -175,26 +175,26 @@ if($is_option)
 					$chd[] = $voted;
 					$chl[] = $d['title'].' ('.$voted.' %)';
 				}
-				$img_url			= 'http://chart.apis.google.com/chart?cht=p3&chs=350x100&chd=t:'.urlencode(implode(',', $chd)).'&chl='.urlencode(implode('|', $chl));
-				$tabs['Chart']= '<p><img src="'.$img_url.'" border=0></p>';
+				$img_url       = 'http://chart.apis.google.com/chart?cht=p3&chs=350x100&chd=t:'.urlencode(implode(',', $chd)).'&chl='.urlencode(implode('|', $chl));
+				$tabs['Chart'] = '<p><img src="'.$img_url.'" border=0></p>';
 			break;
 			default:
 				unset($tabs['Chart']);
 			break;
 		}
 	}else unset($tabs['Chart']);
-	
-	$button = '<input type="button" value="&laquo; Return" onclick="document.location.href=\''.$Bbc->mod['circuit'].'.question\'" class="button" style="float: left;">';
+
+	$button = '';
 	if(isset($tabs['Chart']))
 	{
 		ob_start();
 		include 'question_report.php';
 		$tabs['Report'] = ob_get_contents();
 		ob_end_clean();
-		$button .= '<input type="button" value="RESET QUESTION" title="Reset this question and delete all voters" onclick="document.location.href=\''.$Bbc->mod['circuit'].'.question_reset&id='.$id.'\'" class="button" style="float: right;">';
+		$button .= '<input type="button" value="RESET QUESTION" title="Reset this question and delete all voters" onclick="document.location.href=\''.$Bbc->mod['circuit'].'.question_reset&id='.$id.'&return='.urlencode(seo_url()).'\'" class="btn btn-sm btn-danger">';
 	}
-	
-	echo $form1->edit->getForm().'<br class="clear" />'.tabs($tabs).$button.'<p class="clear">&nbsp;</p>';
+
+	echo $form1->edit->getForm().'<div class="clearfix"></div>'.tabs($tabs).$button;
 }
 function _option_add($id)
 {
