@@ -31,30 +31,6 @@ class content_class {
 			_func('path');
 			path_create($this->img_path);
 		}
-		if (empty($this->user) || empty($this->user->id))
-		{
-			$usr = $this->db->getRow("SELECT * FROM `bbc_user` WHERE `group_ids` LIKE '%,1,%' ORDER BY `id` ASC LIMIT 1");
-			if (empty($usr))
-			{
-				$usr = $this->db->getRow("SELECT * FROM `bbc_user` WHERE 1 ORDER BY `id` ASC LIMIT 1");
-			}
-			if (!empty($usr))
-			{
-				$acc = $this->db->getRow("SELECT * FROM `bbc_account` WHERE `user_id`={$usr['id']} ORDER BY `id` ASC LIMIT 1");
-				if (!empty($acc))
-				{
-					$this->user->id    = $usr['id'];
-					$this->user->name  = $acc['name'];
-					$this->user->email = $acc['email'];
-				}
-			}
-			if (empty($this->user) || empty($this->user->id))
-			{
-				$this->user->id    = 1;
-				$this->user->name  = 'Administrator';
-				$this->user->email = 'danang@fisip.net';
-			}
-		}
 	}
 	function content_save($data, $content_id = 0)
 	{
@@ -303,7 +279,8 @@ class content_class {
 	function _content_save_prune($content_id, $tmp_data, $post)
 	{
 		$tmp_content_id = 0;
-		$post = stripslashes_r($post);
+		$post           = stripslashes_r($post);
+		$user           = $this->getUser();
 		if(!empty($tmp_data) && $content_id > 0)
 		{
 			$r = array(
@@ -328,7 +305,7 @@ class content_class {
 				'created_by'       => $tmp_data['created_by'],
 				'created_by_alias' => !empty($post['created_by_alias']) ? $post['created_by_alias'] : $tmp_data['created_by_alias'],
 				'modified'         => date('Y-m-d H:i:s'),
-				'modified_by'      => $this->user->id,
+				'modified_by'      => $user->id,
 				'revised'          => (intval($tmp_data['revised']) + 1),
 				'privilege'        => $post['privilege'],
 				'hits'             => $tmp_data['hits'],
@@ -603,6 +580,7 @@ class content_class {
 		$is_config = $this->_enum(@$input['is_config']);
 		$par_id    = @intval($input['par_id']);
 		$type_id   = @intval($input['type_id']);
+		$user      = $this->getUser();
 		if (!isset($this->check_types[$type_id]))
 		{
 			if(!$this->db->getOne("SELECT 1 FROM `bbc_content_type` WHERE id={$type_id}"))
@@ -644,9 +622,9 @@ class content_class {
 			'tags_ids'         => isset($input['tags_ids']) && is_array($input['tags_ids']) ? $input['tags_ids'] : array(),
 			'text'             => array(),
 			'schedule'         => array(),
-			'modified_by'      => (!empty($input['modified_by']) ? $input['modified_by'] : $this->user->id),
-			'created_by'       => (!empty($input['created_by']) ? $input['created_by'] : $this->user->id),
-			'created_by_alias' => (!empty($input['created_by_alias']) ? $input['created_by_alias'] : @$this->user->name),
+			'modified_by'      => (!empty($input['modified_by']) ? $input['modified_by'] : $user->id),
+			'created_by'       => (!empty($input['created_by']) ? $input['created_by'] : $user->id),
+			'created_by_alias' => (!empty($input['created_by_alias']) ? $input['created_by_alias'] : @$user->name),
 			'content_related'  => (!empty($input['content_related']) ? $input['content_related'] : array()),
 			'is_popimage'      => $this->_enum(@$input['is_popimage']),
 			'is_front'         => $this->_enum(@$input['is_front']),
@@ -1099,5 +1077,36 @@ class content_class {
 	{
 		$i = intval($i);
 		return $i ? 1 : 0;
+	}
+	private function getUser()
+	{
+		if (empty($this->user) || empty($this->user->id))
+		{
+			$usr = $this->db->getRow("SELECT * FROM `bbc_user` WHERE `group_ids` LIKE '%,1,%' ORDER BY `id` ASC LIMIT 1");
+			if (empty($usr))
+			{
+				$usr = $this->db->getRow("SELECT * FROM `bbc_user` WHERE 1 ORDER BY `id` ASC LIMIT 1");
+			}
+			$obj = new stdClass;
+			if (!empty($usr))
+			{
+				$acc = $this->db->getRow("SELECT * FROM `bbc_account` WHERE `user_id`={$usr['id']} ORDER BY `id` ASC LIMIT 1");
+				if (!empty($acc))
+				{
+					$obj->id    = $usr['id'];
+					$obj->name  = $acc['name'];
+					$obj->email = $acc['email'];
+				}
+			}
+			if (empty($obj) || empty($obj->id))
+			{
+				$obj->id    = 1;
+				$obj->name  = 'Administrator';
+				$obj->email = 'danang@fisip.net';
+			}
+			return $obj;
+		}else{
+			return $this->user;
+		}
 	}
 }
