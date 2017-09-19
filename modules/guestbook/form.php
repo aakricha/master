@@ -1,12 +1,15 @@
 <?php  if (!defined('_VALID_BBC')) exit('No direct script access allowed');
 
+if (config('guestbook', 'avatar') == '1')
+{
+	$auth   = user_auth();
+}
 if (!$sys->menu_real)
 {
 	$sys->nav_change(lang('Guest Book'), 'guestbook');
 	$sys->nav_add(lang('Post Guestbook'));
 }
 echo '<h1>'.lang('Post Guestbook').'</h1>';
-$auth   = user_auth();
 $params = array(
 	'title'      => 'Use form below',
 	'table'      => 'guestbook',

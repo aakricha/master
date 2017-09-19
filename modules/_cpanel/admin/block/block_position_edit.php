@@ -192,7 +192,7 @@ if (!empty($data['help']))
 						  success: function(b) {
 						  	if (b.ok) {
 						  		a.removeAttr("id");
-						  		a.html('<a href="#" title="Bantuan Additional Parameters"> <span class="glyphicon glyphicon-play-circle" /></a>');
+						  		a.html('<a href="/" title="Bantuan Additional Parameters"> <span class="glyphicon glyphicon-question-sign" /></a>');
 						  		a.on("click", function(e){
 						  			e.preventDefault();
 						  			window.open(_URL + 'user/help/'+$(this).data("name"), 'help', 'width=800, height=600, align=top, scrollbars=yes, status=no, resizable=yes');
