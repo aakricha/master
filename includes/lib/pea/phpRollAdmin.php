@@ -343,9 +343,9 @@ class phpRollAdmin extends phpEasyAdminLib
 					$out .= ' <a class="fa fa-file-'.$icon.'-o fa-lg" rel="'.$link.$report->type.'&name='.$name.'&title='.urlencode($title).'" data-type="'.$report->type.'" style="cursor: pointer" title="Export to '.ucfirst($report->type).'"></a>';
 				}
 			}
+			link_js(_PEA_ROOT . 'includes/exportAll.js', false);
 			if ($this->nav->int_tot_page > 1)
 			{
-				link_js(_PEA_ROOT . 'includes/exportAll.js', false);
 				$out .= '<label style="min-height: 0;padding-left: 25px;"><input type="checkbox" class="export_all" data-name="'.$this->formName.'" data-page="'.$this->nav->string_name.'" title="'.lang('Export All Data').'" />'.lang('All Pages').'</label>';
 			}
 			$out .= '</span>';
