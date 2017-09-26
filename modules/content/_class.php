@@ -835,6 +835,10 @@ class content_class {
 						if (preg_match('~v=([^&/]+)~s', $input['video'], $m))
 						{
 							$output['video'] = $m[1];
+						}else
+						if (preg_match('~youtu\.be/([^/&\?]+)~s', $input['video'], $m))
+						{
+							$output['video'] = $m[1];
 						}
 					}else{
 						$output['video'] = $input['video'];
