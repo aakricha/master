@@ -663,10 +663,10 @@ class content_class {
 				$tags				= @$input['text']['tags'][$lang_id];
 				$intro			= isset($input['text']['intro'][$lang_id]) ? $input['text']['intro'][$lang_id] : @$input['text_intro_'.$lang_id];
 				$content		= isset($input['text']['content'][$lang_id]) ? $input['text']['content'][$lang_id] : @$input['text_content_'.$lang_id];
-				$s_intro		= $intro = strip_tags($intro, $this->allowed_tags);
-				if(empty($s_intro)) $intro = substr(trim(strip_tags($content, $this->allowed_tags)), 0, 255);
-				if(empty($description)) $description = substr(trim(strip_tags($intro)), 0, 150);
-				if(empty($keyword) && config('manage','is_nested')!='1') $keyword = $title.', '.substr(trim(strip_tags($description)), 0, 80);
+				$s_intro		= $intro = $this->strip($intro);
+				if(empty($s_intro)) $intro = $this->strip($content);
+				if(empty($description)) $description = $this->strip($intro, 150);
+				if(empty($keyword) && config('manage','is_nested')!='1') $keyword = $title.', '.$this->strip($description, 80);
 				$text[$lang_id] = array(
 					'title'				=> $title,
 					'description'	=> $description,
@@ -690,10 +690,10 @@ class content_class {
 					$tags				= @$input['tags'][$lang_id];
 					$intro			= @$input['intro'][$lang_id];
 					$content		= @$input['content'][$lang_id];
-					$s_intro		= $intro = strip_tags($intro, $this->allowed_tags);
-					if(empty($s_intro)) $intro = substr(strip_tags($content, $this->allowed_tags), 0, 255);
-					if(empty($description)) $description = substr(strip_tags($intro), 0, 150);
-					if(empty($keyword) && config('manage','is_nested')!='1') $keyword = $title.', '.substr(strip_tags($description), 0, 80);
+					$s_intro		= $intro = $this->strip($intro);
+					if(empty($s_intro)) $intro = $this->strip($content);
+					if(empty($description)) $description = $this->strip($intro, 150);
+					if(empty($keyword) && config('manage','is_nested')!='1') $keyword = $title.', '.$this->strip($description, 80);
 					$text[$lang_id] = array(
 						'title'				=> $title,
 						'description'	=> $description,
@@ -711,10 +711,10 @@ class content_class {
 				$tags				= @$input['tags'];
 				$intro			= @$input['intro'];
 				$content		= @$input['content'];
-				$s_intro		= $intro = strip_tags($intro, $this->allowed_tags);
-				if(empty($s_intro)) $intro = substr(strip_tags($content, $this->allowed_tags), 0, 255);
-				if(empty($description)) $description = substr(strip_tags($intro), 0, 150);
-				if(empty($keyword) && config('manage','is_nested')!='1') $keyword = $title.', '.substr(strip_tags($description), 0, 80);
+				$s_intro		= $intro = $this->strip($intro);
+				if(empty($s_intro)) $intro = $this->strip($content);
+				if(empty($description)) $description = $this->strip($intro, 150);
+				if(empty($keyword) && config('manage','is_nested')!='1') $keyword = $title.', '.$this->strip($description, 80);
 				foreach($this->r_lang AS $lang_id => $dt)
 				{
 					$text[$lang_id] = array(
@@ -1108,5 +1108,11 @@ class content_class {
 		}else{
 			return $this->user;
 		}
+	}
+	private function strip($text, $end = 255)
+	{
+		$text = strip_tags($text, $this->allowed_tags);
+		$text = preg_replace('~\s{2,}~is', ' ', $text);
+		return substr(trim($text), 0, $end);
 	}
 }
