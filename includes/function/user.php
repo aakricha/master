@@ -613,7 +613,7 @@ function user_call_func_validate()
 function user_auth($data = array())
 {
 	global $user;
-	if (!empty($data))
+	if (!empty($data) && is_array($data))
 	{
 		$_SESSION['user_auth'] = $data;
 		redirect();
@@ -635,6 +635,11 @@ function user_auth($data = array())
 	}else
 	if (@$_GET['mod']!='user.auth')
 	{
-		redirect('user/auth?return='.urlencode(seo_url()));
+		$add_url = '';
+		if (!empty($data) && is_string($data))
+		{
+			$add_url = 'msg='.urlencode(lang($data)).'&';
+		}
+		redirect('user/auth?'.$add_url.'return='.urlencode(seo_url()));
 	}
 }

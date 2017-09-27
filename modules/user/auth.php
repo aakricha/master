@@ -18,4 +18,10 @@ echo $sys->button($url.'yahoo', 'Yahoo', 'fa-yahoo');
 echo '</div></center>';
 $button = ob_get_contents();
 ob_end_clean();
-echo msg(lang('We must validate your profile before continuing... Please select which account you would like to provide <br />%s', $button), 'warning');
+if (!empty($_GET['msg']))
+{
+	$text = $_GET['msg'].$button;
+}else{
+	$text = lang('We must validate your profile before continuing... Please select which account you would like to provide <br />%s', $button);
+}
+echo msg($text, 'warning');

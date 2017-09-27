@@ -36,7 +36,7 @@ $_setting = array(
 		'type'		=> 'radio',
 		'option'	=> array('1'=>'yes','0'=>'no'),
 		'default'	=> '1',
-		'tips'		=> 'Show user avatar'
+		'tips'    => 'Show user profile picture, if you select "yes" everytime user wants to post testimonial they will be forced to identify him self using their own social media. Go to <a href="index.php?mod=_cpanel.language" rel="admin_link">Control Panel / Language</a> and search "You must validate your profile" in module "testimonial" to change the default message (you can create one if not exists)'
 	),
 	'animated'		=> array(
 		'text'		=> 'Load Page',

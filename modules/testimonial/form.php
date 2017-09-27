@@ -2,7 +2,7 @@
 
 if (config('testimonial', 'avatar') == '1')
 {
-	$auth   = user_auth();
+	$auth   = user_auth('You must validate your profile');
 }
 if (!$sys->menu_real)
 {
