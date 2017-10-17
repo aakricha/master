@@ -80,12 +80,15 @@ class excel extends excel_workbook
 			{
 				$PHPExcel->setActiveSheetIndex($i);
 				$PHPExcel->getActiveSheet()->setTitle($title);
-				foreach ((array)$sheet as $y => $row)
+				$y = 0;
+				foreach ((array)$sheet as $row)
 				{
-					$y += 1;
-					foreach ((array)$row as $x => $column_value)
+					$y+= 1;
+					$x = 0;
+					foreach ((array)$row as $column_value)
 					{
 						$PHPExcel->getActiveSheet()->setCellValueByColumnAndRow($x, $y, $column_value);
+						$x+=1;
 					}
 				}
 				$i++;
