@@ -1,7 +1,17 @@
 <?php
 if ( ! defined('_ROOT'))
 {
-	include dirname(dirname(dirname(dirname(dirname($_SERVER['SCRIPT_FILENAME']))))).'/config.php';
+	$root = dirname(dirname(dirname(dirname(dirname($_SERVER['SCRIPT_FILENAME']))))).'/';
+	if (file_exists($root.'config.php'))
+	{
+		include $root.'config.php';
+	}else
+	if (file_exists($root.'cfg.php'))
+	{
+		include $root.'cfg.php';
+	}else{
+		die('File '.$root.'config.php tidak ditemukan');
+	}
 }
 if ( ! defined('_ADMIN'))
 {
