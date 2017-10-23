@@ -3,11 +3,15 @@
 if (function_exists('ioncube_loader_version'))
 {
 	$i = intval(ioncube_loader_version());
-	if ($i < 6)
+	switch ($i)
 	{
-		require_once __DIR__.'/8.php';
-	}else{
-		require_once __DIR__.'/9.php';
+		case 9:
+		case 10:
+			require_once __DIR__.'/'.$i.'.php';
+			break;
+		default:
+			require_once __DIR__.'/8.php';
+			break;
 	}
 }else{
 	echo '<a href="https://www.ioncube.com/loader-wizard/loader-wizard.zip">click here</a> to get loader';

@@ -25,6 +25,10 @@ class bbcSQL
 	function __construct()
 	{
 		global $Bbc;
+		if (!is_array($Bbc->debug))
+		{
+			$Bbc->debug = array();
+		}
 		$Bbc->debug[]    =& $this->dbOutput;
 		$this->self      = $this->fixPath(__FILE__);
 		$this->now       = time();
