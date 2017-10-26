@@ -3,35 +3,24 @@
 class crypt
 {
 	private $use_sha = false;
+	private $method = 'AES-256-CBC';
 	function __construct() {}
 	public function encode($text)
 	{
-		$text = $this->sha5($text, true, $this->use_sha);
-		$size = mcrypt_get_block_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_ECB);
-		$pad  = $size - (strlen($text) % $size);
-		$text = $text.str_repeat(chr($pad), $pad);
-		$td   = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_ECB, '');
-		$iv   = mcrypt_create_iv (mcrypt_enc_get_iv_size($td), MCRYPT_RAND);
-		mcrypt_generic_init($td, _SALT, $iv);
-		$data = mcrypt_generic($td, $text);
-		mcrypt_generic_deinit($td);
-		mcrypt_module_close($td);
-		$data = base64_encode($data);
-		return $data;
+    date_default_timezone_set('UTC');
+    $text   = $this->sha5(substr(date('c'),0,19) . "$text", true, $this->use_sha);
+    $iv     = substr(bin2hex(openssl_random_pseudo_bytes(16)),0,16);
+    $output = base64_encode(base64_encode($iv) . openssl_encrypt($text, $this->method, _SALT, 0, $iv));
+    return $output;
 	}
 	public function decode($text)
 	{
-		$decrypted = @mcrypt_decrypt(
-			MCRYPT_RIJNDAEL_128,
-			_SALT,
-			base64_decode($text),
-			MCRYPT_MODE_ECB
-			);
-		$dec_s     = strlen($decrypted);
-		$padding   = ord($decrypted[$dec_s-1]);
-		$decrypted = substr($decrypted, 0, -$padding);
-		$decrypted = $this->sha5($decrypted, false, $this->use_sha);
-		return $decrypted;
+    $text      = base64_decode($text);
+    $iv        = base64_decode(substr($text, 0, 24));
+    $decrypted = openssl_decrypt(substr($text, 24), $this->method, _SALT, 0, $iv);
+    $text_raw  = $this->sha5($decrypted, false, $this->use_sha);
+    $output    = substr($text_raw, 19);
+    return $output;
 	}
 	public function sha5($string, $toogle, $use_sha = true)
 	{
@@ -56,6 +45,7 @@ class crypt
 				}
 			}else{
 				$j = 0;
+				$x = 0;
 				foreach ($r as $i => $a)
 				{
 					if($i%2)
