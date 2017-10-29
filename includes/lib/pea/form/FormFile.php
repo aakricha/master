@@ -174,6 +174,8 @@ class FormFile extends Form
 		include_once( _PEA_ROOT.'phpUploadFile.php');
 		$upload	= new phpUploadFile( $this->name, $this->folder, @$this->fileName, $this->chmod
 								, $this->is_resize, $this->rez_width, $this->rez_height );
+		$upload->setAllowedExtension( $this->arrAllowedExtension );
+		$upload->setMaxFileSize( $this->maxFileSize );
 		if ( $i != '' || $i == '0' )
 		{
 			$upload->setArrayPostName( $i );
@@ -183,8 +185,6 @@ class FormFile extends Form
 		{
 			$upload->setUniqueFileNameOn( $prefix = $this->prefixFileName );
 		}
-		$upload->setAllowedExtension( $this->arrAllowedExtension );
-		$upload->setMaxFileSize( $this->maxFileSize );
 		if($this->is_thumbnail)
 		{
 			$upload->setThumbnail($this->thumb_cfg, $this->thumb_prefix);
