@@ -28,7 +28,7 @@ CREATE TABLE `bbc_account` (
 
 INSERT INTO `bbc_account` (`id`, `user_id`, `username`, `name`, `image`, `email`, `params`) VALUES
 (1, 1, 'admin', 'Administrator', '', 'tmp@fisip.net', '{"Alamat Lengkap":"Indonesia","Phone":"0818550122"}'),
-(2, 2, 'bbc_danang@fisip.net', 'Danang Widiantoro', '', 'bbc_danang@fisip.net', '{"Nick Name":"Danang","Company":"Fisip.net","Company Position":"Programmer","Address":"Jl. Janti no.10 B","City":"Bantul","State":"Jogjakarta","Post Code":"55161","Country":"ID","Phone":"0818550122","Fax":"02743012336","Email Alternate":"bbc_danang@yahoo.com"}');
+(2, 2, 'danang@fisip.net', 'Danang Widiantoro', '', 'danang@fisip.net', '{"Nick Name":"Danang","Company":"Fisip.net","Company Position":"Programmer","Address":"Jl. Janti no.10 B","City":"Bantul","State":"Jogjakarta","Post Code":"55161","Country":"ID","Phone":"0818550122","Fax":"02743012336","Email Alternate":"bbc_danang@yahoo.com"}');
 
 DROP TABLE IF EXISTS `bbc_account_temp`;
 CREATE TABLE `bbc_account_temp` (
@@ -1727,7 +1727,7 @@ CREATE TABLE `bbc_user` (
 
 INSERT INTO `bbc_user` (`id`, `group_ids`, `username`, `password`, `last_ip`, `last_ip_temp`, `last_login`, `last_login_temp`, `exp_checked`, `login_time`, `created`, `active`) VALUES
 (1, ',3,4,1,2,', 'admin', 'aCeBO6UpeH2pbVYzFKgzgjsaIW9VheAxFkxabEqM8lvIWIlayjLnOieYTPaFNGYSWbCa28Y91y30rbdF2Szuiw==', '127.0.0.1', '127.0.0.1', '2016-05-25 00:36:44', '2016-05-25 00:03:18', '2016-05-25 03:13:21', 0, '0000-00-00 00:00:00', 1),
-(2, ',2,1,3,4,', 'bbc_danang@fisip.net', 'aCeBO6UpeH2pbVYzFKgzgjsaIW9VheAxFkxabEqM8lvIWIlayjLnOieYTPaFNGYSWbCa28Y91y30rbdF2Szuiw==', '127.0.0.1', '127.0.0.1', '2016-05-03 23:35:44', '2016-05-03 23:32:34', '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 1);
+(2, ',2,1,3,4,', 'danang@fisip.net', 'aCeBO6UpeH2pbVYzFKgzgjsaIW9VheAxFkxabEqM8lvIWIlayjLnOieYTPaFNGYSWbCa28Y91y30rbdF2Szuiw==', '127.0.0.1', '127.0.0.1', '2016-05-03 23:35:44', '2016-05-03 23:32:34', '0000-00-00 00:00:00', 0, '0000-00-00 00:00:00', 1);
 
 DROP TABLE IF EXISTS `bbc_user_field`;
 CREATE TABLE `bbc_user_field` (

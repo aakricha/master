@@ -7,11 +7,11 @@ class crypt
 	function __construct() {}
 	public function encode($text)
 	{
-    date_default_timezone_set('UTC');
-    $text   = $this->sha5(substr(date('c'),0,19) . "$text", true, $this->use_sha);
-    $iv     = substr(bin2hex(openssl_random_pseudo_bytes(16)),0,16);
-    $output = base64_encode(base64_encode($iv) . openssl_encrypt($text, $this->method, _SALT, 0, $iv));
-    return $output;
+		date_default_timezone_set('UTC');
+		$text   = $this->sha5(substr(date('c'),0,19) . "$text", true, $this->use_sha);
+		$iv     = substr(bin2hex(openssl_random_pseudo_bytes(16)),0,16);
+		$output = base64_encode(base64_encode($iv) . openssl_encrypt($text, $this->method, _SALT, 0, $iv));
+		return $output;
 	}
 	public function decode($text)
 	{
@@ -19,12 +19,12 @@ class crypt
 		$text   = base64_decode($text);
 		if (strlen($text) > 24)
 		{
-	    $iv        = base64_decode(substr($text, 0, 24));
-	    $decrypted = openssl_decrypt(substr($text, 24), $this->method, _SALT, 0, $iv);
-	    $text_raw  = $this->sha5($decrypted, false, $this->use_sha);
-	    $output    = substr($text_raw, 19);
+			$iv        = base64_decode(substr($text, 0, 24));
+			$decrypted = openssl_decrypt(substr($text, 24), $this->method, _SALT, 0, $iv);
+			$text_raw  = $this->sha5($decrypted, false, $this->use_sha);
+			$output    = substr($text_raw, 19);
 		}
-    return $output;
+		return $output;
 	}
 	public function sha5($string, $toogle, $use_sha = true)
 	{
