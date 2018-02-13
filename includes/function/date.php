@@ -43,9 +43,8 @@ function day_r($id = 'none')
 function month_r($id = 'none')
 {
 	$output = array('january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december');
-	if($id == 'none') return $output;
-	elseif(isset($output[$id])) return $output[$id];
-	else return false;
+	if(isset($output[$id])) return $output[$id];
+	else return $output;
 }
 function timespan($seconds = 1, $time = '', $show = array('year', 'month', 'week', 'day', 'hour', 'minute', 'second'), $max_show = 2)
 {

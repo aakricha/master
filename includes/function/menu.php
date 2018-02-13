@@ -160,7 +160,8 @@ function menu_horizontal($menus, $y='', $x='', $level = -1) // $y = 'down' || 't
 				{
 					$out .= '<li class="dropdown"><a role="button" data-toggle="dropdown" tabindex="-1" href="'.$menu['link'].'" title="'.$menu['title'].'">'.$menu['title'].' <b class="caret"></b></a>'.$sub.'</li>';
 				}else{
-					$out .= '<li><a href="'.$menu['link'].'" title="'.$menu['title'].'">'.$menu['title'].'</a></li>';
+					$act = @$_GET['menu_id']==$menu['id'] ? ' class="active"' : '';
+					$out.= '<li'.$act.'><a href="'.$menu['link'].'" title="'.$menu['title'].'">'.$menu['title'].'</a></li>';
 				}
 			}
 			$output = '<ul class="nav navbar-nav'.$cls.'">'.$out.'</ul>';
@@ -173,7 +174,8 @@ function menu_horizontal($menus, $y='', $x='', $level = -1) // $y = 'down' || 't
 				{
 					$out .= '<li class="dropdown-submenu"><a tabindex="-1" href="'.$menu['link'].'" title="'.$menu['title'].'">'.$menu['title'].'</a>'.$sub.'</li>';
 				}else{
-					$out .= '<li><a href="'.$menu['link'].'" title="'.$menu['title'].'">'.$menu['title'].'</a></li>';
+					$act = @$_GET['menu_id']==$menu['id'] ? ' class="active"' : '';
+					$out.= '<li'.$act.'><a href="'.$menu['link'].'" title="'.$menu['title'].'">'.$menu['title'].'</a></li>';
 				}
 			}
 			$output = '<ul class="dropdown-menu" role="menu">'.$out.'</ul>';
@@ -213,7 +215,8 @@ function menu_vertical($menus, $level = -1, $id='')
 					$out .= '<a href="#'.$id.$level.'" class="list-group-item" data-toggle="collapse" data-parent="#'.$id.'" title="'.$menu['title'].'">'.$menu['title'].' <span class="caret down"></span></a>';
 					$out .= $sub;
 				}else{
-					$out .= '<a href="'.$menu['link'].'" class="list-group-item" data-parent="#'.$id.'" title="'.$menu['title'].'">'.$menu['title'].'</a>';
+					$act = @$_GET['menu_id']==$menu['id'] ? ' active' : '';
+					$out .= '<a href="'.$menu['link'].'" class="list-group-item'.$act.'" data-parent="#'.$id.'" title="'.$menu['title'].'">'.$menu['title'].'</a>';
 				}
 			}
 			$output = '<div id="'.$id.'"><div class="list-group">'.$out.'</div></div>';
@@ -228,7 +231,8 @@ function menu_vertical($menus, $level = -1, $id='')
 					$out .= '<a href="#'.$id.$level.'" class="list-group-item" data-toggle="collapse" data-parent="#'.$id.'" title="'.$menu['title'].'">'.$menu['title'].' <span class="caret down"></span></a>';
 					$out .= $sub;
 				}else{
-					$out .= '<a href="'.$menu['link'].'" class="list-group-item" data-parent="#'.$id.'" title="'.$menu['title'].'">'.$menu['title'].'</a>';
+					$act = @$_GET['menu_id']==$menu['id'] ? ' active' : '';
+					$out .= '<a href="'.$menu['link'].'" class="list-group-item'.$act.'" data-parent="#'.$id.'" title="'.$menu['title'].'">'.$menu['title'].'</a>';
 				}
 			}
 			$output = '<div id="'.$id.'" class="collapse list-group-submenu">'.$out.'</div>';

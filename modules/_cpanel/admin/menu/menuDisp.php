@@ -25,7 +25,11 @@ foreach($r AS $dt)
 {
   $Bbc->menu->all_array[$dt['id']] = $dt;
 }
-$first_menu = $sys->menu_fetch('link', 'index.php?mod=', 'like');
+$first_menu = $sys->menu_fetch('link', '');
+if (empty($first_menu))
+{
+  $first_menu = $sys->menu_fetch('link', 'index.php?mod=', 'like');
+}
 if (!empty($first_menu['protected']))
 {
   echo msg('You must create at least one normal and unprotected menu in public to avoid page looping for unkown page.<br />Please just add a menu in any position which is linked to any module!', 'danger');
