@@ -216,10 +216,10 @@ function user_create($params)
 				}
 			}
 		}
-		$db->Execute('FLUSH TABLES WITH READ LOCK');
+		// $db->Execute('FLUSH TABLES WITH READ LOCK');
 		if (user_create_validate($data))
 		{
-			$db->Execute('UNLOCK TABLES');
+			// $db->Execute('UNLOCK TABLES');
 			@unlink(_CACHE.'user_create_validate_msg.txt');
 			$q = "INSERT INTO `bbc_user` SET
 				`group_ids`       = '".repairImplode($data['group_ids'])."',
