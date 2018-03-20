@@ -112,11 +112,19 @@ if(is_numeric($config['cat_id']))
 }else {
 	$cat['publish'] = false;
 }
-if($cat['publish'])
+if(!empty($cat['publish']))
 {
-	foreach($cat['list'] AS $i => $d)
+	if (!empty($cat['list']))
 	{
-		$cat['list'][$i]['label'] = content_title($d['title'], @intval($config['limit_title']), @$config['limit_title_by']);
+		foreach($cat['list'] AS $i => $d)
+		{
+			if (empty($d['title']))
+			{
+				unset($cat['list'][$i]);
+			}else{
+				$cat['list'][$i]['label'] = content_title($d['title'], @intval($config['limit_title']), @$config['limit_title_by']);
+			}
+		}
+		include tpl(@$config['template'].'.html.php', 'default.html.php');
 	}
-	include tpl(@$config['template'].'.html.php', 'default.html.php');
 }
