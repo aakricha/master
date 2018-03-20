@@ -27,7 +27,8 @@ function menu_save($txt, $url = false, $replace='')
 	return trim($output, $replace);
 }
 
-function menu_delimiter() {
+function menu_delimiter()
+{
 	$s = config('rules', 'uri_separator');
 	if (!empty($s) && is_string($s))
 	{
@@ -98,6 +99,14 @@ function menu_fetch_recure($ids, $add = array())
 		return call_user_func(__FUNCTION__, $r, $output);
 	}else{
 		return $output;
+	}
+}
+
+function menu_fetch_up($id, $arr_menu=array())
+{
+	global $Bbc;
+	if (empty($arr_menu))
+	{
 	}
 }
 
@@ -226,13 +235,13 @@ function menu_vertical($menus, $level = -1, $id='')
 			foreach ($menus as $menu)
 			{
 				$sub = call_user_func(__FUNCTION__, $menu['child'], ++$level, $id);
+				$cls = @$_GET['menu_id']==$menu['id'] ? ' active' : '';
 				if (!empty($sub))
 				{
-					$out .= '<a href="#'.$id.$level.'" class="list-group-item" data-toggle="collapse" data-parent="#'.$id.'" title="'.$menu['title'].'">'.$menu['title'].' <span class="caret down"></span></a>';
+					$out .= '<a href="#'.$id.$level.'" class="list-group-item'.$cls.'" data-toggle="collapse" data-parent="#'.$id.'" title="'.$menu['title'].'">'.$menu['title'].' <span class="caret down"></span></a>';
 					$out .= $sub;
 				}else{
-					$act = @$_GET['menu_id']==$menu['id'] ? ' active' : '';
-					$out .= '<a href="'.$menu['link'].'" class="list-group-item'.$act.'" data-parent="#'.$id.'" title="'.$menu['title'].'">'.$menu['title'].'</a>';
+					$out .= '<a href="'.$menu['link'].'" class="list-group-item'.$cls.'" data-parent="#'.$id.'" title="'.$menu['title'].'">'.$menu['title'].'</a>';
 				}
 			}
 			$output = '<div id="'.$id.'" class="collapse list-group-submenu">'.$out.'</div>';
@@ -293,12 +302,15 @@ function menu_list($r_menu, $layout = 'vertical top right', $b_id = 1)
 function menu_ulli($arr, $par_id = 0, $attr_ul = '', $attr_li = '')
 {
 	$out		= array();
-	foreach((array)$arr AS $dt) {
-		if($dt['par_id'] == $par_id) {
+	foreach((array)$arr AS $dt)
+	{
+		if($dt['par_id'] == $par_id)
+		{
 			$out[] = '<li '.$attr_li.'><a href="'.$dt['link'].'" title="'.$dt['title'].'">'.$dt['title'].'</a>'.call_user_func(__FUNCTION__, $arr, $dt['id'], $attr_ul, $attr_li).'</li>';
 		}
 	}
-	if(!empty($out)) {
+	if(!empty($out))
+	{
 		$output = '<ul '.$attr_ul.'>'.implode(' ', $out).'</ul>';
 	}else{
 		$output = '';
