@@ -23,10 +23,11 @@ if (!empty($_POST['add_lang_id']))
 					$mods = $db->getAssoc("SELECT `name`, `id` FROM `bbc_module` WHERE 1");
 					// tambahan untuk yang global
 					$mods['GLOBAL SITE'] = 0;
-					if ($keys == array_values($data[1]))
+					$cols = array_slice(array_values($data[1]), 0, 3);
+					if ($keys == $cols)
 					{
 						$lang_id = intval($_POST['add_lang_id']);
-						$keys    = array_keys($data[1]);
+						$keys    = array_slice(array_keys($data[1]), 0, 3);
 
 						foreach ($data as $i => $row)
 						{
