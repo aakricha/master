@@ -105,12 +105,12 @@ function menu_fetch_recure($ids, $add = array())
 Mengambil ID menu yang perlu di highlight untuk ditampilkan pada layout
 biasanya diambil dari URL saat itu
  *=========================================*/
-function menu_highlight($id, $arr_menu=array(), $out = array())
+function menu_parent_ids($id, $arr_menu=array(), $out = array())
 {
 	global $Bbc;
-	if (!empty($Bbc->menu_highlight[$id]))
+	if (!empty($Bbc->menu_parent_ids[$id]))
 	{
-		return $Bbc->menu_highlight[$id];
+		return $Bbc->menu_parent_ids[$id];
 	}
 	if (!empty($arr_menu))
 	{
@@ -127,7 +127,7 @@ function menu_highlight($id, $arr_menu=array(), $out = array())
 			}
 		}
 	}
-	$Bbc->menu_highlight[$id] = $out;
+	$Bbc->menu_parent_ids[$id] = $out;
 	return $out;
 }
 
@@ -174,7 +174,7 @@ function menu_horizontal($menus, $y='', $x='', $level = -1) // $y = 'down' || 't
 	$output = '';
 	if (!empty($menus))
 	{
-		$highlight = menu_highlight(@$_GET['menu_id'], $menus);
+		$highlight = menu_parent_ids(@$_GET['menu_id'], $menus);
 		if ($level == -1)
 		{
 			$output = call_user_func(__FUNCTION__, menu_parse($menus), $y,$x,++$level);
@@ -221,7 +221,7 @@ function menu_vertical($menus, $level = -1, $id='')
 	$output = '';
 	if (!empty($menus))
 	{
-		$highlight = menu_highlight(@$_GET['menu_id'], $menus);
+		$highlight = menu_parent_ids(@$_GET['menu_id'], $menus);
 		if ($level == -1)
 		{
 			$output = call_user_func(__FUNCTION__, menu_parse($menus), ++$level);
