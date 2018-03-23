@@ -249,8 +249,9 @@ class FormFile extends Form
 					$fileUrl = $this->folderUrl . $fileName;
 				}
 			}
-			$btn     = '';
-			$title   = '';
+			$btn   = '';
+			$title = '';
+			$nobr  = 0;
 			if ( file_exists($file) && is_file( $file ) )
 			{
 				$size = '';
@@ -292,7 +293,13 @@ class FormFile extends Form
 						$out = '<button type="button" class="btn btn-default btn-sm formFile-clickable" data-modal="'.htmlentities($out).'" title="'.htmlentities($title).'"><span class="glyphicon glyphicon-film"></span></button>';
 					}
 				}	else {
-					$out	.= '<h1>'.icon('unknown').'</h1>';
+					$i = _func('content', 'format', $fileExt);
+					if (!empty($i))
+					{
+						$i .= '-';
+					}
+					$out .= '<h1>'.icon('fa-file-'.$i.'o', $i).'<br /><small><a href="'.$fileUrl.'" target="_blank">'.$fileName.$size.'</a></small></h1>';
+					$nobr = 1;
 				}
 				if (!$this->isPlaintext)
 				{
@@ -312,7 +319,7 @@ EOT;
 				} else {
 					if (!$this->isImageClick)
 					{
-						if (!empty($out))
+						if (!empty($out) && empty($nobr))
 						{
 							$out .= '<br />';
 						}

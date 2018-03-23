@@ -33,8 +33,8 @@ if (count($r_lang) > 1)
 
 $kinds = content_kind();
 $form->search->addInput('kind_id','select');
-$form->search->input->kind_id->setTitle('Search by Content');
-$form->search->input->kind_id->addOption('Select Content', '');
+$form->search->input->kind_id->setTitle('Search by Format');
+$form->search->input->kind_id->addOption('Select Format', '');
 $form->search->input->kind_id->addOption($kinds, array_keys($kinds));
 
 $q = "SELECT COUNT(*) FROM bbc_content_cat WHERE {$q_add}";
