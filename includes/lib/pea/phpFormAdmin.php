@@ -243,7 +243,7 @@ class Form
 
 	function setPlaintext( $bool_is_plaintext = false )
 	{
-		$this->setIsIncludedInUpdateQuery( false );
+		$this->setIsIncludedInUpdateQuery( !$bool_is_plaintext );
 		$this->isPlaintext		= $bool_is_plaintext;
 	}
 

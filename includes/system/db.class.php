@@ -396,7 +396,7 @@ class bbcSQL
 			$this->dbOutput .= "<br /><b>Tak ada data yang didapat!</b>";
 			return false;
 		}
-		$result = mysqli_fetch_array($this->resid, MYSQL_BOTH);
+		$result = mysqli_fetch_array($this->resid, MYSQLI_BOTH);
 		$this->echoerror();
 		return $result;
 	}

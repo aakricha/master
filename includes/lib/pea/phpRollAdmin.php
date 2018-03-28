@@ -920,94 +920,108 @@ EOT;
 					{
 						// amankan input ID sebelum lakukan eksekusi
 						$this->actionSecurity();
-						// Jika onSave di eksekusi SEBELUM form action di proses
-						if (!$this->onSaveLoadLast)
+						if (!empty($_POST[$this->formName.'_orderby']))
 						{
-							$this->error = !$this->actionOnSave();
-						}
-						if ($this->isActionExecute)
-						{
+							$query = '';
 							foreach((array)$_POST[$this->input->system_id->name] as $i => $id)
 							{
-								if (!$this->onEachSaveLoadLast)
-								{
-									$this->actionOnEachSave($id);
-								}
-								$lang_text = array();
-								$query = "UPDATE ". $this->table ." SET ";
 								foreach ($this->arrInput as $input)
 								{
-									if ($input->isMultiLanguage)
+									if (!$input->isMultiLanguage)
 									{
-										$last = '';
-										if (!empty($_POST[$input->name][$i]))
-										{
-											foreach((array)$_POST[$input->name][$i] AS $l => $p)
-											{
-												$t = $p ? $p : $last;
-												if (@$input->nl2br) $t = nl2br($t);
-												$lang_text[$l][$input->objectName] = $this->cleanSQL($t);;
-												$last = $t;
-											}
-										}
-									}else{
 										$query .= $input->getRollUpdateQuery($i);
 									}
-									$this->setSuccessSaveMessage .= $input->status;
 								}
-								//menambahkan yang additional field dan valuenya
-								foreach ($this->extraField->field as $i => $f)
-								{
-									$query .= '`'.$f .'`=\''.$this->extraField->value[$i].'\', ';
-								}
-								$query = $this->replaceTrailingComma($query) ." WHERE ". $this->tableId ." = '". $id ."' ";
-
-								$this->error	= !$this->db->Execute($query);
-								if (!$this->error && $this->isMultiLanguage && count($lang_text) > 0)
-								{
-									$q = "SELECT `lang_id` FROM `{$this->LanguageTable}` WHERE `{$this->LanguageTableId}`={$id}{$this->LanguageTableWhere}";
-									$r_lang_id = $this->db->getCol($q);
-									foreach($lang_text AS $lang_id => $value)
-									{
-										$field = array();
-										foreach($value AS $f => $v)
-										{
-											$field[] = "`{$f}`='{$v}'";
-										}
-										if (!empty($field))
-										{
-											$fields = implode(', ', $field);
-											if (in_array($lang_id, $r_lang_id))
-											{
-												$q = "UPDATE `{$this->LanguageTable}` SET {$fields} WHERE `lang_id`={$lang_id} AND `{$this->LanguageTableId}`={$id}{$this->LanguageTableWhere}";
-											}else{
-												foreach ($this->LanguageTableUpdate as $var => $val)
-												{
-													$field[] = "`{$var}`='{$val}'";
-												}
-												$fields = implode(', ', $field);
-												$q = "INSERT INTO `{$this->LanguageTable}` SET `lang_id`={$lang_id}, `{$this->LanguageTableId}`={$id}, {$fields}";
-											}
-										}else{
-											$q = '';
-										}
-										$this->db->Execute($q);
-									}
-								}
-								if ($this->onEachSaveLoadLast)
-								{
-									$this->error = !$this->actionOnEachSave($id);
-								}
-								if ($this->error)
-								{
-									$this->errorMsg	= $this->db->ErrorMsg();
-								}
-							} // eo foreach((array)$_POST[$this->input->system_id->name] as $i => $id)
-							// Jika onSave di eksekusi SETELAH form action di proses
-							if (!$this->error && $this->onSaveLoadLast)
+							}
+						}else{
+							// Jika onSave di eksekusi SEBELUM form action di proses
+							if (!$this->onSaveLoadLast)
 							{
 								$this->error = !$this->actionOnSave();
 							}
+							if ($this->isActionExecute)
+							{
+								foreach((array)$_POST[$this->input->system_id->name] as $i => $id)
+								{
+									if (!$this->onEachSaveLoadLast)
+									{
+										$this->actionOnEachSave($id);
+									}
+									$lang_text = array();
+									$query = "UPDATE ". $this->table ." SET ";
+									foreach ($this->arrInput as $input)
+									{
+										if ($input->isMultiLanguage)
+										{
+											$last = '';
+											if (!empty($_POST[$input->name][$i]))
+											{
+												foreach((array)$_POST[$input->name][$i] AS $l => $p)
+												{
+													$t = $p ? $p : $last;
+													if (@$input->nl2br) $t = nl2br($t);
+													$lang_text[$l][$input->objectName] = $this->cleanSQL($t);;
+													$last = $t;
+												}
+											}
+										}else{
+											$query .= $input->getRollUpdateQuery($i);
+										}
+										$this->setSuccessSaveMessage .= $input->status;
+									}
+									//menambahkan yang additional field dan valuenya
+									foreach ($this->extraField->field as $i => $f)
+									{
+										$query .= '`'.$f .'`=\''.$this->extraField->value[$i].'\', ';
+									}
+									$query = $this->replaceTrailingComma($query) ." WHERE ". $this->tableId ." = '". $id ."' ";
+									$this->error	= !$this->db->Execute($query);
+									if (!$this->error && $this->isMultiLanguage && count($lang_text) > 0)
+									{
+										$q = "SELECT `lang_id` FROM `{$this->LanguageTable}` WHERE `{$this->LanguageTableId}`={$id}{$this->LanguageTableWhere}";
+										$r_lang_id = $this->db->getCol($q);
+										foreach($lang_text AS $lang_id => $value)
+										{
+											$field = array();
+											foreach($value AS $f => $v)
+											{
+												$field[] = "`{$f}`='{$v}'";
+											}
+											if (!empty($field))
+											{
+												$fields = implode(', ', $field);
+												if (in_array($lang_id, $r_lang_id))
+												{
+													$q = "UPDATE `{$this->LanguageTable}` SET {$fields} WHERE `lang_id`={$lang_id} AND `{$this->LanguageTableId}`={$id}{$this->LanguageTableWhere}";
+												}else{
+													foreach ($this->LanguageTableUpdate as $var => $val)
+													{
+														$field[] = "`{$var}`='{$val}'";
+													}
+													$fields = implode(', ', $field);
+													$q = "INSERT INTO `{$this->LanguageTable}` SET `lang_id`={$lang_id}, `{$this->LanguageTableId}`={$id}, {$fields}";
+												}
+											}else{
+												$q = '';
+											}
+											$this->db->Execute($q);
+										}
+									}
+									if ($this->onEachSaveLoadLast)
+									{
+										$this->error = !$this->actionOnEachSave($id);
+									}
+									if ($this->error)
+									{
+										$this->errorMsg	= $this->db->ErrorMsg();
+									}
+								} // eo foreach((array)$_POST[$this->input->system_id->name] as $i => $id)
+								// Jika onSave di eksekusi SETELAH form action di proses
+								if (!$this->error && $this->onSaveLoadLast)
+								{
+									$this->error = !$this->actionOnSave();
+								}
+						} // else if (!empty($_POST[$this->formName.'_orderby']))
 						} // eo if ($this->isActionExecute)
 					} // eo if (!empty($_POST[$this->input->system_id->name]))
 				} // eo if ($formExecute)
