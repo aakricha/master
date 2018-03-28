@@ -106,6 +106,10 @@ class FormSelecttable extends FormMulticheckbox
 		{
 			die( "FormSelecttable::  setAutoComplete() hanya bisa digunakan jika tidak menggunakan Relation Table." );
 		}
+		if ($bool_or_array_or_string && !$this->isIncludedInSelectQuery && !$this->isIncludedInUpdateQuery)
+		{
+			die( "FormSelecttable::  setAutoComplete() tidak bisa digunakan jika `isIncludedInSelectQuery` dan `isIncludedInUpdateQuery` bernilai FALSE, contoh jika digunakan dalam multiform" );
+		}
 		if (is_bool($bool_or_array_or_string))
 		{
 			$this->isAutoComplete = $bool_or_array_or_string;
