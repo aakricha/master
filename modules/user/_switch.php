@@ -71,6 +71,9 @@ switch($Bbc->mod['task'])
 	case 'account': // Data informasi profil dari user yang sudah login. Jadi pastikan halaman ini hanya bisa diakses oleh user yang telah login dengan menggunakan checkbox Menu Protection di 'Control Panel / Menu Manager'
 		include 'account.php';
 		break;
+	case 'account_image':
+		include 'account_image.php';
+		break;
 	case 'option':
 		include 'option.php';
 		break;
