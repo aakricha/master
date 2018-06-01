@@ -1137,8 +1137,16 @@ class image_lib {
 							$this->set_error(array('imglib_unsupported_imagecreate', 'imglib_png_not_supported'));
 							return FALSE;
 						}
+						$newImg =  imagecreatefrompng($path);
+						imagealphablending($newImg, false);
+						imagesavealpha($newImg,true);
+						// $im = imagecreatetruecolor(55, 30);
+						// imagecolortransparent($newImg, imagecolorallocate(imagecreatetruecolor(1, 1), 0, 0, 0));
+						$transparent = imagecolorallocatealpha($newImg, 255, 255, 255, 127);
+						imagefilledrectangle($newImg, 0, 0, $nWidth, $nHeight, $transparent);
+						imagecopyresampled($newImg, $im, 0, 0, 0, 0, $nWidth, $nHeight, $imgInfo[0], $imgInfo[1]);
 
-						return imagecreatefrompng($path);
+						return $newImg;
 				break;
 
 		}

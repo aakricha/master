@@ -9,19 +9,6 @@ foreach(lang_assoc() AS $i => $d)
 	$r_lang[$i] = $d['title'];
 }
 
-/* OPTIONAL COLUMN */
-if (!empty($_POST['content_edit_field']))
-{
-	if ($_POST['content_edit_field'] == 'EDIT')
-	{
-		$_SESSION['content_edit_field'] = !empty($_POST['edit']) ? $_POST['edit'] : array();
-	}else{
-		unset($_SESSION['content_edit_field']);
-	}
-	redirect($_POST['return']);
-}
-$show_fields = !empty($_SESSION['content_edit_field']) ? $_SESSION['content_edit_field'] : array('id', 'image');
-
 $form    = _lib('pea', 'bbc_content_'.$type_id);
 $form->initSearch();
 if (count($r_lang) > 1)
@@ -80,19 +67,17 @@ if (!isset($keyword['lang_id']))
 $form = _lib('pea', 'bbc_content AS c LEFT JOIN bbc_content_text AS t ON (c.id=t.content_id AND lang_id='.$keyword['lang_id'].')'.$add_where);
 $form->initRoll( $add_sql.' ORDER BY id DESC', 'id' );
 
-if (in_array('id', $show_fields))
-{
-	$form->roll->addInput( 'id', 'sqlplaintext' );
-	$form->roll->input->id->setFieldName( 'id AS page_id' );
-}
-if (in_array('image', $show_fields))
-{
-	$form->roll->addInput('image','file');
-	$form->roll->input->image->setTitle('image');
-	$form->roll->input->image->setFolder($Content->img_path.'p_', '', false);
-	$form->roll->input->image->setPlaintext( true );
-	$form->roll->input->image->setImageClick( true );
-}
+$form->roll->addInput( 'id', 'sqlplaintext' );
+$form->roll->input->id->setFieldName( 'id AS page_id' );
+$form->roll->input->id->setDisplayColumn(true);
+
+$form->roll->addInput('image','file');
+$form->roll->input->image->setTitle('image');
+$form->roll->input->image->setFolder($Content->img_path.'p_', '', false);
+$form->roll->input->image->setPlaintext( true );
+$form->roll->input->image->setImageClick( true );
+$form->roll->input->image->setDisplayColumn(true);
+
 $form->roll->addInput('col','multiinput');
 $form->roll->input->col->setTitle('Title');
 $form->roll->input->col->setDelimiter(' ');
@@ -109,64 +94,59 @@ $form->roll->input->visit->setFieldName('id AS visit');
 
 if (config('manage', 'is_nested'))
 {
-	if (in_array('parent', $show_fields))
-	{
-		$form->roll->addInput( 'par_id', 'selecttable' );
-		$form->roll->input->par_id->setTitle('Parent');
-		$form->roll->input->par_id->setReferenceTable('bbc_content_text');
-		$form->roll->input->par_id->setReferenceField( 'title', 'content_id' );
-		$form->roll->input->par_id->setReferenceCondition( 'lang_id='.$keyword['lang_id'] );
-		$form->roll->input->par_id->setLinks($edit_link);
-	}
+	$form->roll->addInput( 'par_id', 'selecttable' );
+	$form->roll->input->par_id->setTitle('Parent');
+	$form->roll->input->par_id->setReferenceTable('bbc_content_text');
+	$form->roll->input->par_id->setReferenceField( 'title', 'content_id' );
+	$form->roll->input->par_id->setReferenceCondition( 'lang_id='.$keyword['lang_id'] );
+	$form->roll->input->par_id->setLinks($edit_link);
+	$form->roll->input->par_id->setDisplayColumn(false);
 }
+$form->roll->addInput('hits','sqlplaintext');
+$form->roll->input->hits->setNumberFormat();
+$form->roll->input->hits->setDisplayColumn(false);
 
-if (in_array('hits', $show_fields))
-{
-	$form->roll->addInput('hits','sqlplaintext');
-}
-if (in_array('content', $show_fields))
-{
-	$form->roll->addInput( 'kind_id', 'select' );
-	$form->roll->input->kind_id->setTitle( 'Content' );
-	$form->roll->input->kind_id->addOption($kinds, array_keys($kinds));
-	$form->roll->input->kind_id->setPlaintext(true);
-}
-if (in_array('category', $show_fields))
-{
-	$form->roll->addInput('category','multiselect');
-	$form->roll->input->category->setReferenceTable('bbc_content_cat_text');
-	$form->roll->input->category->setReferenceField('title','cat_id');
-	$form->roll->input->category->setReferenceCondition('lang_id='.lang_id());
-	$form->roll->input->category->setRelationTable('bbc_content_category');
-	$form->roll->input->category->setRelationTableId('category_id');
-	$form->roll->input->category->setRelationField('content_id','cat_id');
-	$form->roll->input->category->setPlaintext(true);
-	$form->roll->input->category->textTip='';
-}
-if (in_array('privilege', $show_fields))
-{
-	$form->roll->addInput('privilege','multiselect');
-	$form->roll->input->privilege->setReferenceTable('bbc_user_group');
-	$form->roll->input->privilege->setReferenceField('name','id');
-	$form->roll->input->privilege->addOption('public', 'all');
-	$form->roll->input->privilege->setPlaintext(true);
-	$form->roll->input->privilege->textTip='';
-}
+$form->roll->addInput( 'kind_id', 'select' );
+$form->roll->input->kind_id->setTitle( 'Format' );
+$form->roll->input->kind_id->addOption($kinds, array_keys($kinds));
+$form->roll->input->kind_id->setPlaintext(true);
+$form->roll->input->kind_id->setDisplayColumn(false);
+
+$form->roll->addInput('category','multiselect');
+$form->roll->input->category->setReferenceTable('bbc_content_cat_text');
+$form->roll->input->category->setReferenceField('title','cat_id');
+$form->roll->input->category->setReferenceCondition('lang_id='.lang_id());
+$form->roll->input->category->setRelationTable('bbc_content_category');
+$form->roll->input->category->setRelationTableId('category_id');
+$form->roll->input->category->setRelationField('content_id','cat_id');
+$form->roll->input->category->setPlaintext(true);
+$form->roll->input->category->setDisplayColumn(false);
+$form->roll->input->category->textTip='';
+
+$form->roll->addInput('privilege','multiselect');
+$form->roll->input->privilege->setReferenceTable('bbc_user_group');
+$form->roll->input->privilege->setReferenceField('name','id');
+$form->roll->input->privilege->addOption('public', 'all');
+$form->roll->input->privilege->setPlaintext(true);
+$form->roll->input->privilege->setDisplayColumn(false);
+$form->roll->input->privilege->textTip='';
+
 $tbl = array(
 		'Author'   => '{created_by_alias}',
-		'Hit'      => '{hits}',
-		'Last Hit' => '{last_hits}',
+		// 'Hit'      => '{hits}',
+		'Last Open' => '{last_hits}',
 		'Modified' => '{modified}',
 		);
-if (in_array('hits', $show_fields))
-{
-	unset($tbl['Hit']);
-}
+// if (in_array('hits', (array)@$_SESSION['ColView'][menu_save(@$_GET['mod'].$form->roll->formName)]))
+// {
+// 	unset($tbl['Hit']);
+// }
+
 $form->roll->addInput( 'created', 'texttip' );
 $form->roll->input->created->setTitle( 'Date' );
 $form->roll->input->created->setDateFormat();
 $form->roll->input->created->setTemplate(table($tbl));
-$form->roll->input->hits->setNumberFormat();
+$form->roll->input->created->setDisplayColumn(true);
 $form->roll->input->last_hits->setDateFormat('M jS, Y H:i:s');
 $form->roll->input->modified->setDateFormat('M jS, Y H:i:s');
 
@@ -220,33 +200,5 @@ _Bbc(function($) {
 	</div>
 	<button type="submit" name="Submit" value="EDIT" class="btn btn-default">
 		<?php echo icon('edit');?>
-	</button>
-</form>
-<form method="POST" action="" name="search" class="form-inline pull-right" role="form">
-	<div class="form-group">
-		<div class="input-group checkbox">
-			<strong>Display Column :</strong>
-			<label><input type="checkbox" name="edit[]" value="id" <?php echo is_checked(in_array('id', $show_fields)); ?> /> ID</label> &nbsp;
-			<label><input type="checkbox" name="edit[]" value="image" <?php echo is_checked(in_array('image', $show_fields)); ?> /> Image</label> &nbsp;
-			<?php
-			if (config('manage', 'is_nested'))
-			{
-				?>
-				<label><input type="checkbox" name="edit[]" value="parent" <?php echo is_checked(in_array('parent', $show_fields)); ?> /> Parent</label> &nbsp;
-				<?php
-			}
-			?>
-			<label><input type="checkbox" name="edit[]" value="hits" <?php echo is_checked(in_array('hits', $show_fields)); ?> /> Hits</label> &nbsp;
-			<label><input type="checkbox" name="edit[]" value="content" <?php echo is_checked(in_array('content', $show_fields)); ?> /> Content</label> &nbsp;
-			<label><input type="checkbox" name="edit[]" value="category" <?php echo is_checked(in_array('category', $show_fields)); ?> /> Category</label> &nbsp;
-			<label><input type="checkbox" name="edit[]" value="privilege" <?php echo is_checked(in_array('privilege', $show_fields)); ?> /> Privilege</label> &nbsp;
-		</div>
-	</div>
-	<input type="hidden" name="return" value="<?php echo htmlentities(seo_uri()); ?>" />
-	<button type="submit" name="content_edit_field" value="EDIT" class="btn btn-default">
-		<span class="glyphicon glyphicon-edit"></span>
-	</button>
-	<button type="submit" name="content_edit_field" value="RESET" class="btn btn-default">
-		<span class="glyphicon glyphicon-remove-circle"></span>
 	</button>
 </form>

@@ -41,6 +41,9 @@ class phpRollAdmin extends phpEasyAdminLib
 	var $onSaveLoadLast;
 	var $onEachSaveLoadLast;
 	var $isActionExecute;
+	var $isOptionalColumn;
+	var $optionalColumn;
+	var $optionalCaption;
 	var $setFailSaveMessage;
 
 	function __construct($str_table, $str_sql_condition = '', $str_table_id='id', $arr_folder= array())
@@ -51,8 +54,9 @@ class phpRollAdmin extends phpEasyAdminLib
 		$this->setResetTool(false);
 		$this->setDeleteTool(true);
 
-		$this->isActionExecute = true;
-		$this->orderUrl        = '';
+		$this->isActionExecute  = true;
+		$this->isOptionalColumn = false;
+		$this->orderUrl         = '';
 		$this->setNumRows();
 	}
 
@@ -264,6 +268,71 @@ class phpRollAdmin extends phpEasyAdminLib
 			$this->input->system_delete_tool->setName('delete');
 			$this->input->system_delete_tool->setTitle(' Delete');
 		}
+		/*	SHOW AND HIDE COLUMN IF OPTIONAL VIEW IS USED  */
+		$this->optionalColumn  = array();
+		$this->optionalCaption = array();
+		// check is optional colom is used
+		foreach ($this->input as $i => $input)
+		{
+			if (is_bool($input->isDisplayColumn))
+			{
+				$this->isOptionalColumn = true;
+				$this->optionalColumn[$i] = $input->isDisplayColumn;
+				$this->optionalCaption[$i] = !empty($input->caption) ? $input->caption : $input->title;
+				// break;
+			}
+		}
+		// proccess optional colom
+		if ($this->isOptionalColumn)
+		{
+			$sesKey = menu_save(@$_GET['mod'].$this->formName);
+			// save post in session
+			if (!empty($_POST[$this->formName.'_ColView']))
+			{
+				if ($_POST[$this->formName.'_ColView'] == "EDIT")
+				{
+					if (!empty($_POST['ColView']))
+					{
+						$_SESSION['ColView'][$sesKey] = $_POST['ColView'];
+					}else{
+						$_SESSION['ColView'][$sesKey] = array();
+					}
+				}else{
+					unset($_SESSION['ColView'][$sesKey]);
+				}
+				die("saved");
+			}
+			// replace variable $this->optionalColumn
+			if (isset($_SESSION['ColView'][$sesKey]))
+			{
+				$r = (array)$_SESSION['ColView'][$sesKey];
+				foreach ($this->optionalColumn as $key => $val)
+				{
+					$this->optionalColumn[$key] = in_array($key, $r) ? true : false;
+				}
+			}
+			// show / hide column based on variable $this->optionalColumn
+			foreach ($this->input as $i => $input)
+			{
+				if (is_bool($input->isDisplayColumn))
+				{
+					if (!$this->optionalColumn[$i])
+					{
+						if (isset($input->elements))
+						{
+							foreach ($input->elements as $j => $subInput)
+							{
+								if (isset($this->input->$j))
+								{
+									unset($this->input->$j);
+								}
+							}
+						}
+						unset($this->input->$i);
+					}
+				}
+			}
+		}
 	}
 
 	function getSaveSuccessPage()
@@ -349,6 +418,34 @@ class phpRollAdmin extends phpEasyAdminLib
 				$out .= '<label style="min-height: 0;padding-left: 25px;"><input type="checkbox" class="export_all" data-name="'.$this->formName.'" data-page="'.$this->nav->string_name.'" title="'.lang('Export All Data').'" />'.lang('All Pages').'</label>';
 			}
 			$out .= '</span>';
+		}
+		if ($this->isOptionalColumn)
+		{
+			link_js(_PEA_ROOT . 'includes/optionalColumn.js', false);
+			$out .= sprintf('<div class="btn-group input-group-addon show_hide_column%s">', (($this->nav->int_tot_rows >= 8) ? ' dropup' : ''));
+			$out .= sprintf('<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> %s <span class="caret"></span> </button> <ul class="dropdown-menu">', lang('Show/Hide Columns'));
+			foreach ($this->optionalColumn as $key => $toogle)
+			{
+				$checked = $toogle ? ' checked' : '';
+				$out .= '<li> <a href="#"> <label><input type="checkbox" value="'.$key.'"'.$checked.' /> '.$this->optionalCaption[$key].'</label> </a> </li>';
+			}
+			$out .= '<li role="separator" class="divider"></li>
+								<li>
+										<div class="btn-group btn-group-justified" role="group" aria-label="...">
+											<div class="btn-group" role="group">
+												<button type="button" rel="btn_ColView" data-name="'.$this->formName.'_ColView" value="EDIT" class="btn btn-default">
+													Submit
+												</button>
+											</div>
+											<div class="btn-group" role="group">
+												<button type="button" rel="btn_ColView" data-name="'.$this->formName.'_ColView" value="RESET" class="btn btn-default">
+													Reset
+												</button>
+											</div>
+										</div>
+								</li>
+							</ul>
+					</div>';
 		}
 		return $out;
 	}

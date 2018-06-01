@@ -27,6 +27,7 @@ class Form
 	var $isMultiLanguage         = false;// apakah field ini merupakan field multi language
 	var $isPlaintext             = false;// apakah component ini bukan merupakan output form, tapi merupakan plaintext, hanya untuk view detail
 	var $isRequire               = false;// apakah component ini harus diisi oleh user ataukah tidak
+	var $isDisplayColumn         = null; // apakah kolom ingin ditampilkan (hanya berlaku untuk phpRollAdmin saja)
 	var $like                    = false;// jika untuk form search maka akan menggunakan LIKE '%$key%' atau = (sama dengan)
 	var $isLoaded;
 	var $objectName;
@@ -185,6 +186,22 @@ class Form
 			}else{
 				die('Type : '.$this->type.' doesn\'t support multi languages');
 			}
+		}
+	}
+
+	/**
+	* set the element to show / hide from the table
+	* this method only works in phpRollAdmin only
+	*
+	* @access public
+	*/
+	function setDisplayColumn($boolean=false)
+	{
+		if ($this->actionType == 'roll')
+		{
+			$this->isDisplayColumn = $boolean;
+		}else{
+			die( 'Method <a href="http://dev.esoftplay.com/Form'.ucwords(trim(strtolower($this->type))).'::setDisplayColumn" target="_blank">setDisplayColumn()</a> hanya bisa digunakan dalam <a href="http://dev.esoftplay.com/phpRollAdmin" target="_blank">phpRollAdmin</a>');
 		}
 	}
 

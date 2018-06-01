@@ -221,7 +221,18 @@ class FormMultiform extends FormMultiinput
 				if ($this->actionType == 'edit')
 				{
 					$fields = $this->getElements('field', 'select');
-					$output = $this->db->getAssoc("SELECT ".implode(', ', $fields)." FROM {$this->referenceTable} ".$this->getReferenceCondition()." ORDER BY ".$this->referenceField['tbl_id']." ASC");
+					if (count($fields) > 2)
+					{
+						$output = $this->db->getAssoc("SELECT ".implode(', ', $fields)." FROM {$this->referenceTable} ".$this->getReferenceCondition()." ORDER BY ".$this->referenceField['tbl_id']." ASC");
+					}else{
+						$array  = $this->db->getAll("SELECT ".implode(', ', $fields)." FROM {$this->referenceTable} ".$this->getReferenceCondition()." ORDER BY ".$this->referenceField['tbl_id']." ASC");
+						$output = array();
+						foreach ($array as $d)
+						{
+							$output[$d[$this->referenceField['tbl_id']]] = $d;
+							unset($output[$d[$this->referenceField['tbl_id']]][$this->referenceField['tbl_id']]);
+						}
+					}
 				}
 				break;
 			default:
