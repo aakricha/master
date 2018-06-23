@@ -22,7 +22,7 @@ $add_sql = $form->search->action();
 $keyword = $form->search->keyword();
 echo $form->search->getForm();
 
-$form->initRoll("WHERE {$add_sql} ORDER BY id DESC");
+$form->initRoll("{$add_sql} ORDER BY id DESC");
 
 $form->roll->addInput('header','header');
 $form->roll->input->header->setTitle('Content Ad List');

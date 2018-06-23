@@ -3,27 +3,28 @@
 /*
 EXAMPLE: (yang diawali # adalah optional)
 $form->edit->addInput('related','multiid');
-#form->edit->input->related->setTitle('Related Images');
-$form->edit->input->related->setReferenceTable('gallery_text');						# menentukan table reference
-$form->edit->input->related->setReferenceField('title','gallery_id');			# menentukan field yang digunakan untuk table reference
+#form->edit->input->related->setTitle('Related Content');
+$form->edit->input->related->setReferenceTable('bbc_content_text');				# menentukan table reference
+$form->edit->input->related->setReferenceField('title','content_id');			# menentukan field yang digunakan untuk table reference
 #form->edit->input->related->setReferenceCondition('lang_id='.lang_id());	# jika ada tambahan dalam pencarian di table reference (bisa banyak)
 #form->edit->input->related->setDB('db1');																# diisi string untuk database lain berdasarkan urutan di config.php
 
 // JIKA MENGGUNAKAN RELATION TABLE SEPERTI DI BAWAH MAKA 'related' AKAN MENJADI FIELD DENGAN NAMA BEBAS
 // ATAU TIDAK MENJADI FIELD DALAM TABLE DATABASE LAGI SEHINGGA TIDAK DI QUERY DALAM `SELECT`
-#form->edit->input->related->setRelationTable('gallery_related');
-#form->edit->input->related->setRelationField('gallery_id', 'related_id');
+#form->edit->input->related->setRelationTable('bbc_content_category');
+#form->edit->input->related->setRelationField('content_id', 'category_id');
 // jika table relasi menggunakan field primary yang auto_increment maka gunakan di bawah
 // jika tidak menggunakan opsi di bawah, maka secara otomatis akan diambil dari field pertama di DB dari relationTable
 #form->edit->input->related->setRelationTableId('id');
 
-// HARUS ADA FIELD `related` (->related->) JIKA TIDAK MENGGUNAKAN RELATION TABLE
+// HARUS ADA FIELD `related` (->related->) PADA TABLE DATABASE JIKA TIDAK MENGGUNAKAN RELATION TABLE
 // SEDANGKAN TYPE FIELD == `related` varchar(255) DEFAULT NULL
 */
 include_once _PEA_ROOT.'form/FormMulticheckbox.php';
 class FormMultiid extends FormMulticheckbox
 {
 	var $links;
+	var $isOrderby;
 	function __construct()
 	{
 		$this->type = 'multiid';

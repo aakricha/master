@@ -9,7 +9,7 @@
 					</div>
 				</div>
 				<div class="col-sm-1">
-					<input type="submit" class="btn btn-default" value="Search" class="button" />
+					<input type="submit" class="btn btn-default" value="Search" />
 				</div>
 			</div>
 		<?php echo $add_input;?>

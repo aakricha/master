@@ -90,12 +90,12 @@ function user_name($code = 'none', $field = 'name')
 }
 /*=========================================
 $params = array(
-	'username'	=> *** || // OR empty for email as username...
-,	'password'	=> *** || // OR empty for random password...
-,	'name'			=>
-,	'email'			=>
-,	'params'		=> // depends on user_field();
-,	'group_ids'	=> array() || '2,1,4' || // OR empty for default group ids...
+	'username'  => , // *** || OR empty for email as username...,
+	'password'  => , // *** || OR empty for random password...,
+	'name'      => ,
+	'email'     => ,
+	'params'    => , // depends on user_field();
+	'group_ids' => array() || '2,1,4' || // OR empty for default group ids...
 );
 return user_id
  *=========================================*/
@@ -103,8 +103,9 @@ function user_create($params)
 {
 	$params = is_array($params) ? $params : config_decode($params);
 	if(isset($params['params'])
-	&& isset($params['name']) && !empty($params['name'])
-	&& isset($params['email']) && is_email($params['email']))
+		&& !empty($params['name'])
+		&& isset($params['email'])
+		&& is_email($params['email']))
 	{
 		global $db;
 		/*=======================================
@@ -139,12 +140,12 @@ function user_create($params)
 		}else return false;
 		$email_to		= array();
 		$def_params = array(
-				'username'
-			,	'password'
-			,	'name'
-			,	'email'
-			,	'params'
-			,	'group_ids'
+			'username',
+			'password',
+			'name',
+			'email',
+			'params',
+			'group_ids'
 		);
 		$data = array('params' => '');
 		foreach($def_params AS $key)
@@ -215,34 +216,34 @@ function user_create($params)
 				}
 			}
 		}
-		$db->Execute('FLUSH TABLES WITH READ LOCK');
+		// $db->Execute('FLUSH TABLES WITH READ LOCK');
 		if (user_create_validate($data))
 		{
-			$db->Execute('UNLOCK TABLES');
+			// $db->Execute('UNLOCK TABLES');
 			@unlink(_CACHE.'user_create_validate_msg.txt');
-			$q = "INSERT INTO `bbc_user`
-				SET `group_ids`     = '".repairImplode($data['group_ids'])."'
-				, `username`        = '".$data['username']."'
-				, `password`        = '".encode($data['password'])."'
-				, `last_ip`         = ''
-				, `last_ip_temp`    = ''
-				, `last_login`      = ''
-				, `last_login_temp` = ''
-				, `exp_checked`     = ''
-				, `login_time`      = 0
-				, `created`         = NOW()
-				, `active`          = 1
+			$q = "INSERT INTO `bbc_user` SET
+				`group_ids`       = '".repairImplode($data['group_ids'])."',
+				`username`        = '".$data['username']."',
+				`password`        = '".encode($data['password'])."',
+				`last_ip`         = '',
+				`last_ip_temp`    = '',
+				`last_login`      = '',
+				`last_login_temp` = '',
+				`exp_checked`     = '',
+				`login_time`      = 0,
+				`created`         = NOW(),
+				`active`          = 1
 				";
 			if($db->Execute($q))
 			{
 				$user_id = $db->Insert_ID();
-				$q = "INSERT INTO `bbc_account`
-							SET `user_id` = '".$user_id."'
-							, `username`  = '".$data['username']."'
-							, `name`      = '".$data['name']."'
-							, `email`     = '".$data['email']."'
-							, `params`    = '".config_encode($data['params'])."'
-							";
+				$q = "INSERT INTO `bbc_account` SET
+					`user_id`  = '".$user_id."',
+					`username` = '".$data['username']."',
+					`name`     = '".$data['name']."',
+					`email`    = '".$data['email']."',
+					`params`   = '".config_encode($data['params'])."'
+					";
 				$db->Execute($q);
 				user_call_func(__FUNCTION__, $user_id);
 				return $user_id;
@@ -447,25 +448,25 @@ function user_login($username, $password, $is_admin = 0, $rememberme = 0)
 				// UPDATE USER DATA
 				$idle_duration = $is_admin ? config('logged', 'duration_admin'): config('logged', 'duration');
 				$idle_period	 = $is_admin ? config('logged', 'period_admin') : config('logged', 'period_admin');
-				$q="UPDATE `bbc_user`
-						SET	`last_ip_temp`	= `last_ip`
-						, `last_ip`					= '".$_SERVER['REMOTE_ADDR']."'
-						, `last_login_temp`	= `last_login`
-						, `last_login`			= NOW()
-						, `login_time`			= (`login_time`+1)
-						,	`exp_checked`			= DATE_ADD(NOW(), INTERVAL +".intval($idle_duration)." ".$idle_period.")
-						WHERE `id`     = ".$dt['id']."";
+				$q="UPDATE `bbc_user` SET
+					`last_ip_temp`    = `last_ip`,
+					`last_ip`         = '".$_SERVER['REMOTE_ADDR']."',
+					`last_login_temp` = `last_login`,
+					`last_login`      = NOW(),
+					`login_time`      = (`login_time`+1),
+					`exp_checked`     = DATE_ADD(NOW(), INTERVAL +".intval($idle_duration)." ".$idle_period.")
+						WHERE `id` = ".$dt['id'];
 				$db->Execute($q);
 
 				// FETCH USER DATA
-				$q = "SELECT id, username, last_ip_temp AS last_ip
-							, DATE_FORMAT(last_login_temp, '%b %D %Y') AS lastLogDate
-							, DATE_FORMAT(last_login_temp, '%T') AS lastLogTime
-							, login_time, '1' AS is_login, group_ids AS group_id
+				$q = "SELECT id, username, last_ip_temp AS last_ip,
+							DATE_FORMAT(last_login_temp, '%b %D %Y') AS lastLogDate,
+							DATE_FORMAT(last_login_temp, '%T') AS lastLogTime,
+							login_time, '1' AS is_login, group_ids AS group_id
 							FROM bbc_user WHERE id = ".$dt['id'];
 				$user = $db->getRow($q);
 				// FETCH PARTICULAR
-				$q = "SELECT id AS account_id, name, email, params FROM bbc_account WHERE user_id=".$dt['id'];
+				$q = "SELECT id AS account_id, name, email, image, params FROM bbc_account WHERE user_id=".$dt['id'];
 				$acc = $db->getRow($q);
 				$acc['params'] = config_decode(@$acc['params']);
 				$user = array_merge($user, $acc);
@@ -476,9 +477,9 @@ function user_login($username, $password, $is_admin = 0, $rememberme = 0)
 				$user['group_ids']= $user['menu_ids']	= $user['cpanel_ids']= array();
 				foreach((array)$r AS $d)
 				{
-					$user['group_ids'][]= $d['id'];
-					$user['menu_ids']		= array_merge($user['menu_ids'], repairExplode($d['menus']));
-					$user['cpanel_ids']	= array_merge($user['cpanel_ids'], repairExplode($d['cpanels']));
+					$user['group_ids'][] = $d['id'];
+					$user['menu_ids']    = array_merge($user['menu_ids'], repairExplode($d['menus']));
+					$user['cpanel_ids']  = array_merge($user['cpanel_ids'], repairExplode($d['cpanels']));
 				}
 				if(in_array('all', $user['menu_ids'])) $user['menu_ids'] = array('all');
 				else $user['menu_ids'] = array_unique($user['menu_ids']);
@@ -608,4 +609,37 @@ function user_call_func_validate()
 		}
 	}
 	return $out;
+}
+function user_auth($data = array())
+{
+	global $user;
+	if (!empty($data) && is_array($data))
+	{
+		$_SESSION['user_auth'] = $data;
+		redirect();
+	}else
+	if (!empty($_SESSION['user_auth']))
+	{
+		return $_SESSION['user_auth'];
+	}else
+	if (!empty($user->image))
+	{
+		$out = array(
+			'id'    => $user->id,
+			'name'  => $user->name,
+			'email' => $user->email,
+			'image' => $user->image
+			);
+		$_SESSION['user_auth'] = $out;
+		return $out;
+	}else
+	if (@$_GET['mod']!='user.auth')
+	{
+		$add_url = '';
+		if (!empty($data) && is_string($data))
+		{
+			$add_url = 'msg='.urlencode(lang($data)).'&';
+		}
+		redirect('user/auth?'.$add_url.'return='.urlencode(seo_url()));
+	}
 }

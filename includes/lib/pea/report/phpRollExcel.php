@@ -6,12 +6,13 @@ include_once __DIR__.'/phpReport.php';
 
 class phpRollExcel extends phpReport
 {
+	public $extension = '.xls';
 	function __construct( $fileName='', $worksheetName='', $arrHeader=array(), $arrData = array() )
 	{
 		$tgl	= date('Y-m-d');
 
-		if ( $fileName == '' )		$fileName = 'excelReport'. $tgl .'.xls';
-		if ( $worksheetName == '' )	$worksheetName = 'Excel Report '. $tgl;
+		if ( $fileName == '' )		$fileName = 'excelReport'. $tgl . $extension;
+		if ( $worksheetName == '' )	$worksheetName = 'sheet ';
 
 		$this->type          = 'excel';
 		$this->fileName      = $fileName;
@@ -24,9 +25,12 @@ class phpRollExcel extends phpReport
 
 	function write()
 	{
-		$data = array(
-			$this->worksheetName => array_merge(array($this->arrHeader), $this->arrData)
-			);
+		$data   = array();
+		$sheets = array_chunk($this->arrData, 64999);
+		foreach ($sheets as $i => $sheet)
+		{
+			$data[$this->worksheetName.($i+1)] = array_merge(array($this->arrHeader), $sheet);
+		}
 		$excel = new excel();
 		$excel->create($data)->download($this->fileName);
 	}

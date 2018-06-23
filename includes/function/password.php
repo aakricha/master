@@ -21,12 +21,39 @@ class Encrypt {
 			return FALSE;
 		}
 		$dec = base64_decode($string);
+		$ssl = false;
+
 		if ($this->_mcrypt_exists === TRUE)
 		{
+
 			if (($dec = $this->mcrypt_decode($dec, $key)) === FALSE)
 			{
-				return FALSE;
+				$ssl = true;
 			}
+			if (preg_match('/[^\x00-\x7F]/', $dec))
+			{
+				$ssl = true;
+				$dec = base64_decode($string);
+			}
+		}else{
+			$ssl = true;
+		}
+		if ($ssl)
+		{
+			$ivlen          = openssl_cipher_iv_length($cipher='AES-128-CBC');
+			$iv             = substr($dec, 0, $ivlen);
+			$hmac           = substr($dec, $ivlen, $sha2len=32);
+			$ciphertext_raw = substr($dec, $ivlen+$sha2len);
+			$dec            = openssl_decrypt($ciphertext_raw, $cipher, $key, $options=OPENSSL_RAW_DATA, $iv);
+			if (function_exists('hash_equals'))
+			{
+				$calcmac = hash_hmac('sha256', $ciphertext_raw, $key, $as_binary=true);
+				if (!hash_equals($hmac, $calcmac))//PHP 5.6+ timing attack safe comparison
+				{
+					$dec = '';
+				}
+			}
+
 		}
 		return $this->_xor_decode($dec, $key);
 	}
@@ -38,6 +65,12 @@ class Encrypt {
 		if ($this->_mcrypt_exists === TRUE)
 		{
 			$enc = $this->mcrypt_encode($enc, $key);
+		}else{
+			$ivlen          = openssl_cipher_iv_length($cipher='AES-128-CBC');
+			$iv             = openssl_random_pseudo_bytes($ivlen);
+			$ciphertext_raw = openssl_encrypt($enc, $cipher, $key, $options=OPENSSL_RAW_DATA, $iv);
+			$hmac           = hash_hmac('sha256', $ciphertext_raw, $key, $as_binary=true);
+			$enc            = $iv.$hmac.$ciphertext_raw;
 		}
 		return base64_encode($enc);
 	}
@@ -100,22 +133,47 @@ class Encrypt {
 
 	function mcrypt_encode($data, $key)
 	{
+		$this->_show_error_message(false);
 		$init_size = mcrypt_get_iv_size($this->_get_cipher(), $this->_get_mode());
 		$init_vect = mcrypt_create_iv($init_size, MCRYPT_RAND);
-		return $this->_add_cipher_noise($init_vect.mcrypt_encrypt($this->_get_cipher(), $key, $data, $this->_get_mode(), $init_vect), $key);
+		$output    = $this->_add_cipher_noise($init_vect.mcrypt_encrypt($this->_get_cipher(), $key, $data, $this->_get_mode(), $init_vect), $key);
+		$this->_show_error_message(true);
+		return $output;
 	}
 
 	function mcrypt_decode($data, $key)
 	{
+		$this->_show_error_message(false);
 		$data = $this->_remove_cipher_noise($data, $key);
 		$init_size = mcrypt_get_iv_size($this->_get_cipher(), $this->_get_mode());
 		if ($init_size > strlen($data))
 		{
+			$this->_show_error_message(true);
 			return FALSE;
 		}
 		$init_vect = substr($data, 0, $init_size);
 		$data = substr($data, $init_size);
-		return rtrim(mcrypt_decrypt($this->_get_cipher(), $key, $data, $this->_get_mode(), $init_vect), "\0");
+		$output = rtrim(mcrypt_decrypt($this->_get_cipher(), $key, $data, $this->_get_mode(), $init_vect), "\0");
+		$this->_show_error_message(true);
+		return $output;
+	}
+
+	function _show_error_message($show)
+	{
+		if ($show)
+		{
+			if (!empty($this->_show_error_message_flag))
+			{
+				ini_set('display_errors', 1);
+			}
+		}else{
+			$display_errors = ini_get('display_errors') ? 1 : 0;
+			if ($display_errors)
+			{
+				ini_set('display_errors', 0);
+				$this->_show_error_message_flag = 1;
+			}
+		}
 	}
 
 	function _add_cipher_noise($data, $key)

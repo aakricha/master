@@ -4,7 +4,57 @@ if (!defined('EXCEL_ROOT'))
 	define('EXCEL_ROOT', dirname(__FILE__) . DIRECTORY_SEPARATOR);
 
 require_once EXCEL_ROOT.'lib'.DIRECTORY_SEPARATOR.'PHPExcel.php';
-class excel extends PHPExcel
+class excel_worksheet extends PHPExcel
+{
+	private $Obj;
+	private $SheetNumber;
+	private $allArray;
+	function __construct($Obj, $SheetNumber)
+	{
+		$this->Obj         = $Obj;
+		$this->SheetNumber = $SheetNumber;
+		$this->allArray    = $this->Obj->getSheet($this->SheetNumber)->toArray(null,true,true,true);
+	}
+	function fetch()
+	{
+		return $this->allArray;
+	}
+	public function row($RowNumber)
+	{
+		if (isset($this->allArray[$RowNumber])) {
+			return $this->allArray[$RowNumber];
+		}else{
+			return array();
+		}
+	}
+}
+class excel_workbook extends excel_worksheet
+{
+	private $Obj;
+	function __construct($FilePath)
+	{
+		try {
+			$this->Obj = PHPExcel_IOFactory::load($FilePath);
+		} catch(Exception $e) {
+			die('Error loading file "'.pathinfo($FilePath,PATHINFO_BASENAME).'": '.$e->getMessage());
+		}
+	}
+	public function sheet($NumberOfSheet = 0)
+	{
+		return new excel_worksheet($this->Obj, --$NumberOfSheet);
+	}
+	public function fetch()
+	{
+		$output = array();
+		$sheets = $this->Obj->getSheetNames();
+		$datas  = $this->Obj->getAllSheets();
+		foreach ($datas as $i => $data) {
+			$output[$sheets[$i]] = $data->toArray(null,true,true,true);
+		}
+		return $output;
+	}
+}
+class excel extends excel_workbook
 {
 	private $doc = null;
 	function __construct() {}
@@ -30,12 +80,15 @@ class excel extends PHPExcel
 			{
 				$PHPExcel->setActiveSheetIndex($i);
 				$PHPExcel->getActiveSheet()->setTitle($title);
-				foreach ((array)$sheet as $y => $row)
+				$y = 0;
+				foreach ((array)$sheet as $row)
 				{
-					$y += 1;
-					foreach ((array)$row as $x => $column_value)
+					$y+= 1;
+					$x = 0;
+					foreach ((array)$row as $column_value)
 					{
 						$PHPExcel->getActiveSheet()->setCellValueByColumnAndRow($x, $y, $column_value);
+						$x+=1;
 					}
 				}
 				$i++;
@@ -97,56 +150,6 @@ class excel extends PHPExcel
 		$objWriter->save($filename);
 	}
 }
-class excel_workbook extends PHPExcel
-{
-	private $Obj;
-	function __construct($FilePath)
-	{
-		try {
-			$this->Obj = PHPExcel_IOFactory::load($FilePath);
-		} catch(Exception $e) {
-			die('Error loading file "'.pathinfo($FilePath,PATHINFO_BASENAME).'": '.$e->getMessage());
-		}
-	}
-	public function sheet($NumberOfSheet = 0)
-	{
-		return new excel_worksheet($this->Obj, --$NumberOfSheet);
-	}
-	public function fetch()
-	{
-		$output = array();
-		$sheets = $this->Obj->getSheetNames();
-		$datas  = $this->Obj->getAllSheets();
-		foreach ($datas as $i => $data) {
-			$output[$sheets[$i]] = $data->toArray(null,true,true,true);
-		}
-		return $output;
-	}
-}
-class excel_worksheet extends PHPExcel
-{
-	private $Obj;
-	private $SheetNumber;
-	private $allArray;
-	function __construct($Obj, $SheetNumber)
-	{
-		$this->Obj         = $Obj;
-		$this->SheetNumber = $SheetNumber;
-		$this->allArray    = $this->Obj->getSheet($this->SheetNumber)->toArray(null,true,true,true);
-	}
-	function fetch()
-	{
-		return $this->allArray;
-	}
-	public function row($RowNumber)
-	{
-		if (isset($this->allArray[$RowNumber])) {
-			return $this->allArray[$RowNumber];
-		}else{
-			return array();
-		}
-	}
-}
 
 /*
 ///////////////////////
@@ -154,17 +157,17 @@ class excel_worksheet extends PHPExcel
 ///////////////////////
 $data = array(
 	'users' => array(
-							array('No','First Name','Last Name')
-						,	array('1','Danang','Widiantoro')
-						,	array('2','Malaquina','Widiantoro')
+		array('No','First Name','Last Name'),
+		array('1','Danang','Widiantoro'),
+		array('2','Malaquina','Widiantoro')
+		),
+	'other' => array(
+		array('No','firstname','lastname','status'),
+		array('1','Malaquina Aurelia','Widiantoro','Daughter'),
+		array('2','Umi','Wafifah','Mommy'),
+		array('3','Ichsaniar Bakti','Putra','Pakde')
 		)
-,	'other' => array(
-							array('No','firstname','lastname','status')
-						,	array('1','Malaquina Aurelia','Widiantoro','Daughter')
-						,	array('2','Umi','Wafifah','Mommy')
-						,	array('3','Ichsaniar Bakti','Putra','Pakde')
-		)
-);
+	);
 
 _lib('excel')->create($data)->download('family.xlsx');									// .xls || .xlsx
 _lib('excel')->create($data)->save(_ROOT.'images/cache/family.xlsx');		// .xls || .xlsx

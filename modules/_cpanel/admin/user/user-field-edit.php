@@ -49,7 +49,7 @@ $form->edit->input->attr->addtip('Style attributes of input eg. size= height=' )
 
 $form->edit->addInput( 'default', 'text' );
 $form->edit->input->default->setTitle( 'Default Value' );
-$form->edit->input->default->addtip('set default value of field (multiple values separated by ;)' );
+$form->edit->input->default->addtip('set default value of field (multiple values separated by ;' );
 
 $form->edit->addInput( 'option', 'textarea' );
 $form->edit->input->option->setTitle( 'Input Options (only for input type: select, checkbox, radio)' );

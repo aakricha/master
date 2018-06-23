@@ -4,30 +4,37 @@
  * FORM ADD
  *================================================*/
 $form1 = _lib('pea', 'survey_polling');
-$form1->initAdd();
-$form1->add->setLanguage( 'polling_id');
+$form1->initEdit();
+$form1->edit->setLanguage('polling_id');
 
-$form1->add->addInput('header','header');
-$form1->add->input->header->setTitle('Add Polling');
+$form1->edit->addInput('header','header');
+$form1->edit->input->header->setTitle('Add Polling');
 
-$form1->add->addInput('question','textarea');
-$form1->add->input->question->setTitle('Question');
-$form1->add->input->question->setSize(4, 80);
-$form1->add->input->question->setLanguage( true );
+$form1->edit->addInput('question','textarea');
+$form1->edit->input->question->setTitle('Question');
+$form1->edit->input->question->setSize(4, 80);
+$form1->edit->input->question->setLanguage( true );
+/*
+$form1->edit->addInput('options','multiform');
+$form1->edit->input->options->setTitle('Options');
+$form1->edit->input->options->setReferenceTable('survey_polling_option AS o LEFT JOIN survey_polling_option_text AS t ON (t.polling_option_id=o.id AND t.lang_id='.lang_id().')');
+$form1->edit->input->options->setReferenceField( 'polling_id', 'id' );
+$form1->edit->input->options->setReferenceCondition( 'publish=1' );
+$form1->edit->input->options->addInput('title', 'text', 'option');
+*/
+$form1->edit->addInput('publish','checkbox');
+$form1->edit->input->publish->setTitle('Publish');
+$form1->edit->input->publish->setCaption('Actived');
+$form1->edit->input->publish->setDefaultValue(1);
 
-$form1->add->addInput('publish','checkbox');
-$form1->add->input->publish->setTitle('Publish');
-$form1->add->input->publish->setCaption('Actived');
-$form1->add->input->publish->setDefaultValue(1);
-
-$form1->add->onSave('_polling_add', $form1->add->getInsertId());
-$form1->add->action();
+$form1->edit->onSave('_polling_add');
+$form1->edit->action();
 function _polling_add($id)
 {
 	global $Bbc;
 	if($id > 0)
 	{
-		redirect($Bbc->mod['circuit'].'.polling_edit&id='.$id);
+		redirect($Bbc->mod['circuit'].'.polling_edit&id='.$id.'&return='.urlencode(seo_url()));
 	}
 }
 
@@ -53,11 +60,12 @@ $form->roll->addInput('question','sqllinks');
 $form->roll->input->question->setTitle('Question');
 $form->roll->input->question->setLinks( $Bbc->mod['circuit'].'.polling_edit');
 
-$form->roll->addInput( 'id', 'selecttable' );
-$form->roll->input->id->setTitle( 'options' );
-$form->roll->input->id->setReferenceTable( 'survey_polling_option WHERE publish=1 GROUP BY polling_id' );
-$form->roll->input->id->setReferenceField( 'COUNT(*)', 'polling_id' );
-$form->roll->input->id->setPlaintext( true );
+$form->roll->addInput('options','multicheckbox');
+$form->roll->input->options->setTitle('Options');
+$form->roll->input->options->setReferenceTable('survey_polling_option AS o LEFT JOIN survey_polling_option_text AS t ON (t.polling_option_id=o.id AND t.lang_id='.lang_id().')');
+$form->roll->input->options->setReferenceField('title','polling_id');
+$form->roll->input->options->setFieldName('id AS options');
+$form->roll->input->options->setPlaintext( true );
 
 $form->roll->addInput('publish','checkbox');
 $form->roll->input->publish->setTitle('Publish');
@@ -87,7 +95,7 @@ function polling_delete($ids)
 	}
 }
 $tabs = array(
-	'List Polling'=> $form->roll->getForm()
-,	'Add Polling'	=> $form1->add->getForm()
+	'List Polling' => $form->roll->getForm(),
+	'Add Polling'  => $form1->edit->getForm()
 );
 echo tabs($tabs);

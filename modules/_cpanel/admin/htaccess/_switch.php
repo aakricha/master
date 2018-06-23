@@ -17,12 +17,12 @@ include _ROOT.'modules/user/repair-comment.php';
 _func('editor');
 $text_css = file_read($thisFile);
 $config = array(
-	'id'						=> 'edit_htaccess'
-,	'allow_resize'	=> true
-,	'syntax'				=> 'c'
-,	'begin_toolbar' => 'save'
-,	'save_callback' => 'edit_submit'
-,	'height'				=> '350px'
+	'id'						=> 'edit_htaccess',
+	'allow_resize'	=> true,
+	'syntax'				=> 'c',
+	'begin_toolbar' => 'save',
+	'save_callback' => 'edit_submit',
+	'height'				=> '350px'
 );
 ?>
 <script type="text/javascript">

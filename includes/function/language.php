@@ -144,5 +144,5 @@ function lang($txt)
 function lang_sql($table, $id = '')
 {
 	$id = !empty($id) ? $id : $table.'_id';
-	return $table.' AS a LEFT JOIN '.$table.'_text AS t ON (t.'.$id.'=a.id AND t.lang_id='.lang_id().')';
+	return '`'.$table.'` AS a LEFT JOIN `'.$table.'_text` AS t ON (t.`'.$id.'`=a.`id` AND t.`lang_id`='.lang_id().')';
 }

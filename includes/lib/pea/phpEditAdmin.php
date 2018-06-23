@@ -53,12 +53,14 @@ class phpEditAdmin extends phpAddAdmin
 		{
 			$out .= '<div class="input-group"><span class="input-group-addon">Export:';
 			$this->arrReport	= get_object_vars( $this->report );
-			$link = _PEA_URL . 'report/phpReportGenerator.php?formName='. $this->formName .'&formType=edit&reportType=';
+			$link  = _PEA_URL . 'report/phpReportGenerator.php?formName='. $this->formName .'&formType=edit&reportType=';
+			$title = !empty($this->input->header->title) ? strip_tags($this->input->header->title) : 'Report';
 			foreach( $this->arrReport as $report )
 			{
 				$report->setData( $this->reportData['data'] );
+				$report->fileName = $title . $report->extension;
 				$icon = $report->type == 'html' ? 'text' : $report->type;
-				$out .= ' <i class="fa fa-file-'.$icon.'-o fa-lg" onClick="document.location.href=\''.$link.$report->type.'&'.@http_build_query((array)$report).'\'" style="cursor: pointer" title="Export to '.ucfirst($report->type).'"></i>';
+				$out .= ' <a class="fa fa-file-'.$icon.'-o fa-lg" onclick="document.location.href=\''.$link.$report->type.'&'.@http_build_query((array)$report).'\'" style="cursor: pointer" title="Export to '.ucfirst($report->type).'"></a>';
 			}
 			$out .= '</span></div>';
 		}

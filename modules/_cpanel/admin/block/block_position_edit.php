@@ -20,15 +20,15 @@ if($block_ref_id)
 {
 	//declare default value
 	$data = array(
-		'block_ref_id'=> $block_ref_id
-	,	'name'				=> $r_ref[$block_ref_id]
-	,	'position_id'	=> isset($position_id) ? $position_id : 0
-	,	'show_title'	=> 1
-	,	'cache'				=> 0
-	,	'active'			=> 1
-	,	'group_ids'		=> 'all'
-	,	'menu_ids'		=> 'all'
-	,	'config'			=> ''
+		'block_ref_id'=> $block_ref_id,
+		'name'				=> $r_ref[$block_ref_id],
+		'position_id'	=> isset($position_id) ? $position_id : 0,
+		'show_title'	=> 1,
+		'cache'				=> 0,
+		'active'			=> 1,
+		'group_ids'		=> 'all',
+		'menu_ids'		=> 'all',
+		'config'			=> ''
 	);
 	if(isset($_POST['block_ref_id']))
 	{
@@ -51,16 +51,16 @@ WHERE m.active=1 AND m.is_admin=0 ORDER BY c.orderby, m.par_id, m.orderby
 ";
 $r_menu = $db->getAll($q);
 $menus1 = array(
-	array('id'=>'all', 'title'=>'All')
-,	array('id'=>'', 'title'=>'--------------------------------------------')
-,	array('id'=>'-1', 'title'=>'Home')
-,	array('id'=>'unassigned', 'title'=>'Unassigned')
+	array('id'=>'all', 'title'=>'All'),
+	array('id'=>'', 'title'=>'--------------------------------------------'),
+	array('id'=>'-1', 'title'=>'Home'),
+	array('id'=>'unassigned', 'title'=>'Unassigned')
 );
 _func('array');
 $menus1 = array_merge($menus1, array_option($r_menu));
 $menus2 = array(
-	array('id'=>'-1', 'title'=>'Home')
-,	array('id'=>'unassigned', 'title'=>'Unassigned')
+	array('id'=>'-1', 'title'=>'Home'),
+	array('id'=>'unassigned', 'title'=>'Unassigned')
 );
 $menus2 = array_merge($menus2, array_option($r_menu));
 /*
@@ -78,6 +78,10 @@ if (preg_match('~(?:\n|\r)//([^\r\n]+)~', file_read(_ROOT.'blocks/'.$data['name'
 {
 	$data['help'] = $m[1];
 }
+if (!empty($data['help']))
+{
+	$data['help'] = '<p class="help-block"><i><small><small>'.htmlentities($data['help']).'</small></small></i></p>';
+}
 ?>
 <form method="POST" action="<?php echo seo_uri(); ?>" onsubmit="return block_submit(this);" name="block" enctype="multipart/form-data" role="form">
 	<div class="panel panel-default">
@@ -85,7 +89,6 @@ if (preg_match('~(?:\n|\r)//([^\r\n]+)~', file_read(_ROOT.'blocks/'.$data['name'
 			<center>
 				<h3 class="panel-title">
 					<?php echo $data['name'];?>
-					<span class="glyphicon glyphicon-question-sign tmppopover" data-placement="bottom" data-content="<?php echo htmlentities($data['help']); ?>"></span>
 				</h3>
 			</center>
 		</div>
@@ -108,6 +111,7 @@ if (preg_match('~(?:\n|\r)//([^\r\n]+)~', file_read(_ROOT.'blocks/'.$data['name'
 						<label><input name="active" type="checkbox" value="1"<?php echo is_checked($data['active']);?> /> Publish</label>
 					</div>
 				</div>
+				<?php echo $data['help']; ?>
 			</div>
 			<?php
 			if($data['position_id']==0)
@@ -161,7 +165,8 @@ if (preg_match('~(?:\n|\r)//([^\r\n]+)~', file_read(_ROOT.'blocks/'.$data['name'
 				<input type="hidden" name="config[template]" value="<?php echo @$block_cfg['template']; ?>" />
 				<?php
 			}
-			$_file = $_path.'_setting.php';
+			$help_id = 'block_help_'.$data['block_ref_id'].'_'.$data['position_id'].'_'.@$data['id'];
+			$_file    = $_path.'_setting.php';
 			if(is_file($_file))
 			{
 				$_setting = array();
@@ -171,10 +176,36 @@ if (preg_match('~(?:\n|\r)//([^\r\n]+)~', file_read(_ROOT.'blocks/'.$data['name'
 				{
 					unset($_setting['template']);
 				}
-				_setting($_setting, $block_cfg);
+				$form_title = 'Additional Parameter <span id="'.$help_id.'" data-name="'.$data['name'].'"></span>';
+				_setting($_setting, $block_cfg, $form_title);
 			}
 			$panel_id = 'form-advance_'.$data['block_ref_id'].'_'.$data['position_id'].'_'.@$data['id'];
 			?>
+			<script type="text/javascript">
+				_Bbc(function($){
+					if ($("#<?php echo $help_id; ?>").length) {
+						var a = $("#<?php echo $help_id; ?>");
+						$.ajax({
+						  url: _URL+"user/help/"+a.data("name")+"?dataType=json",
+						  context: document.body,
+						  global: false,
+						  success: function(b) {
+						  	if (b.ok) {
+						  		a.removeAttr("id");
+						  		a.html('<a href="/" title="Bantuan Additional Parameters"> <span class="glyphicon glyphicon-question-sign" /></a>');
+						  		a.on("click", function(e){
+						  			e.preventDefault();
+						  			window.open(_URL + 'user/help/'+$(this).data("name"), 'help', 'width=800, height=600, align=top, scrollbars=yes, status=no, resizable=yes');
+						  			return false;
+						  		});
+						  	}else{
+						  		a.remove();
+						  	}
+						  }
+						});
+					}
+				});
+			</script>
 			<div class="panel-group" id="accordion<?php echo $panel_id;?>">
 				<div class="panel panel-default">
 				  <div class="panel-heading">

@@ -17,7 +17,7 @@ $form2->roll->setFormName( 'registrant' );
 $form2->roll->addInput( 'email', 'sqllinks' );
 $form2->roll->input->email->setTitle( 'Approved' );
 $form2->roll->input->email->setGetName( 'temp_id' );
-#$form2->roll->input->email->setExtra( 'target="_blank"' );
+$form2->roll->input->email->setExtra( 'target="_blank"' );
 $form2->roll->input->email->setLinks( $Bbc->mod['circuit'].'.user' );
 
 $form2->roll->addInput( 'name', 'sqlplaintext' );

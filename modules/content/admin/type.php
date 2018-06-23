@@ -23,8 +23,8 @@ $form->roll->onSave('content_type_refresh');
 $form->roll->onDelete('content_type_delete');
 
 $tabs = array(
-	'Type List'=> $form->roll->getForm()
-,	'Add Type' => $type_form
+	'Type List'=> $form->roll->getForm(),
+	'Add Type' => $type_form
 );
 
 echo tabs($tabs);

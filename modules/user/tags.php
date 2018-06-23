@@ -58,7 +58,10 @@ if (!empty($_GET['q']) && !empty($_GET['token']))
 		{
 			$q = "SELECT {$format} AS `format`, {$field} AS `title`, {$field_id} AS `id` FROM {$table} {$field_id}={$id} {$sql} ORDER BY {$field} ASC LIMIT 1";
 			$r = $db->getRow($q);
-			echo implode('|', $r)."\n";
+			if (!empty($r))
+			{
+				echo implode('|', $r)."\n";
+			}
 		}else{
 			$name = preg_replace('~[^a-z0-9\s\.]~is', '', $_GET['q']);
 			$q    = "SELECT {$format} AS `format`, {$field} AS `title`, {$field_id} AS `id` FROM {$table} {$field} LIKE '%{$name}%' {$sql} ORDER BY {$field} ASC LIMIT 1000";

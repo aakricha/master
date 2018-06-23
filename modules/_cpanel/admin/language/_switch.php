@@ -1,6 +1,6 @@
 <?php defined( '_VALID_BBC' ) or die( 'Restricted access' );
 
-switch( $_GET['act'] ) 
+switch( $_GET['act'] )
 {
 	case 'reference':
 		include 'language-reference.php';
@@ -9,6 +9,9 @@ switch( $_GET['act'] )
 		$id = intval($_GET['id']);
 		include 'language-update.php';
 		echo $language_update;
+	break;
+	case 'import':
+		include 'language-import.php';
 	break;
 	case 'super-update':
 		include 'super-update.php';

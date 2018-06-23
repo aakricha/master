@@ -23,9 +23,7 @@ function download_file($filename = '', $file = '', $exit = true)
 	if ( ! isset($mimes[$extension]))
 	{
 		$mime = 'application/octet-stream';
-	}
-	else
-	{
+	}else{
 		$mime = (is_array($mimes[$extension])) ? $mimes[$extension][0] : $mimes[$extension];
 	}
 
@@ -38,9 +36,7 @@ function download_file($filename = '', $file = '', $exit = true)
 		header("Content-Transfer-Encoding: binary");
 		header('Pragma: public');
 		header("Content-Length: ".strlen($data));
-	}
-	else
-	{
+	}else{
 		header('Content-Type: "'.$mime.'"');
 		header('Content-Disposition: attachment; filename="'.$filename.'"');
 		header("Content-Transfer-Encoding: binary");

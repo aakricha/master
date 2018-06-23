@@ -1,6 +1,8 @@
 <?php  if ( ! defined('_VALID_BBC')) exit('No direct script access allowed');
 
-$ext = $_CONFIG['site']['logo'] ? strtolower(substr($_CONFIG['site']['logo'], -4)) : '';
+$ext        = $_CONFIG['site']['logo'] ? strtolower(substr($_CONFIG['site']['logo'], -4)) : '';
+$style_size = '';
+$src_size   = '';
 if($config['caption'])
 {
 	list($width, $height) = image_size($config['caption'], true);

@@ -65,7 +65,7 @@ function image($file, $sizes = '', $attr='')
 		}
 		$attr .= $sizes[0] ? ' width="'.$sizes[0].'"' : '';
 		$attr .= $sizes[1] ? ' height="'.$sizes[1].'"' : '';
-		$output = '<img src="'.$path_url.'"'.$attr.'>';
+		$output = '<img src="'.$path_url.'"'.$attr.' />';
 	}
 	return $output;
 }
@@ -223,7 +223,7 @@ EOT;
 	}
 	return $output;
 }
-function tabs($data, $use_cookie = 1, $name='', $maxwidth = false, $r_iframe = array(), $automodeperiod=0)
+function tabs($data, $use_cookie = 1, $name='', $maxwidth = false, $r_iframe = array())
 {
 	$output = '';
 	if (!empty($data) && is_array($data))

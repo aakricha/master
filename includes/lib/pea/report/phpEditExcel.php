@@ -32,7 +32,6 @@ class phpEditExcel extends phpReport
 		$data = array(
 			$this->worksheetName => array_chunk($this->arrData[0], 2)
 			);
-		// pr($data, $this->arrHeader, $this->arrData, __FILE__.':'.__LINE__);die();
 		$excel = new excel();
 		$excel->create($data)->download($this->fileName);
 	}

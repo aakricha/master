@@ -7,7 +7,7 @@
 
 $result = getFieldsFromSQL ( $sql );
 
-//	RESULT BERUPA ARRAY DENGAN INDEX AWAL 0,1,2,3,4, dst... yang masing2 adalah nama2 field dari SQL yang dimasukkan sebagai parameter 
+//	RESULT BERUPA ARRAY DENGAN INDEX AWAL 0,1,2,3,4, dst... yang masing2 adalah nama2 field dari SQL yang dimasukkan sebagai parameter
 
 */
 
@@ -23,7 +23,7 @@ function arrTrim ( &$item, $key )
 	$item = trim ( $item );
 }
 
-// recover a field with SQL function. e.g: CONCAT(bla bla bla	
+// recover a field with SQL function. e.g: CONCAT(bla bla bla
 function arrFuncRecover ( $arr ) // DANANG WIDIANTORO
 {
 	$output = array();
@@ -61,7 +61,7 @@ function getWhereClause ( $data )
 
 function parseSQL ( $sql )
 {
-	$sql = get_magic_quotes_gpc() ? stripslashes ( $sql ) : $sql; 
+	$sql = get_magic_quotes_gpc() ? stripslashes ( $sql ) : $sql;
 	if (	! function_exists ( "arrTrim" ) ||
 			! function_exists ( "arrFuncRecover" )
 		)
@@ -81,7 +81,7 @@ function parseSQL ( $sql )
 			$afterFrom = $match[3];
 
 			// dapetin SQL syntax apa aja setelah FROM
-			$cond = preg_match_all ("/WHERE|GROUP\s+BY|HAVING|ORDER\s+BY|LIMIT/is", $afterFrom, $matchFrom);
+			$cond = preg_match_all ("/\s(?:WHERE|GROUP\s+BY|HAVING|ORDER\s+BY|LIMIT)\s/is", $afterFrom, $matchFrom);
 			if ( count ( $matchFrom[0] ) > 0 )
 			{
 				$result["conditionClause"] = trim ( substr ( $afterFrom, strpos ( $afterFrom, $matchFrom[0][0] ) ) );
@@ -89,15 +89,15 @@ function parseSQL ( $sql )
 				// dapetin table clause WHERE|GROUP BY|HAVING|ORDER BY|LIMIT
 				$result["tableClause"] = trim ( substr ( $afterFrom, 0, strpos ( $afterFrom, $matchFrom[0][0] ) ) );
 
-				// dapetin condiotionnya 
-				$strRegex = implode ( "(.*)", $matchFrom[0] ) . "(.*)";
+				// dapetin condiotionnya
+				$strRegex = trim(implode ( "(.*)", $matchFrom[0] ) . "(.*)");
 				preg_match ( "/$strRegex/is", $result["conditionClause"], $condMatch );
 				array_shift( $condMatch );
 				if ( count ( $condMatch ) == count ( $matchFrom[0] ) )
 				{
 					for ($i = 0; $i < count ( $condMatch ); $i ++ )
 					{
-						$result[strtolower ( preg_replace( "/\s/", "", $matchFrom[0][$i] ) )."Clause"] = preg_replace ( "/\s+/", " ", trim ( $condMatch[$i] ) );
+						$result[strtolower ( preg_replace( "/\s/", "", $matchFrom[0][$i] ) )."Clause"] = preg_replace ( "/\s{2,}/s", " ", trim ( $condMatch[$i] ) );
 					}
 				}
 			}

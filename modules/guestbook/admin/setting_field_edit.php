@@ -2,7 +2,7 @@
 
 $id = @intval($_GET['id']);
 $sql = ($id > 0) ? "WHERE id=$id" : '';
-$txt = (!empty($sql)) ? 'Edit Contact Field' : 'Add Contact Field';
+$txt = (!empty($sql)) ? 'Edit Guestbook Field' : 'Add Guestbook Field';
 
 $form = _lib('pea',  'guestbook_field' );
 
@@ -46,7 +46,7 @@ $form->edit->input->tips->setSize( 1, 40 );
 $form->edit->addInput( 'default', 'text' );
 $form->edit->input->default->setTitle( 'Default' );
 $form->edit->input->default->setSize( 40 );
-$form->edit->input->default->addtip('set default value of field (multiple values separated by ;)' );
+$form->edit->input->default->addtip('set default value of field (multiple values separated by ;' );
 
 $form->edit->addInput( 'option', 'textarea' );
 $form->edit->input->option->setTitle( 'Options' );

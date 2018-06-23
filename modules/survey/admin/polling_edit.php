@@ -83,7 +83,7 @@ $form3->roll->input->publish->setTitle('Publish');
 $form3->roll->input->publish->setCaption('Publish');
 
 $tabs = array(
-  'List Option' => $form3->roll->getForm()
-, 'Add Option'	=> $form2->add->getForm()
+	'List Option' => $form3->roll->getForm(),
+	'Add Option'	=> $form2->add->getForm()
 );
 echo '<br class="clear" />'.tabs($tabs);

@@ -59,7 +59,7 @@ function _question_add($id)
 		$orderby = $db->getOne($q);
 		$q = "UPDATE survey_question SET orderby=$orderby WHERE id=$id";
 		$db->Execute($q);
-		redirect($Bbc->mod['circuit'].'.question_detail&id='.$id);
+		redirect($Bbc->mod['circuit'].'.question_detail&id='.$id.'&return='.urlencode(seo_url()));
 	}
 }
 
@@ -92,7 +92,7 @@ $form->roll->input->file->setTitle('Path');
 
 $form->roll->addInput('voted','condition');
 $form->roll->input->voted->setTitle('Voted');
-$form->roll->input->voted->addCondition('>', '0', '<a href="'.$Bbc->mod['circuit'].'.question_report&id=#_id_#" title="view report">#_value_#</a>');
+$form->roll->input->voted->addCondition('>', '0', '<a href="'.$Bbc->mod['circuit'].'.question_report&id=#_id_#&return='.urlencode(seo_url()).'" title="view report">#_value_#</a>');
 $form->roll->input->voted->addCondition('default', '', '#_value_#');
 
 $form->roll->addInput('orderby','orderby');
@@ -146,7 +146,7 @@ function _question_delete($ids)
 	}
 }
 $tabs = array(
-  'Questions' => $form->roll->getForm()
-, 'Add'	=> $form1->add->getForm()
+	'Questions' => $form->roll->getForm(),
+	'Add'	=> $form1->add->getForm()
 );
 echo tabs($tabs);

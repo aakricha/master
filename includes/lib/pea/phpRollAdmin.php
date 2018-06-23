@@ -41,6 +41,9 @@ class phpRollAdmin extends phpEasyAdminLib
 	var $onSaveLoadLast;
 	var $onEachSaveLoadLast;
 	var $isActionExecute;
+	var $isOptionalColumn;
+	var $optionalColumn;
+	var $optionalCaption;
 	var $setFailSaveMessage;
 
 	function __construct($str_table, $str_sql_condition = '', $str_table_id='id', $arr_folder= array())
@@ -51,8 +54,9 @@ class phpRollAdmin extends phpEasyAdminLib
 		$this->setResetTool(false);
 		$this->setDeleteTool(true);
 
-		$this->isActionExecute = true;
-		$this->orderUrl        = '';
+		$this->isActionExecute  = true;
+		$this->isOptionalColumn = false;
+		$this->orderUrl         = '';
 		$this->setNumRows();
 	}
 
@@ -264,6 +268,71 @@ class phpRollAdmin extends phpEasyAdminLib
 			$this->input->system_delete_tool->setName('delete');
 			$this->input->system_delete_tool->setTitle(' Delete');
 		}
+		/*	SHOW AND HIDE COLUMN IF OPTIONAL VIEW IS USED  */
+		$this->optionalColumn  = array();
+		$this->optionalCaption = array();
+		// check is optional colom is used
+		foreach ($this->input as $i => $input)
+		{
+			if (is_bool($input->isDisplayColumn))
+			{
+				$this->isOptionalColumn = true;
+				$this->optionalColumn[$i] = $input->isDisplayColumn;
+				$this->optionalCaption[$i] = !empty($input->caption) ? $input->caption : $input->title;
+				// break;
+			}
+		}
+		// proccess optional colom
+		if ($this->isOptionalColumn)
+		{
+			$sesKey = menu_save(@$_GET['mod'].$this->formName);
+			// save post in session
+			if (!empty($_POST[$this->formName.'_ColView']))
+			{
+				if ($_POST[$this->formName.'_ColView'] == "EDIT")
+				{
+					if (!empty($_POST['ColView']))
+					{
+						$_SESSION['ColView'][$sesKey] = $_POST['ColView'];
+					}else{
+						$_SESSION['ColView'][$sesKey] = array();
+					}
+				}else{
+					unset($_SESSION['ColView'][$sesKey]);
+				}
+				die("saved");
+			}
+			// replace variable $this->optionalColumn
+			if (isset($_SESSION['ColView'][$sesKey]))
+			{
+				$r = (array)$_SESSION['ColView'][$sesKey];
+				foreach ($this->optionalColumn as $key => $val)
+				{
+					$this->optionalColumn[$key] = in_array($key, $r) ? true : false;
+				}
+			}
+			// show / hide column based on variable $this->optionalColumn
+			foreach ($this->input as $i => $input)
+			{
+				if (is_bool($input->isDisplayColumn))
+				{
+					if (!$this->optionalColumn[$i])
+					{
+						if (isset($input->elements))
+						{
+							foreach ($input->elements as $j => $subInput)
+							{
+								if (isset($this->input->$j))
+								{
+									unset($this->input->$j);
+								}
+							}
+						}
+						unset($this->input->$i);
+					}
+				}
+			}
+		}
 	}
 
 	function getSaveSuccessPage()
@@ -285,28 +354,119 @@ class phpRollAdmin extends phpEasyAdminLib
 		$out	= '';
 		if ($this->isReportOn)
 		{
-			$out            .= '<span class="input-group-addon">Export:';
-			$this->arrReport = get_object_vars($this->report);
-			$link            = _PEA_URL . 'report/phpReportGenerator.php?formName='. $this->formName .'&formType=roll&reportType=';
-			$file            = menu_save(@$_GET['mod'].$this->formName.$page);
-			foreach($this->arrReport as $report)
+			$export_all = !empty($_GET[$this->formName.'_export_all']);
+
+			$out  .= '<span class="input-group-addon checkbox roll-export">';
+			$out  .= 'Export: ';
+			$link  = _PEA_URL . 'report/phpReportGenerator.php?formName='. $this->formName .'&formType=roll&reportType=';
+			$file  = menu_save(@$_GET['mod'].$this->formName);
+			$file .= $export_all ? '' : $page;
+			$file  = _CACHE.implode('/', str_split($file, 2)).'.cfg';
+			$name  = substr(str_replace('/', '', preg_replace('~^'.preg_quote(_CACHE, '~').'~s', '', $file)), 0, -4);
+			$title = !empty($this->input->header->title) ? strip_tags($this->input->header->title) : 'Report';
+			if (preg_match('~([a-z0-9_]+)~is', $this->table, $m) && empty($this->input->header->title))
 			{
-				$report->setHeader($this->reportData['header']);
-				$report->setData($this->reportData['data']);
-				$icon    = $report->type == 'html' ? 'text' : $report->type;
-				$name    = $file.$icon;
-				$out    .= ' <i class="fa fa-file-'.$icon.'-o fa-lg" onClick="document.location.href=\''.$link.$report->type.'&name='.$name.'\'" style="cursor: pointer" title="Export to '.ucfirst($report->type).'"></i>';
-				file_write(_CACHE.implode('/', str_split($name, 2)).'.cfg', json_encode($report));
+				$title .= ' '.$m[1];
+			}
+			$this->arrReport = get_object_vars($this->report);
+			$this->buildReport($page, $file, $export_all);
+			if ($export_all)
+			{
+				ob_end_clean(); // membersihkan output dari script sebelumnya (jika ada)
+				if ($this->nav->int_cur_page >= $this->nav->int_tot_page)
+				{
+					$url  = $link;
+					$url .= !empty($_GET[$this->formName.'_export_type']) ? $_GET[$this->formName.'_export_type'] : 'excel';
+					$url .= '&name='.$name;
+					$url .= '&title='.urlencode($title);
+					$out = array(
+						'ok'  => 1,
+						'url' => $url,
+						'msg' => (($this->nav->int_tot_page > 30) ? lang('If the data size is too large to process, then it will be possible that the file you are downloading is in CSV format. Are you sure to continue?') : '')
+						);
+					output_json($out);
+				}else{
+					global $sys;
+					$url  = $this->nav->string_cur_uri.$this->nav->string_name.'='.($page+1).'&';
+					$max  = $this->nav->int_tot_page;
+					$done = $page ? intval(($page+1)/$max*100) : 0;
+					?>
+					<div class="progress">
+					  <div class="progress-bar" role="progressbar" aria-valuenow="<?php echo $done ?>"
+					  aria-valuemin="0" aria-valuemax="100" style="width:<?php echo $done ?>%">
+					    <?php echo $done ?>%
+					  </div>
+					</div>
+					<?php
+					die();
+					redirect($url);
+				}
+			}else{
+				if ($this->nav->int_tot_page > 1 && $page > 0)
+				{
+					$title .= ' - Page '.money($page);
+				}
+				foreach($this->arrReport as $report)
+				{
+					$icon = $report->type == 'html' ? 'text' : $report->type;
+					$out .= ' <a class="fa fa-file-'.$icon.'-o fa-lg" rel="'.$link.$report->type.'&name='.$name.'&title='.urlencode($title).'" data-type="'.$report->type.'" style="cursor: pointer" title="Export to '.ucfirst($report->type).'"></a>';
+				}
+			}
+			link_js(_PEA_ROOT . 'includes/exportAll.js', false);
+			if ($this->nav->int_tot_page > 1)
+			{
+				$out .= '<label style="min-height: 0;padding-left: 25px;"><input type="checkbox" class="export_all" data-name="'.$this->formName.'" data-page="'.$this->nav->string_name.'" title="'.lang('Export All Data').'" />'.lang('All Pages').'</label>';
 			}
 			$out .= '</span>';
 		}
+		if ($this->isOptionalColumn)
+		{
+			link_js(_PEA_ROOT . 'includes/optionalColumn.js', false);
+			$out .= sprintf('<div class="btn-group input-group-addon show_hide_column%s">', (($this->nav->int_tot_rows >= 8) ? ' dropup' : ''));
+			$out .= sprintf('<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> %s <span class="caret"></span> </button> <ul class="dropdown-menu">', lang('Show/Hide Columns'));
+			foreach ($this->optionalColumn as $key => $toogle)
+			{
+				$checked = $toogle ? ' checked' : '';
+				$out .= '<li> <a href="#"> <label><input type="checkbox" value="'.$key.'"'.$checked.' /> '.$this->optionalCaption[$key].'</label> </a> </li>';
+			}
+			$out .= '<li role="separator" class="divider"></li>
+								<li>
+										<div class="btn-group btn-group-justified" role="group" aria-label="...">
+											<div class="btn-group" role="group">
+												<button type="button" rel="btn_ColView" data-name="'.$this->formName.'_ColView" value="EDIT" class="btn btn-default">
+													Submit
+												</button>
+											</div>
+											<div class="btn-group" role="group">
+												<button type="button" rel="btn_ColView" data-name="'.$this->formName.'_ColView" value="RESET" class="btn btn-default">
+													Reset
+												</button>
+											</div>
+										</div>
+								</li>
+							</ul>
+					</div>';
+		}
 		return $out;
+	}
+	function buildReport($page, $file, $is_export_all)
+	{
+		$csv    = _class('csv');
+		$csv->clear();
+
+		if (($page==1 && $is_export_all) || !$is_export_all)
+		{
+			file_write($file, '');
+			$csv->addRow($this->reportData['header']);
+		}
+		$csv->addData($this->reportData['data']);
+		$csv->save($file, 'a');
 	}
 
 	// getMainForm() mengembalikan form complete, tapi tanpa submit button, tanpa navigasi, tanpa header title
 	function getMainForm()
 	{
-		$this->arrInput	= get_object_vars($this->input);
+		$this->arrInput   = get_object_vars($this->input);
 
 		$out				= '<tbody>';
 		$strField2Select	= array($this->tableId);
@@ -493,95 +653,70 @@ class phpRollAdmin extends phpEasyAdminLib
 		}
 		$out .= '</tr></thead>';
 		$this->reportData['header']	= isset($arrHeader) ? $arrHeader : array();
-
-		// ini colspan untuk TR bagian button submit dan navigasi
-		// jika ada save tool maka colspannya dikurangi satu, kl enggak kurangi 2
-		$numBottomColumns	= 1;
-		$colspan = 0;
-		if ($this->saveTool) $numBottomColumns++;
-		if ($this->deleteTool) $numBottomColumns++;
-
 		// ambil mainFormnya
 		$out .= $mainForm;
 
-		// ambil tr untuk button-button dan navigasi prev next
-		$foot         = '';
-		$returnButton = '';
-		$getNav       = $this->nav->getNav();
-		$colspan      = $numColumns - $numBottomColumns + 1;
-		$tdsave       = false;
-
+		/* Return, Save, Reset, Navigation, Delete */
+		$button = '';
 		if (!empty($_GET['return']))
 		{
-			$returnButton = $GLOBALS['sys']->button($_GET['return']);
+			$button .= $GLOBALS['sys']->button($_GET['return']);
 		}
-
-		if (!empty($getNav))
-		{
-			if ($numColumns >= $numBottomColumns)
-			{
-				$tdsave = true;
-	      $foot  .= '<td colspan="'.$colspan.'">'.$returnButton.$getNav.'</td>';
-			}else{
-				$foot .= '<td>'.$returnButton.$getNav;
-			}
-			$returnButton = '';
-		}else $tdsave = true;
-
 		if ($this->saveTool)
 		{
-			if ($tdsave)
-			{
-				$c     = empty($getNav) ? ' colspan="'.($colspan+1).'"' : '';
-				$foot .= '<td'.$c.'>';
-			}
-			$foot .= $returnButton;
-			$foot .= '<button type="submit" name="'. $this->saveButton->name .'" value="'. $this->saveButton->value
+			$button .= '<button type="submit" name="'. $this->saveButton->name .'" value="'. $this->saveButton->value
 						.	'" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-'.$this->saveButton->icon.'"></span>'
-						. $this->saveButton->label .'</button>'."\n";
-			if ($this->resetTool)
-			{
-				$foot .= '<button type="reset" class="btn btn-warning btn-sm"><span class="glyphicon glyphicon-'.$this->resetButton->icon.'"></span>'.$this->resetButton->label.'</button> ';
-			}
-			if ($tdsave)
-			{
-				$foot .= '</td>';
-			}
-		}else{
-			if (empty($getNav))
-			{
-				$foot  .= '<td colspan="'.$colspan.'"></td>';
-			}
+						. $this->saveButton->label .'</button>';
 		}
-		if (!empty($getNav))
+		if ($this->resetTool)
 		{
-			if (!$tdsave)
+			$button .= '<button type="reset" class="btn btn-warning btn-sm"><span class="glyphicon glyphicon-'.$this->resetButton->icon.'"></span>'.$this->resetButton->label.'</button> ';
+		}
+		$nav = $this->nav->getNav();
+		if (!empty($nav))
+		{
+			if (!empty($button))
 			{
-				$foot .= '</td>';
+				$button = '<table style="width: 100%;"><tr><td style="width: 10px;white-space: nowrap;">'.$button.'</td><td style="text-align: center;">'.$nav.'</td></tr></table>';
+			}else{
+				$button .= $nav;
 			}
 		}
+		$footerTD = array();
+		$colspan  = $numColumns;
 		if ($this->deleteTool)
 		{
-			$foot .= '  <td>'."\n";
-			$foot .= '		<button type="submit" name="'.$this->deleteButton->name.'" value="'. $this->deleteButton->value.'" class="btn btn-danger btn-sm"';
-			$foot .= ' onclick="if (confirm(\'Are you sure want to delete selected row(s) ?\')) { return true; }else{ return false; }">';
-			$foot .=	'<span class="glyphicon glyphicon-'.$this->deleteButton->icon.'"></span>'.$this->deleteButton->label .'</button> ';
-			$foot .= '  </td>'."\n";
+			$colspan -= 1;
 		}
-		if (!empty($foot)) {
-			$out .= "<tfoot><tr>{$foot}</tr></tfoot>";
+		$attr = $colspan > 1 ? ' colspan="'.$colspan.'"' : '';
+		$footerTD[] = '<td'.$attr.'>'.$button.'</td>';
+		if ($this->deleteTool)
+		{
+			$footerTD[] = '<td>'
+				. '<button type="submit" name="'.$this->deleteButton->name.'" value="'. $this->deleteButton->value.'" class="btn btn-danger btn-sm" '
+				. 'onclick="if (confirm(\'Are you sure want to delete selected row(s) ?\')) { return true; }else{ return false; }">'
+				. '<span class="glyphicon glyphicon-'.$this->deleteButton->icon.'"></span>'.$this->deleteButton->label .'</button>'
+				. '</td>';
 		}
-		$out .= "\n".'</form>'."\n";
-
+		if (!empty($footerTD))
+		{
+			$out .= '<tfoot><tr>'.implode('', $footerTD).'</tr></tfoot>';
+		}
+		$out .= '</form>';
 		$out .= '</table>';
-		$showall  = $this->nav->getViewAllLink();
-		if (!empty($showall)) {
-			$showall = '<span class="input-group-addon">'.$showall.'</span>';
+
+		/* Export Tool, Page Status, Form Navigate */
+		$nav = $this->nav->getViewAllLink();
+		if (!empty($nav))
+		{
+			$nav = '<span class="input-group-addon">'.$nav.'</span>';
 		}
-		$showall .= $this->nav->getGoToForm(false);
-    $out.= '<form method="get" action="" role="form" style="margin-top:-20px;margin-bottom: 20px;">'
+		$nav .= $this->nav->getGoToForm(false);
+    $out .= '<form method="get" action="" role="form" style="margin-top:-20px;margin-bottom: 20px;">'
     		.	'<div class="input-group">'.$this->getReport($this->nav->int_cur_page).'<span class="input-group-addon">'
-    		. $this->nav->getStatus().'</span>'.$showall.'</div></form>';
+    		. $this->nav->getStatus().'</span>'.$nav.'</div></form>';
+
+    /* Form Panel */
 		$formHeader = $this->getHeaderType();
 		if (!empty($formHeader))
 		{
@@ -882,94 +1017,108 @@ EOT;
 					{
 						// amankan input ID sebelum lakukan eksekusi
 						$this->actionSecurity();
-						// Jika onSave di eksekusi SEBELUM form action di proses
-						if (!$this->onSaveLoadLast)
+						if (!empty($_POST[$this->formName.'_orderby']))
 						{
-							$this->error = !$this->actionOnSave();
-						}
-						if ($this->isActionExecute)
-						{
+							$query = '';
 							foreach((array)$_POST[$this->input->system_id->name] as $i => $id)
 							{
-								if (!$this->onEachSaveLoadLast)
-								{
-									$this->actionOnEachSave($id);
-								}
-								$lang_text = array();
-								$query = "UPDATE ". $this->table ." SET ";
 								foreach ($this->arrInput as $input)
 								{
-									if ($input->isMultiLanguage)
+									if (!$input->isMultiLanguage)
 									{
-										$last = '';
-										if (!empty($_POST[$input->name][$i]))
-										{
-											foreach((array)$_POST[$input->name][$i] AS $l => $p)
-											{
-												$t = $p ? $p : $last;
-												if (@$input->nl2br) $t = nl2br($t);
-												$lang_text[$l][$input->objectName] = $this->cleanSQL($t);;
-												$last = $t;
-											}
-										}
-									}else{
 										$query .= $input->getRollUpdateQuery($i);
 									}
-									$this->setSuccessSaveMessage .= $input->status;
 								}
-								//menambahkan yang additional field dan valuenya
-								foreach ($this->extraField->field as $i => $f)
-								{
-									$query .= '`'.$f .'`=\''.$this->extraField->value[$i].'\', ';
-								}
-								$query = $this->replaceTrailingComma($query) ." WHERE ". $this->tableId ." = '". $id ."' ";
-
-								$this->error	= !$this->db->Execute($query);
-								if (!$this->error && $this->isMultiLanguage && count($lang_text) > 0)
-								{
-									$q = "SELECT `lang_id` FROM `{$this->LanguageTable}` WHERE `{$this->LanguageTableId}`={$id}{$this->LanguageTableWhere}";
-									$r_lang_id = $this->db->getCol($q);
-									foreach($lang_text AS $lang_id => $value)
-									{
-										$field = array();
-										foreach($value AS $f => $v)
-										{
-											$field[] = "`{$f}`='{$v}'";
-										}
-										if (!empty($field))
-										{
-											$fields = implode(', ', $field);
-											if (in_array($lang_id, $r_lang_id))
-											{
-												$q = "UPDATE `{$this->LanguageTable}` SET {$fields} WHERE `lang_id`={$lang_id} AND `{$this->LanguageTableId}`={$id}{$this->LanguageTableWhere}";
-											}else{
-												foreach ($this->LanguageTableUpdate as $var => $val)
-												{
-													$field[] = "`{$var}`='{$val}'";
-												}
-												$fields = implode(', ', $field);
-												$q = "INSERT INTO `{$this->LanguageTable}` SET `lang_id`={$lang_id}, `{$this->LanguageTableId}`={$id}, {$fields}";
-											}
-										}else{
-											$q = '';
-										}
-										$this->db->Execute($q);
-									}
-								}
-								if ($this->onEachSaveLoadLast)
-								{
-									$this->error = !$this->actionOnEachSave($id);
-								}
-								if ($this->error)
-								{
-									$this->errorMsg	= $this->db->ErrorMsg();
-								}
-							} // eo foreach((array)$_POST[$this->input->system_id->name] as $i => $id)
-							// Jika onSave di eksekusi SETELAH form action di proses
-							if (!$this->error && $this->onSaveLoadLast)
+							}
+						}else{
+							// Jika onSave di eksekusi SEBELUM form action di proses
+							if (!$this->onSaveLoadLast)
 							{
 								$this->error = !$this->actionOnSave();
 							}
+							if ($this->isActionExecute)
+							{
+								foreach((array)$_POST[$this->input->system_id->name] as $i => $id)
+								{
+									if (!$this->onEachSaveLoadLast)
+									{
+										$this->actionOnEachSave($id);
+									}
+									$lang_text = array();
+									$query = "UPDATE ". $this->table ." SET ";
+									foreach ($this->arrInput as $input)
+									{
+										if ($input->isMultiLanguage)
+										{
+											$last = '';
+											if (!empty($_POST[$input->name][$i]))
+											{
+												foreach((array)$_POST[$input->name][$i] AS $l => $p)
+												{
+													$t = $p ? $p : $last;
+													if (@$input->nl2br) $t = nl2br($t);
+													$lang_text[$l][$input->objectName] = $this->cleanSQL($t);;
+													$last = $t;
+												}
+											}
+										}else{
+											$query .= $input->getRollUpdateQuery($i);
+										}
+										$this->setSuccessSaveMessage .= $input->status;
+									}
+									//menambahkan yang additional field dan valuenya
+									foreach ($this->extraField->field as $i => $f)
+									{
+										$query .= '`'.$f .'`=\''.$this->extraField->value[$i].'\', ';
+									}
+									$query = $this->replaceTrailingComma($query) ." WHERE ". $this->tableId ." = '". $id ."' ";
+									$this->error	= !$this->db->Execute($query);
+									if (!$this->error && $this->isMultiLanguage && count($lang_text) > 0)
+									{
+										$q = "SELECT `lang_id` FROM `{$this->LanguageTable}` WHERE `{$this->LanguageTableId}`={$id}{$this->LanguageTableWhere}";
+										$r_lang_id = $this->db->getCol($q);
+										foreach($lang_text AS $lang_id => $value)
+										{
+											$field = array();
+											foreach($value AS $f => $v)
+											{
+												$field[] = "`{$f}`='{$v}'";
+											}
+											if (!empty($field))
+											{
+												$fields = implode(', ', $field);
+												if (in_array($lang_id, $r_lang_id))
+												{
+													$q = "UPDATE `{$this->LanguageTable}` SET {$fields} WHERE `lang_id`={$lang_id} AND `{$this->LanguageTableId}`={$id}{$this->LanguageTableWhere}";
+												}else{
+													foreach ($this->LanguageTableUpdate as $var => $val)
+													{
+														$field[] = "`{$var}`='{$val}'";
+													}
+													$fields = implode(', ', $field);
+													$q = "INSERT INTO `{$this->LanguageTable}` SET `lang_id`={$lang_id}, `{$this->LanguageTableId}`={$id}, {$fields}";
+												}
+											}else{
+												$q = '';
+											}
+											$this->db->Execute($q);
+										}
+									}
+									if ($this->onEachSaveLoadLast)
+									{
+										$this->error = !$this->actionOnEachSave($id);
+									}
+									if ($this->error)
+									{
+										$this->errorMsg	= $this->db->ErrorMsg();
+									}
+								} // eo foreach((array)$_POST[$this->input->system_id->name] as $i => $id)
+								// Jika onSave di eksekusi SETELAH form action di proses
+								if (!$this->error && $this->onSaveLoadLast)
+								{
+									$this->error = !$this->actionOnSave();
+								}
+						} // else if (!empty($_POST[$this->formName.'_orderby']))
 						} // eo if ($this->isActionExecute)
 					} // eo if (!empty($_POST[$this->input->system_id->name]))
 				} // eo if ($formExecute)

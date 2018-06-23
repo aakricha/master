@@ -25,8 +25,8 @@ $form->roll->onSave('user_field_repair');
 $form->roll->onDelete('user_field_repair');
 
 $tabs = array(
-  'Field List' => $form->roll->getForm()
-,  'Add List' => $form->edit->getForm()
-);
+	'Field List' => $form->roll->getForm(),
+	'Add Field' => $form->edit->getForm()
+	);
 
 echo tabs($tabs);

@@ -13,9 +13,9 @@
 	 */
 	class file
 	{
-		var $fileInfo = "";
+		var $fileInfo = array();
 		var $filePath = "";
-		var $fileStat = "";
+		var $fileStat = array();
 		var $mask = '0775';
 		var $debug = false;
 		var $errors = array();
@@ -55,7 +55,7 @@
 
 				}elseif(is_dir($this->filePath))
 				{
-					$this->fileStat = @stat($path);
+					$this->fileStat = stat($path);
 					$this->fileInfo['name'] = basename($path);
 					$this->fileInfo['path'] = $path;
 					$this->fileInfo['atime'] = $this->fileStat[8];

@@ -20,13 +20,13 @@ if($type == 1 || $type == 2 || $type == 3 || $type == 4)
     case 'login':
       $arr    = $sys->login($type_name);
       $email  = @$arr['email'];
-      $user   = $db->getRow("SELECT * FROM bbc_user WHERE `username`='{$email}'");
+      $user   = $db->getRow("SELECT * FROM `bbc_user` WHERE `username`='{$email}'");
       $MAINURL= _URL._ADMIN;
       if(empty($user))
       {
-        $q		= "SELECT user_id FROM `bbc_account` WHERE `email`='".$email."'";
-        $uid	= $db->getOne($q);
-        $q		= "SELECT * FROM bbc_user WHERE id=$uid";
+        $q		= "SELECT `user_id` FROM `bbc_account` WHERE `email`='{$email}'";
+        $uid	= intval($db->getOne($q));
+        $q		= "SELECT * FROM `bbc_user` WHERE id={$uid}";
         $user	= $db->getRow($q);
       }
       if(empty($user))
@@ -51,11 +51,16 @@ if($type == 1 || $type == 2 || $type == 3 || $type == 4)
             break;
         }
       }
-      echo msg($msg);
-      echo $sys->button($MAINURL, 'Relogin', 'repeat');
-      $sys->set_layout('login.php');
-      $sys->link_set($sys->template_url.'css/login.css', 'css');
-      $sys->link_set('', 'js');
+      ?>
+      <div class="container">
+        <div class="jumbotron">
+          <h1><?php echo $msg; ?></h1>
+          <p>Please contact administrator to get privilege to login. Or if you want to try another shot to sign in, you may want to click the button below.</p>
+          <p><?php echo $sys->button($MAINURL, 'Relogin', 'repeat'); ?></p>
+        </div>
+      </div>
+      <?php
+      $sys->set_layout('blank.php');
       break;
 
   case 'repair':

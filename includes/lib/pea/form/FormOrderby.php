@@ -69,7 +69,7 @@ class FormOrderby extends Form
 		$i = 0;
 		foreach( $arrTitle as $title)
 		{
-			$this ->addOrderby( $title, $arrValue[$i] );
+			$this->addOrderby( $title, $arrValue[$i] );
 			$i++;
 		}
 	}
@@ -396,6 +396,10 @@ class FormOrderby extends Form
 					'sqlOrder'     => $this->sqlOrder,
 					'expire'       => strtotime('+2 HOUR')
 					);
+				if (preg_match('~([a-z0-9_\-]+)~is', $param['tableName'], $m))
+				{
+					$param['tableName'] = $m[1];
+				}
 				if (!empty($this->db_str))
 				{
 					$param['db'] = $this->db_str;

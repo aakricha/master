@@ -25,6 +25,10 @@ class bbcSQL
 	function __construct()
 	{
 		global $Bbc;
+		if (!is_array($Bbc->debug))
+		{
+			$Bbc->debug = array();
+		}
 		$Bbc->debug[]    =& $this->dbOutput;
 		$this->self      = $this->fixPath(__FILE__);
 		$this->now       = time();
@@ -129,9 +133,9 @@ class bbcSQL
 		return $result;
 	}
 
-	function Insert($table, $data)
+	function Insert($table, $data, $exclude = array('id'))
 	{
-		$sql = $this->_build($data);
+		$sql = $this->_build($data, $exclude);
 		$out = 0;
 		if (!empty($sql))
 		{
@@ -162,8 +166,11 @@ class bbcSQL
 			}else{
 				$where = '';
 			}
-			// pr("UPDATE `{$table}` SET {$sql} {$where}", __FILE__.':'.__LINE__);die();
 			$out = $this->Execute("UPDATE `{$table}` SET {$sql} {$where}");
+			if ($out && is_numeric($where))
+			{
+				$out = $where;
+			}
 		}
 		return $out;
 	}
@@ -389,7 +396,7 @@ class bbcSQL
 			$this->dbOutput .= "<br /><b>Tak ada data yang didapat!</b>";
 			return false;
 		}
-		$result = mysqli_fetch_array($this->resid, MYSQL_BOTH);
+		$result = mysqli_fetch_array($this->resid, MYSQLI_BOTH);
 		$this->echoerror();
 		return $result;
 	}
@@ -403,7 +410,7 @@ class bbcSQL
 			{
 				if (!in_array($key, $exclude))
 				{
-					$output[] = "`{$key}`='".addslashes($value)."'";
+					$output[] = "`{$key}`='".@addslashes((string)$value)."'";
 				}
 			}
 		}

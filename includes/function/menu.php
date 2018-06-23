@@ -27,7 +27,8 @@ function menu_save($txt, $url = false, $replace='')
 	return trim($output, $replace);
 }
 
-function menu_delimiter() {
+function menu_delimiter()
+{
 	$s = config('rules', 'uri_separator');
 	if (!empty($s) && is_string($s))
 	{
@@ -100,6 +101,35 @@ function menu_fetch_recure($ids, $add = array())
 		return $output;
 	}
 }
+/*===========================================
+Mengambil ID menu yang perlu di highlight untuk ditampilkan pada layout
+biasanya diambil dari URL saat itu
+ *=========================================*/
+function menu_parent_ids($id, $arr_menu=array(), $out = array())
+{
+	global $Bbc;
+	if (!empty($Bbc->menu_parent_ids[$id]))
+	{
+		return $Bbc->menu_parent_ids[$id];
+	}
+	if (!empty($arr_menu))
+	{
+		foreach ($arr_menu as $m)
+		{
+			if ($m['id'] == $id)
+			{
+				$out[] = $id;
+				if (!empty($m['par_id']))
+				{
+					$out = call_user_func_array(__FUNCTION__, [$m['par_id'], $arr_menu, $out]);
+					break;
+				}
+			}
+		}
+	}
+	$Bbc->menu_parent_ids[$id] = $out;
+	return $out;
+}
 
 function menu_repair()
 {
@@ -144,6 +174,7 @@ function menu_horizontal($menus, $y='', $x='', $level = -1) // $y = 'down' || 't
 	$output = '';
 	if (!empty($menus))
 	{
+		$highlight = menu_parent_ids(@$_GET['menu_id'], $menus);
 		if ($level == -1)
 		{
 			$output = call_user_func(__FUNCTION__, menu_parse($menus), $y,$x,++$level);
@@ -158,9 +189,11 @@ function menu_horizontal($menus, $y='', $x='', $level = -1) // $y = 'down' || 't
 				$sub = call_user_func(__FUNCTION__, $menu['child'], $y,$x,++$level);
 				if (!empty($sub))
 				{
-					$out .= '<li class="dropdown"><a role="button" data-toggle="dropdown" tabindex="-1" href="'.$menu['link'].'" title="'.$menu['title'].'">'.$menu['title'].' <b class="caret"></b></a>'.$sub.'</li>';
+					$act = in_array($menu['id'], $highlight) ? ' active' : '';
+					$out .= '<li class="dropdown'.$act.'"><a role="button" data-toggle="dropdown" tabindex="-1" href="'.$menu['link'].'" title="'.$menu['title'].'">'.$menu['title'].' <b class="caret"></b></a>'.$sub.'</li>';
 				}else{
-					$out .= '<li><a href="'.$menu['link'].'" title="'.$menu['title'].'">'.$menu['title'].'</a></li>';
+					$act = in_array($menu['id'], $highlight) ? ' class="active"' : '';
+					$out.= '<li'.$act.'><a href="'.$menu['link'].'" title="'.$menu['title'].'">'.$menu['title'].'</a></li>';
 				}
 			}
 			$output = '<ul class="nav navbar-nav'.$cls.'">'.$out.'</ul>';
@@ -171,9 +204,11 @@ function menu_horizontal($menus, $y='', $x='', $level = -1) // $y = 'down' || 't
 				$sub = call_user_func(__FUNCTION__, $menu['child'], $y,$x,++$level);
 				if (!empty($sub))
 				{
-					$out .= '<li class="dropdown-submenu"><a tabindex="-1" href="'.$menu['link'].'" title="'.$menu['title'].'">'.$menu['title'].'</a>'.$sub.'</li>';
+					$act = in_array($menu['id'], $highlight) ? ' active' : '';
+					$out .= '<li class="dropdown-submenu'.$act.'"><a tabindex="-1" href="'.$menu['link'].'" title="'.$menu['title'].'">'.$menu['title'].'</a>'.$sub.'</li>';
 				}else{
-					$out .= '<li><a href="'.$menu['link'].'" title="'.$menu['title'].'">'.$menu['title'].'</a></li>';
+					$act = in_array($menu['id'], $highlight) ? ' class="active"' : '';
+					$out.= '<li'.$act.'><a href="'.$menu['link'].'" title="'.$menu['title'].'">'.$menu['title'].'</a></li>';
 				}
 			}
 			$output = '<ul class="dropdown-menu" role="menu">'.$out.'</ul>';
@@ -186,6 +221,7 @@ function menu_vertical($menus, $level = -1, $id='')
 	$output = '';
 	if (!empty($menus))
 	{
+		$highlight = menu_parent_ids(@$_GET['menu_id'], $menus);
 		if ($level == -1)
 		{
 			$output = call_user_func(__FUNCTION__, menu_parse($menus), ++$level);
@@ -208,12 +244,13 @@ function menu_vertical($menus, $level = -1, $id='')
 			foreach ($menus as $menu)
 			{
 				$sub = call_user_func(__FUNCTION__, $menu['child'], ++$level, $id);
+				$act = in_array($menu['id'], $highlight) ? ' active' : '';
 				if (!empty($sub))
 				{
-					$out .= '<a href="#'.$id.$level.'" class="list-group-item" data-toggle="collapse" data-parent="#'.$id.'" title="'.$menu['title'].'">'.$menu['title'].' <span class="caret down"></span></a>';
+					$out .= '<a href="#'.$id.$level.'" class="list-group-item'.$act.'" data-toggle="collapse" data-parent="#'.$id.'" title="'.$menu['title'].'">'.$menu['title'].' <span class="caret down"></span></a>';
 					$out .= $sub;
 				}else{
-					$out .= '<a href="'.$menu['link'].'" class="list-group-item" data-parent="#'.$id.'" title="'.$menu['title'].'">'.$menu['title'].'</a>';
+					$out .= '<a href="'.$menu['link'].'" class="list-group-item'.$act.'" data-parent="#'.$id.'" title="'.$menu['title'].'">'.$menu['title'].'</a>';
 				}
 			}
 			$output = '<div id="'.$id.'"><div class="list-group">'.$out.'</div></div>';
@@ -223,12 +260,13 @@ function menu_vertical($menus, $level = -1, $id='')
 			foreach ($menus as $menu)
 			{
 				$sub = call_user_func(__FUNCTION__, $menu['child'], ++$level, $id);
+				$act = in_array($menu['id'], $highlight) ? ' active' : '';
 				if (!empty($sub))
 				{
-					$out .= '<a href="#'.$id.$level.'" class="list-group-item" data-toggle="collapse" data-parent="#'.$id.'" title="'.$menu['title'].'">'.$menu['title'].' <span class="caret down"></span></a>';
+					$out .= '<a href="#'.$id.$level.'" class="list-group-item'.$act.'" data-toggle="collapse" data-parent="#'.$id.'" title="'.$menu['title'].'">'.$menu['title'].' <span class="caret down"></span></a>';
 					$out .= $sub;
 				}else{
-					$out .= '<a href="'.$menu['link'].'" class="list-group-item" data-parent="#'.$id.'" title="'.$menu['title'].'">'.$menu['title'].'</a>';
+					$out .= '<a href="'.$menu['link'].'" class="list-group-item'.$act.'" data-parent="#'.$id.'" title="'.$menu['title'].'">'.$menu['title'].'</a>';
 				}
 			}
 			$output = '<div id="'.$id.'" class="collapse list-group-submenu">'.$out.'</div>';
@@ -289,12 +327,15 @@ function menu_list($r_menu, $layout = 'vertical top right', $b_id = 1)
 function menu_ulli($arr, $par_id = 0, $attr_ul = '', $attr_li = '')
 {
 	$out		= array();
-	foreach((array)$arr AS $dt) {
-		if($dt['par_id'] == $par_id) {
+	foreach((array)$arr AS $dt)
+	{
+		if($dt['par_id'] == $par_id)
+		{
 			$out[] = '<li '.$attr_li.'><a href="'.$dt['link'].'" title="'.$dt['title'].'">'.$dt['title'].'</a>'.call_user_func(__FUNCTION__, $arr, $dt['id'], $attr_ul, $attr_li).'</li>';
 		}
 	}
-	if(!empty($out)) {
+	if(!empty($out))
+	{
 		$output = '<ul '.$attr_ul.'>'.implode(' ', $out).'</ul>';
 	}else{
 		$output = '';

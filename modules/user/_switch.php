@@ -57,6 +57,10 @@ switch($Bbc->mod['task'])
 		include 'alert_remove.php';
 		break;
 
+	case 'auth':
+		include 'auth.php'; // untuk mengambil foto user yang ingin men-submit gambar
+		break;
+
 	case 'logout': // Halaman untuk logout bagi user yang sudah login
 		user_logout($user->id);
 		redirect(_URL);
@@ -66,6 +70,9 @@ switch($Bbc->mod['task'])
 		break;
 	case 'account': // Data informasi profil dari user yang sudah login. Jadi pastikan halaman ini hanya bisa diakses oleh user yang telah login dengan menggunakan checkbox Menu Protection di 'Control Panel / Menu Manager'
 		include 'account.php';
+		break;
+	case 'account_image':
+		include 'account_image.php';
 		break;
 	case 'option':
 		include 'option.php';

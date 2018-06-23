@@ -1,10 +1,13 @@
 <?php  if ( ! defined('_VALID_BBC')) exit('No direct script access allowed');
 
-$q = "SELECT id, name FROM bbc_menu_cat ORDER BY orderby ASC";
+$q     = "SELECT id, name FROM bbc_menu_cat ORDER BY orderby ASC";
 $r_cat = $db->getAssoc($q);
-
-$arr = $sys->menu_get_all();
-$r = array();
+$arr   = $sys->menu_get_all();
+$r     = array();
+if (empty($user->menu_ids) || !is_array($user->menu_ids))
+{
+	$user->menu_ids = array();
+}
 foreach($arr AS $m)
 {
 	if($m['protected'])

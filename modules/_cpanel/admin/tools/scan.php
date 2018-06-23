@@ -26,15 +26,14 @@ if($_GET['act'] == 'scan_files')
 		echo $output;
 	}
 }
-?>
-<ul class="list-inline">
-	<li><input type="button" value="&laquo; back" class="btn btn-default" onClick="document.location.href='<?php echo $Bbc->mod['circuit'];?>.tools'"></li>
-	<li><input type="button" value="Scan Files &raquo;" class="btn btn-default" onClick="document.location.href='<?php echo $Bbc->mod['circuit'];?>.tools&act=scan_files'"></li>
-	<li><input type="button" value="Get Command &raquo;" class="btn btn-default" onClick="document.location.href='<?php echo $Bbc->mod['circuit'];?>.tools&act=scan_command'"></li>
-	<li><input type="button" value="Chmod Tool &raquo;" class="btn btn-default" onClick="document.location.href='<?php echo $Bbc->mod['circuit'];?>.tools&act=scan_chmod'"></li>
-	<li><input type="button" value="Repair Database &raquo;" class="btn btn-default" onClick="document.location.href='<?php echo $Bbc->mod['circuit'];?>.tools&act=scan_database'"></li>
-</ul>
-<?php
+if (!empty($_GET['return']))
+{
+	echo $sys->button($_GET['return']);
+}
+echo $sys->button(tools_url('scan_files'), 'Scan Files', 'fa-search').' ';
+echo $sys->button(tools_url('scan_command'), 'Get Command', 'fa-terminal').' ';
+echo $sys->button(tools_url('scan_chmod'), 'Chmod Tool', 'fa-lock').' ';
+echo $sys->button(tools_url('scan_database'), 'Repair Database', 'fa-database');
 function tools_scan_check_file_perm(&$folder_errors, $baseDir, $right_chmod)
 {
 	$permision = file_octal_permissions(fileperms($baseDir));

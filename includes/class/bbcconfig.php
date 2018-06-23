@@ -154,11 +154,17 @@ class bbcconfig
 	}
 	function show_param($arr, $config = array(), $form_title = 'Additional Parameter', $name = 'config')
 	{
-		global $sys;
+		global $sys, $Bbc;
 		$i = 0;
 		if(is_array($arr) AND count($arr) > 0)
 		{
-			$panel_id = menu_save(json_encode($arr));
+			if (empty($Bbc->bbcshowparams))
+			{
+				$Bbc->bbcshowparams = 1;
+			}else{
+				$Bbc->bbcshowparams++;
+			}
+			$panel_id = time().$Bbc->bbcshowparams;
 			if ($form_title != 'null')
 			{
 				?>

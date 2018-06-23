@@ -14,6 +14,10 @@ if (!empty($_POST['token']) && !empty($_POST['ids']))
 		$tableName    = @$token['tableName'];
 		$sqlCondition = @$token['sqlCondition'];
 		$sqlOrder     = @$token['sqlOrder'];
+		if (preg_match('~([a-z0-9_]+)~is', $tableName, $m))
+		{
+			$tableName = $m[1];
+		}
 		if (!empty($token['db']))
 		{
 			$db = ${$token['db']};

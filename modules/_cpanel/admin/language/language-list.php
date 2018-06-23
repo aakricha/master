@@ -1,7 +1,10 @@
 <?php defined( '_VALID_BBC' ) or die( 'Restricted access' );
 
-$form1 = _lib('pea', "bbc_lang_code AS c LEFT JOIN bbc_lang_text AS t ON (c.id=t.code_id AND t.lang_id=".lang_id().")" );
-// $form1 = _lib('pea', 'bbc_lang_code');
+if (empty($keyword['lang_id']))
+{
+	$keyword['lang_id'] = lang_id();
+}
+$form1 = _lib('pea', "bbc_lang_code AS c LEFT JOIN bbc_lang_text AS t ON (c.id=t.code_id AND t.lang_id=".$keyword['lang_id'].")" );
 
 $form1->initRoll("$add_sql ORDER BY id DESC", 'id');
 $form1->roll->setLanguage('code_id', 'bbc_lang_text');

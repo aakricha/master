@@ -55,8 +55,8 @@ $form->roll->input->publish->setTitle('Publish');
 $form->roll->input->publish->setCaption('Actived');
 
 $tabs = array(
-	'Question'=> $form->roll->getForm()
-,	'Add'			=> $form->add->getForm()
+	'Question'=> $form->roll->getForm(),
+	'Add'			=> $form->add->getForm()
 );
 
 function questionary_option($opti, $c)
@@ -66,43 +66,52 @@ function questionary_option($opti, $c)
 	foreach($r AS $d)
 	{
 		preg_match('~^([0-9]+)~is', $d, $m);
-		if(isset($dt[$m[1]])) $dt[$m[1]]++;
+		if(isset($m[1]) && isset($dt[$m[1]]))
+		{
+			$dt[$m[1]]++;
+		// }else{
+		// 	$dt[$m[1]] = 0;
+		}
 	}
 }
 
-$q	= "SELECT question_title, option_titles FROM survey_posted_question WHERE question_id=$id";
-$arr= $db->getAll($q);
-if($db->Affected_rows())
+$q   = "SELECT `question_title`, `option_titles` FROM `survey_posted_question` WHERE `question_id`={$id}";
+$arr = $db->getAll($q);
+if(count($arr) > 0)
 {
 	$c = array(
-		1 => lang('Sangat Tidak Setuju')
-	,	2 => lang('Tidak Setuju')
-	,	3 => lang('Netral')
-	,	4 => lang('Setuju')
-	,	5 => lang('Sangat Setuju')
+		1 => lang('Sangat Tidak Setuju'),
+		2 => lang('Tidak Setuju'),
+		3 => lang('Netral'),
+		4 => lang('Setuju'),
+		5 => lang('Sangat Setuju')
 	);
 	ob_start();
-	$r_q = explode('<br />', $arr['question_title']);
-	$r_a = explode('<br />', $arr['option_titles']);
-	foreach($r_q AS $j => $q)
+	foreach ($arr as $data)
 	{
-		echo '<h2>'.$q.'</h2><br />';
-		$dt = array(1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0);
-		foreach($r_a[$j] AS $d)
+		$r_q = explode('<br />', $data['question_title']);
+		$r_a = explode('<br />', $data['option_titles']);
+		foreach($r_q AS $j => $q)
 		{
-			questionary_option($d, $c);
+			echo '<b>'.$q.'</b><br />';
+			$dt = array(1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0);
+			questionary_option($r_a[$j], $c);
+			$chd = $chl = array();
+			$total = array_sum($dt);
+			if ($total > 0)
+			{
+				foreach($dt AS $i => $voted)
+				{
+					if($voted > 0) $voted = round($voted / $total * 100, 2);
+					else $voted = 0;
+					$chd[] = $voted;
+					$chl[] = $c[$i].' ('.$voted.' %)';
+				}
+				$img_url = 'http://chart.apis.google.com/chart?cht=p3&chs=460x100&chd=t:'.urlencode(implode(',', $chd)).'&chl='.urlencode(implode('|', $chl));
+
+				echo '<p><img src="'.$img_url.'" border=0></p>';
+			}
 		}
-		$chd = $chl = array();
-		$total = array_sum($dt);
-		foreach($dt AS $i => $voted)
-		{
-			if($voted > 0) $voted = round($voted / $total * 100, 2);
-			else $voted = 0;
-			$chd[] = $voted;
-			$chl[] = $c[$i].' ('.$voted.' %)';
-		}
-		$img_url			= 'http://chart.apis.google.com/chart?cht=p3&chs=460x100&chd=t:'.urlencode(implode(',', $chd)).'&chl='.urlencode(implode('|', $chl));
-		echo '<p><img src="'.$img_url.'" border=0></p>';
 	}
 	$tabs['Report'] = ob_get_contents();
 	ob_end_clean();

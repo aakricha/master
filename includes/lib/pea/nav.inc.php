@@ -185,7 +185,7 @@ class oNav extends oDebug
 			foreach($_GET as $name=>$val)
 			{
 				if ($name != $this->string_name)
-					$this->string_cur_uri .= $name . '=' . $val .'&';
+					$this->string_cur_uri .= $name . '=' . urlencode($val) .'&';
 			}
 		}
 	}
@@ -301,24 +301,30 @@ class oNav extends oDebug
 		if (!$this->is_loaded['get_data']) $this->getData();
 		$arr_nav = array();
 		if ($this->int_tot_page < $this->num_nav)
+		{
 			$max = $this->int_tot_page;
-		else
+		}else{
 			$max = $this->int_cur_page + $this->num_nav -1;
+		}
 
 		if ($max > $this->int_tot_page)
+		{
 			$max = $this->int_tot_page;
+		}
 
 		if ($max > 2 * $this->num_nav-1)
+		{
 			$n = $max - 2 * $this->num_nav;
-		else
+		}else{
 			$n = 0;
+		}
 		$k = 0;
 		$a = !empty($this->layout['link_class']) ? ' class="'. $this->layout['link_class'] .'"' : '';
 		for ($i=$n; $i < $max; $i++)
 		{
 			$j = $i+1;
 			$c = ($this->int_cur_page==$j) ? ' class="active"' : '';
-			$arr_nav[$i] = '<li'.$c.'><a'.$a.' href="'.$this->string_cur_uri.$this->string_name.'='.$j.'">'.$j.'</a></li>';
+			$arr_nav[$i] = '<li'.$c.'><a'.$a.' href="'.$this->string_cur_uri.$this->string_name.'='.$j.'">'.money($j).'</a></li>';
 			$k++;
 		}
 		return $arr_nav;
@@ -371,10 +377,15 @@ class oNav extends oDebug
 		{
 			$action	= preg_replace("#\?.*#", '', $_SERVER['REQUEST_URI']);
 			if ($withFormTag)
+			{
 				$form .= '<form method="GET" action="'.$action.'" name="'.$this->string_name.'_goto" role="form"><div class="input-group">';
-			foreach($_GET as $name=>$val){
+			}
+			foreach($_GET as $name=>$val)
+			{
 				if ($name != 'submit' && $name != $this->string_name && !empty($val))
+				{
 					$form .= '<input type=hidden name="'.$name.'" value="'.$val.'">';
+				}
 			}
 			$total = money($this->int_tot_page);
 			$form .= <<<EOT

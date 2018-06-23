@@ -44,6 +44,7 @@ if( !empty($config['rating'])
 	|| !empty($config['print'])
 	|| !empty($config['email'])
 	|| !empty($config['pdf'])
+	|| !empty($config['share'])
 	|| !empty($edit_data) )
 {
 	$sys->link_js('detail.js', false);
@@ -93,7 +94,7 @@ if( !empty($config['rating'])
 		</div>
 	</div>
 	<?php
-	if(@$config['share'])
+	if(!empty($config['share']))
 	{
 		$sys->meta_add('<link rel="image_src" href="'.content_src($data['image'], false, true).'" />
 		<meta property="og:title" content="'.$data['title'].'" />

@@ -72,6 +72,15 @@ class FormDateInterval extends FormMultiinput
 		}
 	}
 
+	function setPlaintext( $bool_is_plaintext = false )
+	{
+		Form::setPlaintext($bool_is_plaintext);
+		if (!empty($this->endDate))
+		{
+			$this->endDate->setPlaintext($bool_is_plaintext);
+		}
+	}
+
 	// untuk ngeset default value pada Add Form
 	// bisa diberi argumen NOW agar terisi saat ini
 	function setDefaultValue( $value_start = 'now', $value_end='')
